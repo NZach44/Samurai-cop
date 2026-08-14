@@ -1,6 +1,9 @@
 extends CharacterBody2D
 class_name Fighter
 
+signal health_changed(current_health: int, max_health: int)
+signal defeated(fighter: Fighter)
+
 @export var move_speed: float = 240.0
 @export var jump_velocity: float = 600.0
 @export var max_health: int = 100
@@ -25,6 +28,8 @@ var hit_target_ids: Dictionary = {}
 var current_health: int
 var is_in_hit_stun: bool = false
 var hit_stun_time_remaining: float = 0.0
+var is_defeated: bool = false
+var attack_sequence_id: int = 0
 
 
 func _ready() -> void:
@@ -32,7 +37,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_in_hit_stun:
+	if is_defeated:
+		if is_in_hit_stun:
+			_update_hit_stun(delta)
+		else:
+			velocity.x = 0.0
+	elif is_in_hit_stun:
 		_update_hit_stun(delta)
 	else:
 		_handle_player_input()
@@ -69,15 +79,23 @@ func _face_opponent() -> void:
 func _start_punch() -> void:
 	is_punching = true
 	hit_target_ids.clear()
+	attack_sequence_id += 1
+	var current_attack_id: int = attack_sequence_id
 	await get_tree().create_timer(punch_startup_time).timeout
+	if current_attack_id != attack_sequence_id or is_defeated:
+		return
 
 	punch_is_active = true
 	punch_hit_box.set_deferred("monitoring", true)
 	await get_tree().create_timer(punch_active_time).timeout
+	if current_attack_id != attack_sequence_id:
+		return
 
 	punch_is_active = false
 	punch_hit_box.set_deferred("monitoring", false)
 	await get_tree().create_timer(punch_recovery_time).timeout
+	if current_attack_id != attack_sequence_id:
+		return
 	is_punching = false
 
 
@@ -94,8 +112,12 @@ func _on_punch_hit_box_area_entered(hurt_box: Area2D) -> void:
 
 
 func receive_hit(damage: int, knockback_speed: float, attacker: Fighter) -> void:
+	if is_defeated:
+		return
+
 	var previous_health: int = current_health
 	current_health = clampi(current_health - damage, 0, max_health)
+	health_changed.emit(current_health, max_health)
 
 	var knockback_direction: float = signf(global_position.x - attacker.global_position.x)
 	velocity.x = knockback_direction * knockback_speed
@@ -109,3 +131,27 @@ func receive_hit(damage: int, knockback_speed: float, attacker: Fighter) -> void
 		damage_dealt,
 		current_health,
 	])
+
+	if current_health == 0:
+		is_defeated = true
+		_cancel_attack()
+		defeated.emit(self)
+
+
+func reset_for_round(spawn_position: Vector2) -> void:
+	position = spawn_position
+	velocity = Vector2.ZERO
+	current_health = max_health
+	is_defeated = false
+	is_in_hit_stun = false
+	hit_stun_time_remaining = 0.0
+	_cancel_attack()
+	health_changed.emit(current_health, max_health)
+
+
+func _cancel_attack() -> void:
+	attack_sequence_id += 1
+	is_punching = false
+	punch_is_active = false
+	hit_target_ids.clear()
+	punch_hit_box.set_deferred("monitoring", false)
