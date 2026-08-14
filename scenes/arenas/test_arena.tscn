@@ -22,5 +22,15 @@ color = Color(0.36, 0.3, 0.24, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Fighter" parent="." instance=ExtResource("1_fighter")]
+[node name="Fighter1" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_fighter")]
 position = Vector2(320, 400)
+opponent = NodePath("../Fighter2")
+
+[node name="Fighter2" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_fighter")]
+modulate = Color(0.95, 0.55, 0.45, 1)
+position = Vector2(832, 400)
+left_action = &"p2_left"
+right_action = &"p2_right"
+jump_action = &"p2_jump"
+punch_action = &"p2_punch"
+opponent = NodePath("../Fighter1")
