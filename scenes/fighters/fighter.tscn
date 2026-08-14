@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/fighters/fighter.gd" id="1_fighter"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fighter"]
+size = Vector2(48, 128)
+
+[node name="Fighter" type="CharacterBody2D"]
+script = ExtResource("1_fighter")
+
+[node name="PlaceholderVisual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-24, -64, 24, -64, 24, 64, -24, 64)
+color = Color(0.18, 0.72, 0.9, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fighter")

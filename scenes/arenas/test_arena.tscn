@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1152, 64)
+
+[node name="TestArena" type="Node2D"]
+
+[node name="Background" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+color = Color(0.08, 0.1, 0.16, 1)
+z_index = -1
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(576, 584)
+
+[node name="Visual" type="Polygon2D" parent="Floor"]
+polygon = PackedVector2Array(-576, -32, 576, -32, 576, 32, -576, 32)
+color = Color(0.36, 0.3, 0.24, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Fighter" parent="." instance=ExtResource("1_fighter")]
+position = Vector2(320, 400)
