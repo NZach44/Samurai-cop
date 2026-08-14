@@ -1,0 +1,130 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/mobile_controls.gd" id="1_mobile_controls"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_button"]
+size = Vector2(108, 76)
+
+[node name="MobileControls" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_mobile_controls")
+
+[node name="Layout" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LeftControls" type="Control" parent="Layout"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -120.0
+offset_right = 260.0
+offset_bottom = -24.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="MoveLeft" type="TouchScreenButton" parent="Layout/LeftControls"]
+position = Vector2(54, 48)
+visibility_mode = 0
+action = &"p1_left"
+shape = SubResource("RectangleShape2D_button")
+
+[node name="Visual" type="Polygon2D" parent="Layout/LeftControls/MoveLeft"]
+polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
+color = Color(0.12, 0.45, 0.78, 0.48)
+
+[node name="Label" type="Label" parent="Layout/LeftControls/MoveLeft"]
+offset_left = -54.0
+offset_top = -38.0
+offset_right = 54.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "LEFT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MoveRight" type="TouchScreenButton" parent="Layout/LeftControls"]
+position = Vector2(182, 48)
+visibility_mode = 0
+action = &"p1_right"
+shape = SubResource("RectangleShape2D_button")
+
+[node name="Visual" type="Polygon2D" parent="Layout/LeftControls/MoveRight"]
+polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
+color = Color(0.12, 0.45, 0.78, 0.48)
+
+[node name="Label" type="Label" parent="Layout/LeftControls/MoveRight"]
+offset_left = -54.0
+offset_top = -38.0
+offset_right = 54.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "RIGHT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightControls" type="Control" parent="Layout"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -120.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Jump" type="TouchScreenButton" parent="Layout/RightControls"]
+position = Vector2(54, 48)
+visibility_mode = 0
+action = &"p1_jump"
+shape = SubResource("RectangleShape2D_button")
+
+[node name="Visual" type="Polygon2D" parent="Layout/RightControls/Jump"]
+polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
+color = Color(0.88, 0.42, 0.12, 0.48)
+
+[node name="Label" type="Label" parent="Layout/RightControls/Jump"]
+offset_left = -54.0
+offset_top = -38.0
+offset_right = 54.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "JUMP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Punch" type="TouchScreenButton" parent="Layout/RightControls"]
+position = Vector2(182, 48)
+visibility_mode = 0
+action = &"p1_punch"
+shape = SubResource("RectangleShape2D_button")
+
+[node name="Visual" type="Polygon2D" parent="Layout/RightControls/Punch"]
+polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
+color = Color(0.88, 0.42, 0.12, 0.48)
+
+[node name="Label" type="Label" parent="Layout/RightControls/Punch"]
+offset_left = -54.0
+offset_top = -38.0
+offset_right = 54.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+text = "PUNCH"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
+[ext_resource type="PackedScene" path="res://scenes/ui/mobile_controls.tscn" id="3_mobile_controls"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1152, 64)
@@ -140,3 +141,6 @@ grow_horizontal = 2
 theme_override_font_sizes/font_size = 32
 text = "PLAYER 1 WINS"
 horizontal_alignment = 1
+
+[node name="MobileControls" parent="." instance=ExtResource("3_mobile_controls")]
+force_visible_for_testing = true
