@@ -12,13 +12,16 @@ config_version=5
 
 config/name="Samurai_Cop"
 run/main_scene="res://scenes/arenas/test_arena.tscn"
-config/features=PackedStringArray("4.7", "Mobile")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [display]
 
+window/size/viewport_width=1152
+window/size/viewport_height=648
+window/size/resizable=true
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep"
 
 [input]
 
@@ -115,4 +118,5 @@ pointing/emulate_touch_from_mouse=true
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
