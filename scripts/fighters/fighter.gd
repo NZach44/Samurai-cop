@@ -15,6 +15,7 @@ enum ControlMode {
 @export var separation_speed: float = 160.0
 @export var max_health: int = 100
 @export var hit_stun_duration: float = 0.25
+@export var character_data: CharacterData
 @export var control_mode: ControlMode = ControlMode.HUMAN
 @export var left_action: StringName = &"p1_left"
 @export var right_action: StringName = &"p1_right"
@@ -103,10 +104,10 @@ func _handle_cpu_input(delta: float) -> void:
 
 
 func _apply_control_input(move_direction: float, jump_requested: bool, punch_requested: bool) -> void:
-	velocity.x = move_direction * move_speed
+	velocity.x = move_direction * get_move_speed()
 
 	if is_on_floor() and jump_requested:
-		velocity.y = -jump_velocity
+		velocity.y = -get_jump_velocity()
 
 	if punch_requested and not is_punching:
 		_start_punch()
@@ -196,7 +197,7 @@ func _on_punch_hit_box_area_entered(hurt_box: Area2D) -> void:
 		return
 
 	hit_target_ids[target.get_instance_id()] = true
-	target.receive_hit(punch_damage, punch_knockback_speed, self)
+	target.receive_hit(get_punch_damage(), punch_knockback_speed, self)
 
 
 func receive_hit(damage: int, knockback_speed: float, attacker: Fighter) -> void:
@@ -216,8 +217,8 @@ func receive_hit(damage: int, knockback_speed: float, attacker: Fighter) -> void
 
 	var damage_dealt: int = previous_health - current_health
 	print("PUNCH HIT: %s hit %s for %d damage (%d health remaining)" % [
-		attacker.name,
-		name,
+		attacker.get_display_name(),
+		get_display_name(),
 		damage_dealt,
 		current_health,
 	])
@@ -245,6 +246,27 @@ func set_controls_enabled(enabled: bool) -> void:
 	if not enabled:
 		cpu_controller.stop()
 		_cancel_attack()
+
+
+func get_display_name() -> String:
+	if character_data != null and not character_data.display_name.is_empty():
+		return character_data.display_name
+	return name
+
+
+func get_move_speed() -> float:
+	return character_data.move_speed if character_data != null else move_speed
+
+
+func get_jump_velocity() -> float:
+	return character_data.jump_velocity if character_data != null else jump_velocity
+
+
+func get_punch_damage() -> int:
+	var power_multiplier: float = (
+		character_data.power_multiplier if character_data != null else 1.0
+	)
+	return maxi(roundi(float(punch_damage) * power_multiplier), 0)
 
 
 func _cancel_attack() -> void:

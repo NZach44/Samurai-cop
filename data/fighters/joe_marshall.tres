@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fighters/character_data.gd" id="1_character_data"]
+
+[resource]
+script = ExtResource("1_character_data")
+character_id = &"joe_marshall"
+display_name = "Joe Marshall"
+move_speed = 240.0
+jump_velocity = 600.0
+power_multiplier = 1.1

@@ -18,6 +18,8 @@ const ROUNDS_TO_WIN: int = 2
 @onready var fighter_2: Fighter = $Fighter2
 @onready var fighter_1_health_bar: ProgressBar = $HUD/Controls/Fighter1HealthBar
 @onready var fighter_2_health_bar: ProgressBar = $HUD/Controls/Fighter2HealthBar
+@onready var fighter_1_name_label: Label = $HUD/Controls/Fighter1Label
+@onready var fighter_2_name_label: Label = $HUD/Controls/Fighter2Label
 @onready var fighter_1_rounds_label: Label = $HUD/Controls/Fighter1RoundsLabel
 @onready var fighter_2_rounds_label: Label = $HUD/Controls/Fighter2RoundsLabel
 @onready var winner_label: Label = $HUD/Controls/WinnerLabel
@@ -41,6 +43,8 @@ func _ready() -> void:
 
 	_on_health_changed(fighter_1.current_health, fighter_1.max_health, fighter_1_health_bar)
 	_on_health_changed(fighter_2.current_health, fighter_2.max_health, fighter_2_health_bar)
+	fighter_1_name_label.text = fighter_1.get_display_name()
+	fighter_2_name_label.text = fighter_2.get_display_name()
 	_update_round_win_ui()
 	_start_round()
 
@@ -67,7 +71,11 @@ func _on_fighter_defeated(loser: Fighter) -> void:
 
 	winner_label.text = "PLAYER %d WINS ROUND" % winner_number
 	winner_label.show()
-	print("ROUND %d: %s wins; %s is defeated" % [round_number, winner.name, loser.name])
+	print("ROUND %d: %s wins; %s is defeated" % [
+		round_number,
+		winner.get_display_name(),
+		loser.get_display_name(),
+	])
 
 	await get_tree().create_timer(round_end_delay).timeout
 	if _get_round_wins(winner) >= ROUNDS_TO_WIN:
@@ -104,7 +112,7 @@ func _finish_match(winner: Fighter, winner_number: int) -> void:
 	_set_fighter_controls_enabled(false)
 	winner_label.text = "PLAYER %d WINS THE MATCH" % winner_number
 	winner_label.show()
-	print("MATCH OVER: %s wins the match" % winner.name)
+	print("MATCH OVER: %s wins the match" % winner.get_display_name())
 
 	await get_tree().create_timer(match_end_delay).timeout
 	fighter_1_round_wins = 0

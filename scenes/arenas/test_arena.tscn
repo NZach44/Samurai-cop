@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
 [ext_resource type="PackedScene" path="res://scenes/ui/mobile_controls.tscn" id="3_mobile_controls"]
+[ext_resource type="Resource" path="res://data/fighters/joe_marshall.tres" id="4_joe"]
+[ext_resource type="Resource" path="res://data/fighters/yamashita.tres" id="5_yamashita"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1152, 64)
@@ -42,11 +44,13 @@ shape = SubResource("RectangleShape2D_wall")
 
 [node name="Fighter1" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_fighter")]
 position = Vector2(320, 400)
+character_data = ExtResource("4_joe")
 opponent = NodePath("../Fighter2")
 
 [node name="Fighter2" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_fighter")]
 modulate = Color(0.95, 0.55, 0.45, 1)
 position = Vector2(832, 400)
+character_data = ExtResource("5_yamashita")
 control_mode = 1
 left_action = &"p2_left"
 right_action = &"p2_right"
