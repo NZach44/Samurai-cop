@@ -14,6 +14,8 @@ const ROUNDS_TO_WIN: int = 2
 @export var round_end_delay: float = 2.0
 @export var match_end_delay: float = 3.0
 @export var special_move_message_duration: float = 0.8
+@export var intro_duration: float = 1.7
+@export var intro_start_delay: float = 0.5
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
@@ -25,6 +27,9 @@ const ROUNDS_TO_WIN: int = 2
 @onready var fighter_2_rounds_label: Label = $HUD/Controls/Fighter2RoundsLabel
 @onready var winner_label: Label = $HUD/Controls/WinnerLabel
 @onready var special_move_label: Label = $HUD/Controls/SpecialMoveLabel
+@onready var intro_bubble: PanelContainer = $HUD/Controls/IntroBubble
+@onready var intro_label: Label = $HUD/Controls/IntroBubble/Label
+@onready var intro_voice_player: AudioStreamPlayer = $IntroVoicePlayer
 
 var fighter_1_spawn_position: Vector2
 var fighter_2_spawn_position: Vector2
@@ -105,6 +110,18 @@ func _start_round() -> void:
 	_set_fighter_controls_enabled(false)
 	fighter_1.reset_for_round(fighter_1_spawn_position)
 	fighter_2.reset_for_round(fighter_2_spawn_position)
+	winner_label.hide()
+	intro_bubble.hide()
+
+	await get_tree().create_timer(intro_start_delay).timeout
+	if match_state != MatchState.ROUND_START:
+		return
+	await _play_fighter_intro(fighter_1)
+	if match_state != MatchState.ROUND_START:
+		return
+	await _play_fighter_intro(fighter_2)
+	if match_state != MatchState.ROUND_START:
+		return
 
 	winner_label.text = "ROUND %d" % round_number
 	winner_label.show()
@@ -120,6 +137,45 @@ func _start_round() -> void:
 	winner_label.hide()
 	match_state = MatchState.FIGHTING
 	_set_fighter_controls_enabled(true)
+
+
+func _play_fighter_intro(fighter: Fighter) -> void:
+	var data: CharacterData = fighter.character_data
+	if data == null or (data.intro_text.is_empty() and data.intro_audio == null):
+		return
+
+	intro_voice_player.stop()
+	intro_voice_player.stream = data.intro_audio
+	if data.intro_audio != null:
+		intro_voice_player.play()
+
+	if not data.intro_text.is_empty():
+		intro_label.text = data.intro_text
+		_position_intro_bubble(fighter)
+		intro_bubble.show()
+
+	await get_tree().create_timer(intro_duration).timeout
+	intro_bubble.hide()
+	intro_voice_player.stop()
+	intro_voice_player.stream = null
+
+
+func _position_intro_bubble(fighter: Fighter) -> void:
+	var fighter_screen_position: Vector2 = fighter.get_global_transform_with_canvas().origin
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var bubble_size: Vector2 = intro_bubble.size
+	var desired_position := fighter_screen_position + Vector2(-bubble_size.x * 0.5, -170.0)
+	desired_position.x = clampf(
+		desired_position.x,
+		16.0,
+		maxf(viewport_size.x - bubble_size.x - 16.0, 16.0)
+	)
+	desired_position.y = clampf(
+		desired_position.y,
+		96.0,
+		maxf(viewport_size.y - bubble_size.y - 16.0, 96.0)
+	)
+	intro_bubble.position = desired_position
 
 
 func _finish_match(winner: Fighter, winner_number: int) -> void:
