@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+
+[resource]
+script = ExtResource("1_special")
+move_id = &"yamashita_special_2"
+display_name = "Mountain Breaker"
+damage = 22
+startup_time = 0.32
+active_time = 0.16
+recovery_time = 0.46
+knockback = 460.0
+hitbox_width = 76.0
+hitbox_height = 52.0
+hitbox_offset_x = 62.0

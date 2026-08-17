@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+
+[resource]
+script = ExtResource("1_special")
+move_id = &"joe_special_2"
+display_name = "Rising Force"
+damage = 20
+startup_time = 0.28
+active_time = 0.14
+recovery_time = 0.42
+knockback = 430.0
+hitbox_width = 56.0
+hitbox_height = 70.0
+hitbox_offset_x = 50.0

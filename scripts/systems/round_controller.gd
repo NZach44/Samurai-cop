@@ -13,6 +13,7 @@ const ROUNDS_TO_WIN: int = 2
 @export var fight_message_duration: float = 1.0
 @export var round_end_delay: float = 2.0
 @export var match_end_delay: float = 3.0
+@export var special_move_message_duration: float = 0.8
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
@@ -23,6 +24,7 @@ const ROUNDS_TO_WIN: int = 2
 @onready var fighter_1_rounds_label: Label = $HUD/Controls/Fighter1RoundsLabel
 @onready var fighter_2_rounds_label: Label = $HUD/Controls/Fighter2RoundsLabel
 @onready var winner_label: Label = $HUD/Controls/WinnerLabel
+@onready var special_move_label: Label = $HUD/Controls/SpecialMoveLabel
 
 var fighter_1_spawn_position: Vector2
 var fighter_2_spawn_position: Vector2
@@ -30,6 +32,7 @@ var fighter_1_round_wins: int = 0
 var fighter_2_round_wins: int = 0
 var round_number: int = 1
 var match_state: MatchState = MatchState.ROUND_START
+var special_message_sequence_id: int = 0
 
 
 func _ready() -> void:
@@ -40,6 +43,8 @@ func _ready() -> void:
 	fighter_2.health_changed.connect(_on_health_changed.bind(fighter_2_health_bar))
 	fighter_1.defeated.connect(_on_fighter_defeated)
 	fighter_2.defeated.connect(_on_fighter_defeated)
+	fighter_1.special_move_started.connect(_on_special_move_started)
+	fighter_2.special_move_started.connect(_on_special_move_started)
 
 	_on_health_changed(fighter_1.current_health, fighter_1.max_health, fighter_1_health_bar)
 	_on_health_changed(fighter_2.current_health, fighter_2.max_health, fighter_2_health_bar)
@@ -52,6 +57,16 @@ func _ready() -> void:
 func _on_health_changed(current_health: int, max_health: int, health_bar: ProgressBar) -> void:
 	health_bar.max_value = max_health
 	health_bar.value = current_health
+
+
+func _on_special_move_started(move_name: String) -> void:
+	special_message_sequence_id += 1
+	var current_message_id: int = special_message_sequence_id
+	special_move_label.text = move_name
+	special_move_label.show()
+	await get_tree().create_timer(special_move_message_duration).timeout
+	if current_message_id == special_message_sequence_id:
+		special_move_label.hide()
 
 
 func _on_fighter_defeated(loser: Fighter) -> void:
@@ -129,6 +144,9 @@ func _get_round_wins(fighter: Fighter) -> int:
 func _set_fighter_controls_enabled(enabled: bool) -> void:
 	fighter_1.set_controls_enabled(enabled)
 	fighter_2.set_controls_enabled(enabled)
+	if not enabled:
+		special_message_sequence_id += 1
+		special_move_label.hide()
 
 
 func _update_round_win_ui() -> void:
