@@ -28,6 +28,7 @@ const ANIMATION_IDLE: StringName = &"idle"
 const ANIMATION_WALK: StringName = &"walk"
 const ANIMATION_JUMP: StringName = &"jump"
 const ANIMATION_CROUCH: StringName = &"crouch"
+const ANIMATION_BLOCK: StringName = &"block"
 const ANIMATION_PUNCH: StringName = &"punch"
 const ANIMATION_KICK: StringName = &"kick"
 const ANIMATION_HURT: StringName = &"hurt"
@@ -47,6 +48,7 @@ const ANIMATION_KO: StringName = &"ko"
 @export var right_action: StringName = &"p1_right"
 @export var jump_action: StringName = &"p1_jump"
 @export var crouch_action: StringName = &"p1_crouch"
+@export var block_action: StringName = &"p1_block"
 @export var punch_action: StringName = &"p1_punch"
 @export var kick_action: StringName = &"p1_kick"
 @export var special_1_action: StringName = &"p1_special_1"
@@ -66,6 +68,9 @@ const ANIMATION_KO: StringName = &"ko"
 @export var kick_hitbox_height: float = 40.0
 @export var kick_hitbox_offset_x: float = 58.0
 @export var crouch_hurtbox_height: float = 72.0
+@export_range(0.0, 1.0, 0.05) var blocked_damage_multiplier: float = 0.20
+@export var block_stun_duration: float = 0.16
+@export_range(0.0, 1.0, 0.05) var block_knockback_multiplier: float = 0.40
 
 @onready var visuals: Node2D = $Visuals
 @onready var animated_sprite: AnimatedSprite2D = $Visuals/AnimatedSprite2D
@@ -95,6 +100,9 @@ var missing_animation_warnings: Dictionary = {}
 var punch_attack: NormalAttackData
 var kick_attack: NormalAttackData
 var is_crouching: bool = false
+var is_blocking: bool = false
+var is_in_block_stun: bool = false
+var block_stun_time_remaining: float = 0.0
 var standing_hurtbox_size: Vector2
 var standing_hurtbox_position: Vector2
 
@@ -122,6 +130,8 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0.0
 	elif is_in_hit_stun:
 		_update_hit_stun(delta)
+	elif is_in_block_stun:
+		_update_block_stun(delta)
 	elif controls_enabled:
 		_handle_control_input(delta)
 	else:
@@ -144,6 +154,7 @@ func _handle_control_input(delta: float) -> void:
 			Input.get_axis(left_action, right_action),
 			Input.is_action_just_pressed(jump_action),
 			Input.is_action_pressed(crouch_action),
+			Input.is_action_pressed(block_action),
 			Input.is_action_just_pressed(punch_action),
 			Input.is_action_just_pressed(kick_action),
 			Input.is_action_just_pressed(special_1_action),
@@ -153,7 +164,7 @@ func _handle_control_input(delta: float) -> void:
 
 func _handle_cpu_input(delta: float) -> void:
 	if not is_instance_valid(opponent):
-		_apply_control_input(0.0, false, false, false, false, false, false)
+		_apply_control_input(0.0, false, false, false, false, false, false, false)
 		return
 
 	var horizontal_distance: float = opponent.global_position.x - global_position.x
@@ -172,6 +183,7 @@ func _handle_cpu_input(delta: float) -> void:
 		cpu_controller.move_direction,
 		false,
 		false,
+		false,
 		cpu_controller.consume_punch_request(),
 		false,
 		false,
@@ -183,13 +195,21 @@ func _apply_control_input(
 	move_direction: float,
 	jump_requested: bool,
 	crouch_held: bool,
+	block_held: bool,
 	punch_requested: bool,
 	kick_requested: bool,
 	special_1_requested: bool,
 	special_2_requested: bool
 ) -> void:
 	if not is_attacking:
-		_set_crouching(crouch_held and is_on_floor() and controls_enabled)
+		var should_crouch: bool = crouch_held and is_on_floor() and controls_enabled
+		if is_blocking and block_held:
+			should_crouch = false
+		_set_crouching(should_crouch)
+		_set_blocking(block_held and _can_enter_block())
+	if is_blocking:
+		velocity.x = 0.0
+		return
 	if is_crouching:
 		velocity.x = 0.0
 		return
@@ -215,6 +235,12 @@ func _update_hit_stun(delta: float) -> void:
 	hit_stun_time_remaining = maxf(hit_stun_time_remaining - delta, 0.0)
 	if is_zero_approx(hit_stun_time_remaining):
 		is_in_hit_stun = false
+
+
+func _update_block_stun(delta: float) -> void:
+	block_stun_time_remaining = maxf(block_stun_time_remaining - delta, 0.0)
+	if is_zero_approx(block_stun_time_remaining):
+		is_in_block_stun = false
 
 
 func _face_opponent() -> void:
@@ -376,6 +402,8 @@ func _can_start_attack() -> bool:
 		and not is_in_hit_stun
 		and not is_attacking
 		and not is_crouching
+		and not is_blocking
+		and not is_in_block_stun
 	)
 
 
@@ -445,19 +473,50 @@ func receive_hit(
 ) -> void:
 	if is_defeated:
 		return
+	if _can_block_attack(attacker):
+		_resolve_block(damage, knockback_speed, attacker, attack_name)
+	else:
+		_resolve_normal_hit(damage, knockback_speed, attacker, attack_name)
 
-	var previous_health: int = current_health
-	current_health = clampi(current_health - damage, 0, max_health)
-	health_changed.emit(current_health, max_health)
 
-	var knockback_direction: float = signf(global_position.x - attacker.global_position.x)
-	velocity.x = knockback_direction * knockback_speed
+func _resolve_block(
+	damage: int,
+	knockback_speed: float,
+	attacker: Fighter,
+	attack_name: String
+) -> void:
+	_set_blocking(false)
+	is_in_block_stun = true
+	block_stun_time_remaining = block_stun_duration
+	var blocked_damage: int = maxi(roundi(float(damage) * blocked_damage_multiplier), 0)
+	var damage_dealt: int = _apply_damage(blocked_damage)
+	_apply_knockback(attacker, knockback_speed * block_knockback_multiplier)
+	print("BLOCKED: %s blocked %s from %s for %d damage (%d health remaining)" % [
+		get_display_name(),
+		attack_name,
+		attacker.get_display_name(),
+		damage_dealt,
+		current_health,
+	])
+	_finish_damage_resolution()
+
+
+func _resolve_normal_hit(
+	damage: int,
+	knockback_speed: float,
+	attacker: Fighter,
+	attack_name: String
+) -> void:
+	_set_blocking(false)
+	is_in_block_stun = false
+	block_stun_time_remaining = 0.0
+	var damage_dealt: int = _apply_damage(damage)
+	_apply_knockback(attacker, knockback_speed)
 	is_in_hit_stun = true
 	hit_stun_time_remaining = hit_stun_duration
 	if control_mode == ControlMode.CPU:
 		cpu_controller.stop()
 
-	var damage_dealt: int = previous_health - current_health
 	if attack_name == "Punch":
 		print("PUNCH HIT: %s hit %s for %d damage (%d health remaining)" % [
 			attacker.get_display_name(),
@@ -480,7 +539,53 @@ func receive_hit(
 			damage_dealt,
 			current_health,
 		])
+	_finish_damage_resolution()
 
+
+func _apply_damage(damage: int) -> int:
+	var previous_health: int = current_health
+	current_health = clampi(current_health - maxi(damage, 0), 0, max_health)
+	health_changed.emit(current_health, max_health)
+	return previous_health - current_health
+
+
+func _apply_knockback(attacker: Fighter, knockback_speed: float) -> void:
+	var knockback_direction: float = signf(global_position.x - attacker.global_position.x)
+	velocity.x = knockback_direction * knockback_speed
+
+
+func _can_block_attack(attacker: Fighter) -> bool:
+	if (
+		not is_blocking
+		or is_crouching
+		or is_in_hit_stun
+		or is_in_block_stun
+		or is_attacking
+		or is_defeated
+		or not controls_enabled
+		or not is_on_floor()
+	):
+		return false
+	var attacker_direction: float = signf(attacker.global_position.x - global_position.x)
+	return not is_zero_approx(attacker_direction) and is_equal_approx(
+		attacker_direction,
+		facing_direction
+	)
+
+
+func _can_enter_block() -> bool:
+	return (
+		controls_enabled
+		and is_on_floor()
+		and not is_crouching
+		and not is_attacking
+		and not is_in_hit_stun
+		and not is_in_block_stun
+		and not is_defeated
+	)
+
+
+func _finish_damage_resolution() -> void:
 	if current_health == 0:
 		is_defeated = true
 		_cancel_attack()
@@ -496,6 +601,9 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	is_defeated = false
 	is_in_hit_stun = false
 	hit_stun_time_remaining = 0.0
+	is_in_block_stun = false
+	block_stun_time_remaining = 0.0
+	_set_blocking(false)
 	_set_crouching(false)
 	_cancel_attack()
 	cpu_controller.reset_for_round()
@@ -505,6 +613,9 @@ func reset_for_round(spawn_position: Vector2) -> void:
 func set_controls_enabled(enabled: bool) -> void:
 	controls_enabled = enabled
 	if not enabled:
+		is_in_block_stun = false
+		block_stun_time_remaining = 0.0
+		_set_blocking(false)
 		_set_crouching(false)
 		cpu_controller.stop()
 		_cancel_attack()
@@ -591,11 +702,20 @@ func _set_crouching(crouching: bool) -> void:
 	_update_animation()
 
 
+func _set_blocking(blocking: bool) -> void:
+	if is_blocking == blocking:
+		return
+	is_blocking = blocking
+	_update_animation()
+
+
 func _update_animation() -> void:
 	if is_defeated:
 		_play_animation_if_available(ANIMATION_KO)
 	elif is_in_hit_stun:
 		_play_animation_if_available(ANIMATION_HURT)
+	elif is_in_block_stun or is_blocking:
+		_play_animation_if_available(ANIMATION_BLOCK)
 	elif is_attacking:
 		_play_animation_if_available(active_attack_animation)
 	elif not is_on_floor():

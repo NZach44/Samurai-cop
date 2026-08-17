@@ -55,6 +55,7 @@ control_mode = 1
 left_action = &"p2_left"
 right_action = &"p2_right"
 jump_action = &"p2_jump"
+block_action = &"p2_block"
 punch_action = &"p2_punch"
 kick_action = &"p2_kick"
 opponent = NodePath("../Fighter1")
