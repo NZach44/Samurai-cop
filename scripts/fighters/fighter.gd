@@ -27,6 +27,7 @@ enum ControlMode {
 const ANIMATION_IDLE: StringName = &"idle"
 const ANIMATION_WALK: StringName = &"walk"
 const ANIMATION_JUMP: StringName = &"jump"
+const ANIMATION_CROUCH: StringName = &"crouch"
 const ANIMATION_PUNCH: StringName = &"punch"
 const ANIMATION_KICK: StringName = &"kick"
 const ANIMATION_HURT: StringName = &"hurt"
@@ -45,6 +46,7 @@ const ANIMATION_KO: StringName = &"ko"
 @export var left_action: StringName = &"p1_left"
 @export var right_action: StringName = &"p1_right"
 @export var jump_action: StringName = &"p1_jump"
+@export var crouch_action: StringName = &"p1_crouch"
 @export var punch_action: StringName = &"p1_punch"
 @export var kick_action: StringName = &"p1_kick"
 @export var special_1_action: StringName = &"p1_special_1"
@@ -63,12 +65,14 @@ const ANIMATION_KO: StringName = &"ko"
 @export var kick_hitbox_width: float = 64.0
 @export var kick_hitbox_height: float = 40.0
 @export var kick_hitbox_offset_x: float = 58.0
+@export var crouch_hurtbox_height: float = 72.0
 
 @onready var visuals: Node2D = $Visuals
 @onready var animated_sprite: AnimatedSprite2D = $Visuals/AnimatedSprite2D
 @onready var fallback_visuals: Node2D = $Visuals/FallbackVisuals
 @onready var punch_hit_box: Area2D = $Visuals/PunchHitBox
 @onready var punch_hit_box_shape: CollisionShape2D = $Visuals/PunchHitBox/CollisionShape2D
+@onready var hurt_box_shape: CollisionShape2D = $HurtBox/CollisionShape2D
 @onready var cpu_controller: CPUController = $CPUController
 
 var is_attacking: bool = false
@@ -90,6 +94,9 @@ var facing_direction: float = 1.0
 var missing_animation_warnings: Dictionary = {}
 var punch_attack: NormalAttackData
 var kick_attack: NormalAttackData
+var is_crouching: bool = false
+var standing_hurtbox_size: Vector2
+var standing_hurtbox_position: Vector2
 
 
 func _ready() -> void:
@@ -98,6 +105,10 @@ func _ready() -> void:
 	var hitbox_rectangle: RectangleShape2D = punch_hit_box_shape.shape as RectangleShape2D
 	default_hitbox_size = hitbox_rectangle.size
 	default_hitbox_position = punch_hit_box.position
+	hurt_box_shape.shape = hurt_box_shape.shape.duplicate()
+	var hurtbox_rectangle: RectangleShape2D = hurt_box_shape.shape as RectangleShape2D
+	standing_hurtbox_size = hurtbox_rectangle.size
+	standing_hurtbox_position = hurt_box_shape.position
 	_configure_normal_attacks()
 	_configure_character_visual()
 	_update_animation()
@@ -132,6 +143,7 @@ func _handle_control_input(delta: float) -> void:
 		_apply_control_input(
 			Input.get_axis(left_action, right_action),
 			Input.is_action_just_pressed(jump_action),
+			Input.is_action_pressed(crouch_action),
 			Input.is_action_just_pressed(punch_action),
 			Input.is_action_just_pressed(kick_action),
 			Input.is_action_just_pressed(special_1_action),
@@ -141,7 +153,7 @@ func _handle_control_input(delta: float) -> void:
 
 func _handle_cpu_input(delta: float) -> void:
 	if not is_instance_valid(opponent):
-		_apply_control_input(0.0, false, false, false, false, false)
+		_apply_control_input(0.0, false, false, false, false, false, false)
 		return
 
 	var horizontal_distance: float = opponent.global_position.x - global_position.x
@@ -159,6 +171,7 @@ func _handle_cpu_input(delta: float) -> void:
 	_apply_control_input(
 		cpu_controller.move_direction,
 		false,
+		false,
 		cpu_controller.consume_punch_request(),
 		false,
 		false,
@@ -169,11 +182,18 @@ func _handle_cpu_input(delta: float) -> void:
 func _apply_control_input(
 	move_direction: float,
 	jump_requested: bool,
+	crouch_held: bool,
 	punch_requested: bool,
 	kick_requested: bool,
 	special_1_requested: bool,
 	special_2_requested: bool
 ) -> void:
+	if not is_attacking:
+		_set_crouching(crouch_held and is_on_floor() and controls_enabled)
+	if is_crouching:
+		velocity.x = 0.0
+		return
+
 	velocity.x = move_direction * get_move_speed()
 
 	if is_on_floor() and jump_requested:
@@ -350,7 +370,13 @@ func _start_special(
 
 
 func _can_start_attack() -> bool:
-	return controls_enabled and not is_defeated and not is_in_hit_stun and not is_attacking
+	return (
+		controls_enabled
+		and not is_defeated
+		and not is_in_hit_stun
+		and not is_attacking
+		and not is_crouching
+	)
 
 
 func _start_attack(
@@ -470,6 +496,7 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	is_defeated = false
 	is_in_hit_stun = false
 	hit_stun_time_remaining = 0.0
+	_set_crouching(false)
 	_cancel_attack()
 	cpu_controller.reset_for_round()
 	health_changed.emit(current_health, max_health)
@@ -478,6 +505,7 @@ func reset_for_round(spawn_position: Vector2) -> void:
 func set_controls_enabled(enabled: bool) -> void:
 	controls_enabled = enabled
 	if not enabled:
+		_set_crouching(false)
 		cpu_controller.stop()
 		_cancel_attack()
 
@@ -540,6 +568,29 @@ func _configure_character_visual() -> void:
 	push_warning("%s has no character SpriteFrames; using the fallback visual." % name)
 
 
+func _set_crouching(crouching: bool) -> void:
+	if is_crouching == crouching:
+		return
+	is_crouching = crouching
+
+	var hurtbox_rectangle: RectangleShape2D = hurt_box_shape.shape as RectangleShape2D
+	if is_crouching:
+		var crouching_height: float = clampf(
+			crouch_hurtbox_height,
+			1.0,
+			standing_hurtbox_size.y
+		)
+		hurtbox_rectangle.size = Vector2(standing_hurtbox_size.x, crouching_height)
+		hurt_box_shape.position = standing_hurtbox_position + Vector2(
+			0.0,
+			(standing_hurtbox_size.y - crouching_height) * 0.5
+		)
+	else:
+		hurtbox_rectangle.size = standing_hurtbox_size
+		hurt_box_shape.position = standing_hurtbox_position
+	_update_animation()
+
+
 func _update_animation() -> void:
 	if is_defeated:
 		_play_animation_if_available(ANIMATION_KO)
@@ -549,6 +600,8 @@ func _update_animation() -> void:
 		_play_animation_if_available(active_attack_animation)
 	elif not is_on_floor():
 		_play_animation_if_available(ANIMATION_JUMP)
+	elif is_crouching:
+		_play_animation_if_available(ANIMATION_CROUCH)
 	elif not is_zero_approx(velocity.x):
 		_play_animation_if_available(ANIMATION_WALK)
 	else:
