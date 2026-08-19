@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"joe_special_2"
 display_name = "Rising Force"
+command = Array[int]([3, 0, 5])
 damage = 20
 startup_time = 0.28
 active_time = 0.14

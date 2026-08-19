@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"frank_special_2"
 display_name = "Test Forward Drive"
+command = Array[int]([3, 0, 5])
 damage = 19
 startup_time = 0.27
 active_time = 0.14

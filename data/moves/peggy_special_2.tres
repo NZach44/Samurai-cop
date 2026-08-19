@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"peggy_special_2"
 display_name = "Test Dash Kick"
+command = Array[int]([3, 0, 5])
 damage = 18
 startup_time = 0.23
 active_time = 0.13

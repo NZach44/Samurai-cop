@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"fujiyama_special_2"
 display_name = "Test Heavy Step"
+command = Array[int]([3, 0, 5])
 damage = 20
 startup_time = 0.29
 active_time = 0.15

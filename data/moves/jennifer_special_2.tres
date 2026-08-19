@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"jennifer_special_2"
 display_name = "Test Rising Sweep"
+command = Array[int]([3, 0, 5])
 damage = 18
 startup_time = 0.25
 active_time = 0.14

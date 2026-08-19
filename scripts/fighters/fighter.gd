@@ -15,6 +15,15 @@ class NormalAttackData:
 	var animation_name: StringName
 	var grounded_only: bool
 
+class CommandInput:
+	extends RefCounted
+	var token: SpecialMoveData.CommandToken
+	var timestamp: float
+
+	func _init(input_token: SpecialMoveData.CommandToken, input_timestamp: float) -> void:
+		token = input_token
+		timestamp = input_timestamp
+
 signal health_changed(current_health: int, max_health: int)
 signal defeated(fighter: Fighter)
 signal special_move_started(move_name: String)
@@ -61,8 +70,9 @@ const ANIMATION_KO: StringName = &"ko"
 @export var block_action: StringName = &"p1_block"
 @export var punch_action: StringName = &"p1_punch"
 @export var kick_action: StringName = &"p1_kick"
-@export var special_1_action: StringName = &"p1_special_1"
-@export var special_2_action: StringName = &"p1_special_2"
+@export_range(0.1, 2.0, 0.05) var command_buffer_lifetime: float = 0.7
+@export_range(3, 10, 1) var command_buffer_capacity: int = 8
+@export var debug_command_input: bool = false
 @export var opponent: Node2D
 @export var punch_damage: int = 10
 @export var punch_knockback_speed: float = 300.0
@@ -110,9 +120,11 @@ var kick_attack: NormalAttackData
 var block_stun_time_remaining: float = 0.0
 var standing_hurtbox_size: Vector2
 var standing_hurtbox_position: Vector2
+var command_buffer: Array[CommandInput] = []
 
 
 func _ready() -> void:
+	_clear_command_buffer()
 	current_health = max_health
 	punch_hit_box_shape.shape = punch_hit_box_shape.shape.duplicate()
 	var hitbox_rectangle: RectangleShape2D = punch_hit_box_shape.shape as RectangleShape2D
@@ -152,16 +164,116 @@ func _handle_control_input(delta: float) -> void:
 	if control_mode == ControlMode.CPU:
 		_handle_cpu_input(delta)
 	else:
-		_apply_control_input(
-			Input.get_axis(left_action, right_action),
-			Input.is_action_just_pressed(jump_action),
-			Input.is_action_pressed(crouch_action),
-			Input.is_action_pressed(block_action),
-			Input.is_action_just_pressed(punch_action),
-			Input.is_action_just_pressed(kick_action),
-			Input.is_action_just_pressed(special_1_action),
-			Input.is_action_just_pressed(special_2_action)
-		)
+		_handle_human_input()
+
+
+func _handle_human_input() -> void:
+	_expire_command_inputs(_get_command_time_seconds())
+	_record_direction_command_presses()
+
+	var punch_pressed: bool = Input.is_action_just_pressed(punch_action)
+	var kick_pressed: bool = Input.is_action_just_pressed(kick_action)
+	var matched_special_slot: int = 0
+	if punch_pressed:
+		_append_command_input(SpecialMoveData.CommandToken.PUNCH)
+		matched_special_slot = _find_matching_special()
+	if kick_pressed and matched_special_slot == 0:
+		_append_command_input(SpecialMoveData.CommandToken.KICK)
+		matched_special_slot = _find_matching_special()
+
+	if matched_special_slot != 0:
+		if debug_command_input:
+			print("Matched: Special %d" % matched_special_slot)
+		# A recognized command is consumed even when current state rules reject it.
+		_clear_command_buffer()
+
+	_apply_control_input(
+		Input.get_axis(left_action, right_action),
+		Input.is_action_just_pressed(jump_action),
+		Input.is_action_pressed(crouch_action),
+		Input.is_action_pressed(block_action),
+		punch_pressed and matched_special_slot == 0,
+		kick_pressed and matched_special_slot == 0,
+		matched_special_slot == 1,
+		matched_special_slot == 2
+	)
+
+
+func _record_direction_command_presses() -> void:
+	if Input.is_action_just_pressed(left_action):
+		_append_horizontal_command_input(-1.0)
+	if Input.is_action_just_pressed(right_action):
+		_append_horizontal_command_input(1.0)
+	if Input.is_action_just_pressed(jump_action):
+		_append_command_input(SpecialMoveData.CommandToken.UP)
+	if Input.is_action_just_pressed(crouch_action):
+		_append_command_input(SpecialMoveData.CommandToken.DOWN)
+	if Input.is_action_just_pressed(block_action):
+		_append_command_input(SpecialMoveData.CommandToken.BLOCK)
+
+
+func _append_horizontal_command_input(input_direction: float) -> void:
+	var token: SpecialMoveData.CommandToken = SpecialMoveData.CommandToken.BACK
+	if is_equal_approx(signf(input_direction), facing_direction):
+		token = SpecialMoveData.CommandToken.FORWARD
+	_append_command_input(token)
+
+
+func _append_command_input(token: SpecialMoveData.CommandToken) -> void:
+	var current_time: float = _get_command_time_seconds()
+	_expire_command_inputs(current_time)
+	command_buffer.append(CommandInput.new(token, current_time))
+	while command_buffer.size() > command_buffer_capacity:
+		command_buffer.pop_front()
+	if debug_command_input:
+		print("InputBuffer: %s" % _get_command_buffer_text())
+
+
+func _find_matching_special() -> int:
+	for slot: int in [1, 2]:
+		var special_move: SpecialMoveData = get_special_move(slot)
+		if special_move != null and _command_matches(special_move.command):
+			return slot
+	return 0
+
+
+func _command_matches(command: Array[SpecialMoveData.CommandToken]) -> bool:
+	if command.size() < 2 or command.size() > 3 or command_buffer.size() < command.size():
+		return false
+	var buffer_start: int = command_buffer.size() - command.size()
+	if (
+		command_buffer[-1].timestamp - command_buffer[buffer_start].timestamp
+		> command_buffer_lifetime
+	):
+		return false
+	for command_index: int in command.size():
+		if command_buffer[buffer_start + command_index].token != command[command_index]:
+			return false
+	return true
+
+
+func _expire_command_inputs(current_time: float) -> void:
+	while (
+		not command_buffer.is_empty()
+		and current_time - command_buffer[0].timestamp > command_buffer_lifetime
+	):
+		command_buffer.pop_front()
+
+
+func _clear_command_buffer() -> void:
+	command_buffer.clear()
+
+
+func _get_command_time_seconds() -> float:
+	return float(Time.get_ticks_msec()) / 1000.0
+
+
+func _get_command_buffer_text() -> String:
+	var token_names: PackedStringArray = []
+	var command_token_names: Array = SpecialMoveData.CommandToken.keys()
+	for input_entry: CommandInput in command_buffer:
+		token_names.append(command_token_names[input_entry.token])
+	return ", ".join(token_names)
 
 
 func _handle_cpu_input(delta: float) -> void:
@@ -683,6 +795,7 @@ func _finish_damage_resolution() -> void:
 
 
 func reset_for_round(spawn_position: Vector2) -> void:
+	_clear_command_buffer()
 	_cancel_attack(FighterState.NORMAL)
 	_update_hurtbox_for_posture(false)
 	position = spawn_position
@@ -701,6 +814,7 @@ func reset_for_round(spawn_position: Vector2) -> void:
 func set_controls_enabled(enabled: bool) -> void:
 	controls_enabled = enabled
 	if not enabled:
+		_clear_command_buffer()
 		hit_stun_time_remaining = 0.0
 		block_stun_time_remaining = 0.0
 		cpu_controller.stop()
@@ -797,6 +911,12 @@ func _set_fighter_state(new_state: FighterState) -> void:
 		return
 	var was_crouching: bool = fighter_state == FighterState.CROUCHING
 	fighter_state = new_state
+	if fighter_state in [
+		FighterState.HIT_STUN,
+		FighterState.BLOCK_STUN,
+		FighterState.DEFEATED,
+	]:
+		_clear_command_buffer()
 	var is_crouching: bool = fighter_state == FighterState.CROUCHING
 	if was_crouching != is_crouching:
 		_update_hurtbox_for_posture(is_crouching)

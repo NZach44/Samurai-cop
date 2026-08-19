@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"nurse_special_2"
 display_name = "Test Push Back"
+command = Array[int]([3, 0, 5])
 damage = 17
 startup_time = 0.22
 active_time = 0.12

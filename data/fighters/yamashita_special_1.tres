@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"yamashita_special_1"
 display_name = "Iron Palm"
+command = Array[int]([0, 0, 4])
 damage = 17
 startup_time = 0.22
 active_time = 0.13

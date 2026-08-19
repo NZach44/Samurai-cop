@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"jennifer_special_1"
 display_name = "Test Swift Palm"
+command = Array[int]([0, 0, 4])
 damage = 14
 startup_time = 0.16
 active_time = 0.11

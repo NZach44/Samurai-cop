@@ -6,6 +6,7 @@
 script = ExtResource("1_special")
 move_id = &"frank_special_1"
 display_name = "Test Closeout"
+command = Array[int]([0, 0, 4])
 damage = 15
 startup_time = 0.18
 active_time = 0.11
