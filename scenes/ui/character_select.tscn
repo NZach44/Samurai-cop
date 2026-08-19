@@ -1,0 +1,127 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_character_select"]
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_character_select")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.055, 0.07, 0.12, 1)
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainColumn" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Margin/MainColumn"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SELECT YOUR FIGHTER"
+horizontal_alignment = 1
+
+[node name="Instructions" type="Label" parent="Margin/MainColumn"]
+layout_mode = 2
+text = "Arrow keys or WASD: Choose    Enter: Fight    Mouse/Touch: Select and confirm"
+horizontal_alignment = 1
+
+[node name="Content" type="HBoxContainer" parent="Margin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="CharacterGrid" type="GridContainer" parent="Margin/MainColumn/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 4
+
+[node name="DetailsPanel" type="PanelContainer" parent="Margin/MainColumn/Content"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="DetailsMargin" type="MarginContainer" parent="Margin/MainColumn/Content/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Details" type="VBoxContainer" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="SelectedNameLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Fighter"
+horizontal_alignment = 1
+
+[node name="Preview" type="TextureRect" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 120)
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="SpeedLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Speed: Balanced"
+
+[node name="PowerLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Power: Balanced"
+
+[node name="JumpLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Jump: Balanced"
+
+[node name="Special1Label" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Special 1"
+autowrap_mode = 2
+
+[node name="Special2Label" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Special 2"
+autowrap_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="Margin/MainColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "FIGHT!"

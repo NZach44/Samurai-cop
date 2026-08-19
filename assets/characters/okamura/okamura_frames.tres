@@ -1,69 +1,104 @@
-[gd_resource type="SpriteFrames" load_steps=3 format=3]
+[gd_resource type="SpriteFrames" load_steps=13 format=3]
 
-[sub_resource type="Gradient" id="Gradient_character"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.95, 0.62, 0.16, 1, 0.35, 0.14, 0.03, 1)
+[ext_resource type="Texture2D" path="res://assets/characters/okamura/placeholder_sheet.svg" id="1_sheet"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_character"]
-gradient = SubResource("Gradient_character")
-width = 48
-height = 128
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
+atlas = ExtResource("1_sheet")
+region = Rect2(48, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
+atlas = ExtResource("1_sheet")
+region = Rect2(96, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
+atlas = ExtResource("1_sheet")
+region = Rect2(144, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
+atlas = ExtResource("1_sheet")
+region = Rect2(192, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(240, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(288, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
+atlas = ExtResource("1_sheet")
+region = Rect2(336, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
+atlas = ExtResource("1_sheet")
+region = Rect2(384, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
+atlas = ExtResource("1_sheet")
+region = Rect2(432, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
+atlas = ExtResource("1_sheet")
+region = Rect2(480, 0, 48, 128)
 
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
 "loop": true,
 "name": &"block",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
 "loop": true,
 "name": &"crouch",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
 "loop": false,
 "name": &"hurt",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
 "loop": true,
 "name": &"idle",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
 "loop": false,
 "name": &"jump",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
 "loop": false,
 "name": &"kick",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
 "loop": false,
 "name": &"ko",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
 "loop": false,
 "name": &"punch",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
 "loop": false,
 "name": &"special_1",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
 "loop": false,
 "name": &"special_2",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
 "loop": true,
 "name": &"walk",
 "speed": 5.0

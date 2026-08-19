@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="528" height="128" viewBox="0 0 528 128">
+  <g fill="#e85d9f" stroke="#ffe8f5" stroke-width="2">
+    <rect x="12" y="14" width="24" height="108" rx="5"/>
+    <rect x="56" y="14" width="24" height="108" rx="5"/><path d="M56 90 49 120M80 90 88 120"/>
+    <rect x="108" y="4" width="24" height="100" rx="5"/><path d="M108 100 100 122M132 100 140 122"/>
+    <rect x="156" y="14" width="24" height="108" rx="5"/><path d="M178 44H191" stroke-width="8"/>
+    <path d="m210 18 22 8-10 98-25-8z"/>
+    <rect x="252" y="14" width="24" height="108" rx="5"/><circle cx="264" cy="50" r="22" fill="none" stroke="#9dff8b" stroke-width="5"/>
+    <rect x="300" y="14" width="24" height="108" rx="5"/><path d="m292 60 44-22-17 35 17 18-44 12z" fill="#9dff8b" stroke="none" opacity=".75"/>
+    <rect x="340" y="91" width="40" height="24" rx="5"/>
+    <rect x="396" y="14" width="24" height="108" rx="5"/><path d="M418 78 431 68" stroke-width="9"/>
+    <rect x="444" y="58" width="24" height="64" rx="5"/>
+    <rect x="492" y="14" width="24" height="108" rx="5"/><path d="M516 38v54M516 48l11 9M516 82l11-9" stroke-width="7"/>
+  </g>
+</svg>

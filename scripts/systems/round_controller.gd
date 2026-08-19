@@ -8,6 +8,7 @@ enum MatchState {
 }
 
 const ROUNDS_TO_WIN: int = 2
+const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 
 @export var round_message_duration: float = 0.8
 @export var fight_message_duration: float = 1.0
@@ -38,6 +39,16 @@ var fighter_2_round_wins: int = 0
 var round_number: int = 1
 var match_state: MatchState = MatchState.ROUND_START
 var special_message_sequence_id: int = 0
+
+
+func _enter_tree() -> void:
+	var player_fighter: Fighter = get_node("Fighter1") as Fighter
+	var cpu_fighter: Fighter = get_node("Fighter2") as Fighter
+	var game_session: Node = get_node("/root/GameSession")
+	if game_session.selected_player_character != null:
+		player_fighter.character_data = game_session.selected_player_character
+	if game_session.selected_cpu_character != null:
+		cpu_fighter.character_data = game_session.selected_cpu_character
 
 
 func _ready() -> void:
@@ -186,11 +197,8 @@ func _finish_match(winner: Fighter, winner_number: int) -> void:
 	print("MATCH OVER: %s wins the match" % winner.get_display_name())
 
 	await get_tree().create_timer(match_end_delay).timeout
-	fighter_1_round_wins = 0
-	fighter_2_round_wins = 0
-	round_number = 1
-	_update_round_win_ui()
-	_start_round()
+	get_node("/root/GameSession").clear_match()
+	get_tree().change_scene_to_file(CHARACTER_SELECT_SCENE)
 
 
 func _get_round_wins(fighter: Fighter) -> int:
