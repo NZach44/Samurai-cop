@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+
+[resource]
+script = ExtResource("1_special")
+move_id = &"jennifer_special_1"
+display_name = "Test Swift Palm"
+damage = 14
+startup_time = 0.16
+active_time = 0.11
+recovery_time = 0.27
+knockback = 345.0
+hitbox_width = 68.0
+hitbox_height = 40.0
+hitbox_offset_x = 58.0

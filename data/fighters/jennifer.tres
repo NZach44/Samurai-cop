@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/fighters/character_data.gd" id="1_character_data"]
+[ext_resource type="Resource" path="res://data/moves/jennifer_special_1.tres" id="2_special_1"]
+[ext_resource type="Resource" path="res://data/moves/jennifer_special_2.tres" id="3_special_2"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/jennifer/jennifer_frames.tres" id="4_frames"]
+
+[resource]
+script = ExtResource("1_character_data")
+character_id = &"jennifer"
+display_name = "Jennifer"
+intro_text = "Let's see what works."
+sprite_frames = ExtResource("4_frames")
+move_speed = 258.0
+jump_velocity = 605.0
+power_multiplier = 0.94
+special_move_1 = ExtResource("2_special_1")
+special_move_2 = ExtResource("3_special_2")

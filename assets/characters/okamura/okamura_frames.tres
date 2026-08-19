@@ -1,0 +1,70 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3]
+
+[sub_resource type="Gradient" id="Gradient_character"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.95, 0.62, 0.16, 1, 0.35, 0.14, 0.03, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_character"]
+gradient = SubResource("Gradient_character")
+width = 48
+height = 128
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[resource]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": true,
+"name": &"block",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": true,
+"name": &"crouch",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"kick",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"ko",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"punch",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"special_1",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": false,
+"name": &"special_2",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("GradientTexture2D_character")}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
