@@ -18,9 +18,13 @@ const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 @export var special_move_message_duration: float = 0.8
 @export var intro_duration: float = 1.7
 @export var intro_start_delay: float = 0.5
+@export var mobile_floor_clearance: float = 24.0
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
+@onready var floor_body: StaticBody2D = $Floor
+@onready var floor_collision: CollisionShape2D = $Floor/CollisionShape2D
+@onready var mobile_controls: CanvasLayer = $MobileControls
 @onready var fighter_1_health_bar: ProgressBar = $HUD/Controls/Fighter1HealthBar
 @onready var fighter_2_health_bar: ProgressBar = $HUD/Controls/Fighter2HealthBar
 @onready var fighter_1_name_label: Label = $HUD/Controls/Fighter1Label
@@ -41,6 +45,9 @@ var fighter_2_round_wins: int = 0
 var round_number: int = 1
 var match_state: MatchState = MatchState.ROUND_START
 var special_message_sequence_id: int = 0
+var desktop_floor_position: Vector2
+var desktop_fighter_1_position: Vector2
+var desktop_fighter_2_position: Vector2
 
 
 func _enter_tree() -> void:
@@ -57,6 +64,10 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	desktop_floor_position = floor_body.position
+	desktop_fighter_1_position = fighter_1.position
+	desktop_fighter_2_position = fighter_2.position
+	_apply_mobile_safe_area()
 	fighter_1_spawn_position = fighter_1.position
 	fighter_2_spawn_position = fighter_2.position
 
@@ -74,6 +85,28 @@ func _ready() -> void:
 	_update_campaign_ui()
 	_update_round_win_ui()
 	_start_round()
+
+
+func _apply_mobile_safe_area() -> void:
+	floor_body.position = desktop_floor_position
+	fighter_1.position = desktop_fighter_1_position
+	fighter_2.position = desktop_fighter_2_position
+	if (
+		not mobile_controls.has_method("is_touch_layout_active")
+		or not mobile_controls.is_touch_layout_active()
+	):
+		return
+
+	var floor_shape: RectangleShape2D = floor_collision.shape as RectangleShape2D
+	if floor_shape == null:
+		return
+	var viewport_height: float = get_viewport_rect().size.y
+	var reserved_height: float = mobile_controls.get_reserved_control_height(viewport_height)
+	var floor_surface_y: float = viewport_height - reserved_height - mobile_floor_clearance
+	floor_body.position.y = floor_surface_y + floor_shape.size.y * 0.5
+	var mobile_vertical_offset: float = floor_body.position.y - desktop_floor_position.y
+	fighter_1.position.y += mobile_vertical_offset
+	fighter_2.position.y += mobile_vertical_offset
 
 
 func _on_health_changed(current_health: int, max_health: int, health_bar: ProgressBar) -> void:

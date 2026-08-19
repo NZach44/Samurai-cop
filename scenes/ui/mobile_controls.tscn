@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/mobile_controls.gd" id="1_mobile_controls"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_button"]
-size = Vector2(108, 76)
+[sub_resource type="CircleShape2D" id="CircleShape2D_direction"]
+radius = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_action"]
+radius = 34.0
 
 [node name="MobileControls" type="CanvasLayer"]
 layer = 20
@@ -18,113 +21,194 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="LeftControls" type="Control" parent="Layout"]
+[node name="ControlZone" type="ColorRect" parent="Layout"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.035, 0.05, 0.09, 0.72)
+
+[node name="TopBorder" type="ColorRect" parent="Layout/ControlZone"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 2.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.2, 0.48, 0.72, 0.5)
+
+[node name="LeftControls" type="Control" parent="Layout/ControlZone"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -120.0
-offset_right = 260.0
-offset_bottom = -24.0
+offset_left = 16.0
+offset_top = -156.0
+offset_right = 192.0
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="MoveLeft" type="TouchScreenButton" parent="Layout/LeftControls"]
-position = Vector2(54, 48)
+[node name="Up" type="TouchScreenButton" parent="Layout/ControlZone/LeftControls"]
+position = Vector2(88, 27)
+visibility_mode = 0
+action = &"p1_jump"
+shape = SubResource("CircleShape2D_direction")
+
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Up"]
+polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
+color = Color(0.12, 0.45, 0.78, 0.46)
+
+[node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Up"]
+offset_left = -26.0
+offset_top = -26.0
+offset_right = 26.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "▲"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Left" type="TouchScreenButton" parent="Layout/ControlZone/LeftControls"]
+position = Vector2(28, 78)
 visibility_mode = 0
 action = &"p1_left"
-shape = SubResource("RectangleShape2D_button")
+shape = SubResource("CircleShape2D_direction")
 
-[node name="Visual" type="Polygon2D" parent="Layout/LeftControls/MoveLeft"]
-polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
-color = Color(0.12, 0.45, 0.78, 0.48)
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Left"]
+polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
+color = Color(0.12, 0.45, 0.78, 0.46)
 
-[node name="Label" type="Label" parent="Layout/LeftControls/MoveLeft"]
-offset_left = -54.0
-offset_top = -38.0
-offset_right = 54.0
-offset_bottom = 38.0
+[node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Left"]
+offset_left = -26.0
+offset_top = -26.0
+offset_right = 26.0
+offset_bottom = 26.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "LEFT"
+theme_override_font_sizes/font_size = 22
+text = "◀"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MoveRight" type="TouchScreenButton" parent="Layout/LeftControls"]
-position = Vector2(182, 48)
+[node name="Right" type="TouchScreenButton" parent="Layout/ControlZone/LeftControls"]
+position = Vector2(148, 78)
 visibility_mode = 0
 action = &"p1_right"
-shape = SubResource("RectangleShape2D_button")
+shape = SubResource("CircleShape2D_direction")
 
-[node name="Visual" type="Polygon2D" parent="Layout/LeftControls/MoveRight"]
-polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
-color = Color(0.12, 0.45, 0.78, 0.48)
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Right"]
+polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
+color = Color(0.12, 0.45, 0.78, 0.46)
 
-[node name="Label" type="Label" parent="Layout/LeftControls/MoveRight"]
-offset_left = -54.0
-offset_top = -38.0
-offset_right = 54.0
-offset_bottom = 38.0
+[node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Right"]
+offset_left = -26.0
+offset_top = -26.0
+offset_right = 26.0
+offset_bottom = 26.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "RIGHT"
+theme_override_font_sizes/font_size = 22
+text = "▶"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightControls" type="Control" parent="Layout"]
+[node name="Down" type="TouchScreenButton" parent="Layout/ControlZone/LeftControls"]
+position = Vector2(88, 129)
+visibility_mode = 0
+action = &"p1_crouch"
+shape = SubResource("CircleShape2D_direction")
+
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Down"]
+polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
+color = Color(0.12, 0.45, 0.78, 0.46)
+
+[node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Down"]
+offset_left = -26.0
+offset_top = -26.0
+offset_right = 26.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "▼"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightControls" type="Control" parent="Layout/ControlZone"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -260.0
-offset_top = -120.0
-offset_right = -24.0
-offset_bottom = -24.0
+offset_left = -212.0
+offset_top = -156.0
+offset_right = -16.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="Jump" type="TouchScreenButton" parent="Layout/RightControls"]
-position = Vector2(54, 48)
+[node name="Punch" type="TouchScreenButton" parent="Layout/ControlZone/RightControls"]
+position = Vector2(112, 30)
 visibility_mode = 0
-action = &"p1_jump"
-shape = SubResource("RectangleShape2D_button")
+action = &"p1_punch"
+shape = SubResource("CircleShape2D_action")
 
-[node name="Visual" type="Polygon2D" parent="Layout/RightControls/Jump"]
-polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
-color = Color(0.88, 0.42, 0.12, 0.48)
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Punch"]
+polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
+color = Color(0.9, 0.32, 0.12, 0.5)
 
-[node name="Label" type="Label" parent="Layout/RightControls/Jump"]
-offset_left = -54.0
-offset_top = -38.0
-offset_right = 54.0
-offset_bottom = 38.0
+[node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Punch"]
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 34.0
+offset_bottom = 34.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "JUMP"
+theme_override_font_sizes/font_size = 22
+text = "P"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Punch" type="TouchScreenButton" parent="Layout/RightControls"]
-position = Vector2(182, 48)
+[node name="Kick" type="TouchScreenButton" parent="Layout/ControlZone/RightControls"]
+position = Vector2(158, 88)
 visibility_mode = 0
-action = &"p1_punch"
-shape = SubResource("RectangleShape2D_button")
+action = &"p1_kick"
+shape = SubResource("CircleShape2D_action")
 
-[node name="Visual" type="Polygon2D" parent="Layout/RightControls/Punch"]
-polygon = PackedVector2Array(-54, -38, 54, -38, 54, 38, -54, 38)
-color = Color(0.88, 0.42, 0.12, 0.48)
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Kick"]
+polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
+color = Color(0.82, 0.18, 0.25, 0.5)
 
-[node name="Label" type="Label" parent="Layout/RightControls/Punch"]
-offset_left = -54.0
-offset_top = -38.0
-offset_right = 54.0
-offset_bottom = 38.0
+[node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Kick"]
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 34.0
+offset_bottom = 34.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 18
-text = "PUNCH"
+theme_override_font_sizes/font_size = 22
+text = "K"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Block" type="TouchScreenButton" parent="Layout/ControlZone/RightControls"]
+position = Vector2(76, 120)
+visibility_mode = 0
+action = &"p1_block"
+shape = SubResource("CircleShape2D_action")
+
+[node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Block"]
+polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
+color = Color(0.16, 0.68, 0.38, 0.5)
+
+[node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Block"]
+offset_left = -34.0
+offset_top = -34.0
+offset_right = 34.0
+offset_bottom = 34.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 22
+text = "B"
 horizontal_alignment = 1
 vertical_alignment = 1
