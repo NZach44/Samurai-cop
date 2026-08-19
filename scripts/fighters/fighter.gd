@@ -177,12 +177,13 @@ func _handle_cpu_input(delta: float) -> void:
 	var opponent_near_wall: bool = (
 		opponent_fighter.is_near_world_wall(cpu_controller.corner_check_distance)
 	)
+	var opponent_hurtbox_half_width: float = opponent_fighter.get_hurtbox_half_width()
 	var attack_reaches := PackedFloat32Array([
 		0.0,
-		get_normal_attack_reach(punch_attack),
-		get_normal_attack_reach(kick_attack),
-		get_special_attack_reach(1),
-		get_special_attack_reach(2),
+		get_normal_attack_reach(punch_attack) + opponent_hurtbox_half_width,
+		get_normal_attack_reach(kick_attack) + opponent_hurtbox_half_width,
+		get_special_attack_reach(1) + opponent_hurtbox_half_width,
+		get_special_attack_reach(2) + opponent_hurtbox_half_width,
 	])
 	cpu_controller.update_decision(
 		delta,
@@ -190,6 +191,8 @@ func _handle_cpu_input(delta: float) -> void:
 		can_start_attack(),
 		can_block() or fighter_state == FighterState.BLOCKING,
 		opponent_fighter.is_performing_attack(),
+		opponent_fighter.is_attack_hitbox_active(),
+		opponent_fighter.get_attack_sequence_id(),
 		_is_position_in_front(opponent_fighter.global_position),
 		opponent_fighter.get_current_attack_reach(),
 		opponent_near_wall,
@@ -264,15 +267,23 @@ func request_special(slot: int) -> void:
 
 
 func _update_hit_stun(delta: float) -> void:
+	if control_mode == ControlMode.CPU:
+		cpu_controller.update_inactive(delta)
 	hit_stun_time_remaining = maxf(hit_stun_time_remaining - delta, 0.0)
 	if is_zero_approx(hit_stun_time_remaining):
 		_set_fighter_state(FighterState.NORMAL)
+		if control_mode == ControlMode.CPU and controls_enabled:
+			_handle_cpu_input(0.0)
 
 
 func _update_block_stun(delta: float) -> void:
+	if control_mode == ControlMode.CPU:
+		cpu_controller.update_inactive(delta)
 	block_stun_time_remaining = maxf(block_stun_time_remaining - delta, 0.0)
 	if is_zero_approx(block_stun_time_remaining):
 		_set_fighter_state(FighterState.NORMAL)
+		if control_mode == ControlMode.CPU and controls_enabled:
+			_handle_cpu_input(0.0)
 
 
 func _face_opponent() -> void:
@@ -455,6 +466,19 @@ func is_performing_attack() -> bool:
 	return fighter_state == FighterState.ATTACKING
 
 
+func is_attack_hitbox_active() -> bool:
+	return fighter_state == FighterState.ATTACKING and attack_is_active
+
+
+func get_attack_sequence_id() -> int:
+	return attack_sequence_id
+
+
+func get_hurtbox_half_width() -> float:
+	var hurtbox_rectangle: RectangleShape2D = hurt_box_shape.shape as RectangleShape2D
+	return hurtbox_rectangle.size.x * 0.5 if hurtbox_rectangle != null else 0.0
+
+
 func get_normal_attack_reach(attack: NormalAttackData) -> float:
 	if attack == null:
 		return 0.0
@@ -552,10 +576,16 @@ func receive_hit(
 ) -> void:
 	if fighter_state == FighterState.DEFEATED:
 		return
-	if _can_block_attack(attacker):
+	var attack_was_blocked: bool = _can_block_attack(attacker)
+	if attack_was_blocked:
 		_resolve_block(damage, knockback_speed, attacker, attack_name)
 	else:
 		_resolve_normal_hit(damage, knockback_speed, attacker, attack_name)
+	if control_mode == ControlMode.CPU:
+		if attack_was_blocked:
+			cpu_controller.register_blocked_opponent_attack()
+		else:
+			cpu_controller.register_opponent_pressure()
 
 
 func _resolve_block(

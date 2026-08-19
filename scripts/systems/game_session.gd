@@ -3,17 +3,26 @@ extends Node
 const CAMPAIGN_LENGTH: int = 7
 const GOOD_FINAL_OPPONENT_ID: StringName = &"yamashita"
 const BAD_FINAL_OPPONENT_ID: StringName = &"joe_marshall"
+const DEFAULT_DIFFICULTY: CpuDifficultyProfile = preload(
+	"res://data/difficulties/medium.tres"
+)
 
 var selected_player_character: CharacterData
 var selected_cpu_character: CharacterData
 var campaign_opponents: Array[CharacterData] = []
 var current_campaign_index: int = 0
+var selected_difficulty: CpuDifficultyProfile = DEFAULT_DIFFICULTY
 
 
-func begin_campaign(player_character: CharacterData, roster: Array[CharacterData]) -> bool:
+func begin_campaign(
+	player_character: CharacterData,
+	roster: Array[CharacterData],
+	difficulty: CpuDifficultyProfile = DEFAULT_DIFFICULTY
+) -> bool:
 	clear_campaign()
 	if player_character == null:
 		return false
+	selected_difficulty = difficulty if difficulty != null else DEFAULT_DIFFICULTY
 
 	var final_opponent_id: StringName = (
 		GOOD_FINAL_OPPONENT_ID
@@ -76,3 +85,4 @@ func clear_campaign() -> void:
 	selected_cpu_character = null
 	campaign_opponents.clear()
 	current_campaign_index = 0
+	selected_difficulty = DEFAULT_DIFFICULTY

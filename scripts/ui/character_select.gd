@@ -13,6 +13,11 @@ const ROSTER: Array[CharacterData] = [
 	preload("res://data/fighters/peggy.tres"),
 	preload("res://data/fighters/nurse.tres"),
 ]
+const DIFFICULTIES: Array[CpuDifficultyProfile] = [
+	preload("res://data/difficulties/easy.tres"),
+	preload("res://data/difficulties/medium.tres"),
+	preload("res://data/difficulties/difficult.tres"),
+]
 
 @onready var character_grid: GridContainer = %CharacterGrid
 @onready var preview: TextureRect = %Preview
@@ -22,11 +27,16 @@ const ROSTER: Array[CharacterData] = [
 @onready var jump_label: Label = %JumpLabel
 @onready var special_1_label: Label = %Special1Label
 @onready var special_2_label: Label = %Special2Label
+@onready var easy_button: Button = %EasyButton
+@onready var medium_button: Button = %MediumButton
+@onready var difficult_button: Button = %DifficultButton
 @onready var confirm_button: Button = %ConfirmButton
 
 var selected_index: int = 0
+var selected_difficulty_index: int = 1
 var character_buttons: Array[Button] = []
 var character_name_labels: Array[Label] = []
+var difficulty_buttons: Array[Button] = []
 var is_transitioning: bool = false
 
 
@@ -39,7 +49,11 @@ func _ready() -> void:
 		character_buttons.append(option)
 
 	confirm_button.pressed.connect(_confirm_selection)
+	difficulty_buttons.assign([easy_button, medium_button, difficult_button])
+	for index: int in difficulty_buttons.size():
+		difficulty_buttons[index].pressed.connect(_select_difficulty.bind(index))
 	_select_character(0)
+	_select_difficulty(selected_difficulty_index)
 	character_buttons[0].grab_focus()
 
 
@@ -60,6 +74,12 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_down") or event.is_action_pressed("p1_down"):
 		_move_selection(0, 1)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("p1_special_1"):
+		_select_difficulty(wrapi(selected_difficulty_index - 1, 0, DIFFICULTIES.size()))
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("p1_special_2"):
+		_select_difficulty(wrapi(selected_difficulty_index + 1, 0, DIFFICULTIES.size()))
 		get_viewport().set_input_as_handled()
 
 
@@ -87,6 +107,18 @@ func _move_selection(horizontal: int, vertical: int) -> void:
 	character_buttons[selected_index].grab_focus()
 
 
+func _select_difficulty(index: int) -> void:
+	selected_difficulty_index = clampi(index, 0, DIFFICULTIES.size() - 1)
+	for button_index: int in difficulty_buttons.size():
+		var is_selected: bool = button_index == selected_difficulty_index
+		difficulty_buttons[button_index].button_pressed = is_selected
+		difficulty_buttons[button_index].text = (
+			"✓ %s" % DIFFICULTIES[button_index].profile_name
+			if is_selected
+			else DIFFICULTIES[button_index].profile_name
+		)
+
+
 func _update_details(character: CharacterData) -> void:
 	selected_name_label.text = character.display_name
 	preview.texture = _get_preview_texture(character)
@@ -103,7 +135,11 @@ func _confirm_selection() -> void:
 	is_transitioning = true
 	confirm_button.disabled = true
 	var game_session: Node = get_node("/root/GameSession")
-	if not game_session.begin_campaign(ROSTER[selected_index], ROSTER):
+	if not game_session.begin_campaign(
+		ROSTER[selected_index],
+		ROSTER,
+		DIFFICULTIES[selected_difficulty_index]
+	):
 		is_transitioning = false
 		confirm_button.disabled = false
 		return

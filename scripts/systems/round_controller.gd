@@ -51,6 +51,9 @@ func _enter_tree() -> void:
 		player_fighter.character_data = game_session.selected_player_character
 	if game_session.selected_cpu_character != null:
 		cpu_fighter.character_data = game_session.selected_cpu_character
+	if game_session.selected_difficulty != null:
+		var controller: CPUController = cpu_fighter.get_node("CPUController") as CPUController
+		controller.difficulty_profile = game_session.selected_difficulty
 
 
 func _ready() -> void:

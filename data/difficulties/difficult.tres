@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CpuDifficultyProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/cpu_difficulty_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_name = "DIFFICULT"
+decision_interval_min = 0.1
+decision_interval_max = 0.17
+attack_probability = 0.82
+attack_cooldown = 0.32
+punch_weight = 5.2
+kick_weight = 5.2
+special_weight = 1.9
+defensive_reaction_min = 0.04
+defensive_reaction_max = 0.08
+block_probability = 0.86
+block_hold_min = 0.38
+block_hold_max = 0.58
+preferred_distance_multiplier = 1.48
+retreat_probability = 0.55
+repeat_attack_penalty = 0.16
+pressure_response_probability = 0.9
+counterattack_probability = 0.9
+special_cooldown = 1.6

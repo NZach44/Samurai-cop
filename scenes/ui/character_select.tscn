@@ -45,7 +45,7 @@ horizontal_alignment = 1
 
 [node name="Instructions" type="Label" parent="Margin/MainColumn"]
 layout_mode = 2
-text = "Arrow keys or WASD: Choose    Enter: Fight    Mouse/Touch: Select and confirm"
+text = "Arrows/WASD: Fighter    Q/E: Difficulty    Enter: Fight    Mouse/Touch supported"
 horizontal_alignment = 1
 
 [node name="Content" type="HBoxContainer" parent="Margin/MainColumn"]
@@ -118,6 +118,36 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Special 2"
 autowrap_mode = 2
+
+[node name="DifficultyRow" type="HBoxContainer" parent="Margin/MainColumn"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="DifficultyLabel" type="Label" parent="Margin/MainColumn/DifficultyRow"]
+layout_mode = 2
+text = "DIFFICULTY"
+
+[node name="EasyButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+toggle_mode = true
+text = "EASY"
+
+[node name="MediumButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+toggle_mode = true
+text = "MEDIUM"
+
+[node name="DifficultButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+toggle_mode = true
+text = "DIFFICULT"
 
 [node name="ConfirmButton" type="Button" parent="Margin/MainColumn"]
 unique_name_in_owner = true
