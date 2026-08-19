@@ -136,6 +136,16 @@ grow_horizontal = 0
 text = "P2 ROUNDS: 0"
 horizontal_alignment = 2
 
+[node name="CampaignProgressLabel" type="Label" parent="HUD/Controls"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 50.0
+grow_horizontal = 2
+text = "FIGHT 1 / 7"
+horizontal_alignment = 1
+
 [node name="WinnerLabel" type="Label" parent="HUD/Controls"]
 visible = false
 layout_mode = 1

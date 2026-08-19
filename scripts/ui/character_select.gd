@@ -103,15 +103,11 @@ func _confirm_selection() -> void:
 	is_transitioning = true
 	confirm_button.disabled = true
 	var game_session: Node = get_node("/root/GameSession")
-	game_session.begin_match(ROSTER[selected_index], _choose_cpu_character(selected_index))
+	if not game_session.begin_campaign(ROSTER[selected_index], ROSTER):
+		is_transitioning = false
+		confirm_button.disabled = false
+		return
 	get_tree().change_scene_to_file(ARENA_SCENE)
-
-
-func _choose_cpu_character(player_index: int) -> CharacterData:
-	var cpu_index: int = randi_range(0, ROSTER.size() - 2)
-	if cpu_index >= player_index:
-		cpu_index += 1
-	return ROSTER[cpu_index]
 
 
 func _get_preview_texture(character: CharacterData) -> Texture2D:

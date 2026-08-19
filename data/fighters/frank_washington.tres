@@ -9,6 +9,8 @@
 script = ExtResource("1_character_data")
 character_id = &"frank_washington"
 display_name = "Frank Washington"
+alignment = 0
+campaign_tier = 1
 intro_text = "Ready when you are."
 sprite_frames = ExtResource("4_frames")
 move_speed = 238.0

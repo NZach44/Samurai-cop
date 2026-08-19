@@ -1,8 +1,21 @@
 extends Resource
 class_name CharacterData
 
+enum Alignment {
+	GOOD,
+	BAD,
+}
+
+enum CampaignTier {
+	EARLY,
+	MEDIUM,
+	LATE,
+}
+
 @export var character_id: StringName = &"fighter"
 @export var display_name: String = "Fighter"
+@export var alignment: Alignment = Alignment.GOOD
+@export var campaign_tier: CampaignTier = CampaignTier.EARLY
 @export var intro_text: String = ""
 @export var intro_audio: AudioStream
 @export var sprite_frames: SpriteFrames

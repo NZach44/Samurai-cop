@@ -8,6 +8,7 @@ enum MatchState {
 }
 
 const ROUNDS_TO_WIN: int = 2
+const ARENA_SCENE: String = "res://scenes/arenas/test_arena.tscn"
 const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 
 @export var round_message_duration: float = 0.8
@@ -26,6 +27,7 @@ const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 @onready var fighter_2_name_label: Label = $HUD/Controls/Fighter2Label
 @onready var fighter_1_rounds_label: Label = $HUD/Controls/Fighter1RoundsLabel
 @onready var fighter_2_rounds_label: Label = $HUD/Controls/Fighter2RoundsLabel
+@onready var campaign_progress_label: Label = $HUD/Controls/CampaignProgressLabel
 @onready var winner_label: Label = $HUD/Controls/WinnerLabel
 @onready var special_move_label: Label = $HUD/Controls/SpecialMoveLabel
 @onready var intro_bubble: PanelContainer = $HUD/Controls/IntroBubble
@@ -66,6 +68,7 @@ func _ready() -> void:
 	_on_health_changed(fighter_2.current_health, fighter_2.max_health, fighter_2_health_bar)
 	fighter_1_name_label.text = fighter_1.get_display_name()
 	fighter_2_name_label.text = fighter_2.get_display_name()
+	_update_campaign_ui()
 	_update_round_win_ui()
 	_start_round()
 
@@ -192,12 +195,29 @@ func _position_intro_bubble(fighter: Fighter) -> void:
 func _finish_match(winner: Fighter, winner_number: int) -> void:
 	match_state = MatchState.MATCH_OVER
 	_set_fighter_controls_enabled(false)
-	winner_label.text = "PLAYER %d WINS THE MATCH" % winner_number
+	var game_session: Node = get_node("/root/GameSession")
+	var player_won: bool = winner == fighter_1
+	var campaign_is_active: bool = game_session.is_campaign_active()
+	var completed_campaign: bool = (
+		campaign_is_active
+		and player_won
+		and game_session.is_final_fight()
+	)
+	if campaign_is_active and not player_won:
+		winner_label.text = "GAME OVER"
+	elif completed_campaign:
+		winner_label.text = "CAMPAIGN COMPLETE"
+	else:
+		winner_label.text = "PLAYER %d WINS THE MATCH" % winner_number
 	winner_label.show()
 	print("MATCH OVER: %s wins the match" % winner.get_display_name())
 
 	await get_tree().create_timer(match_end_delay).timeout
-	get_node("/root/GameSession").clear_match()
+	if campaign_is_active and player_won and not completed_campaign:
+		if game_session.advance_campaign():
+			get_tree().change_scene_to_file(ARENA_SCENE)
+			return
+	game_session.clear_campaign()
 	get_tree().change_scene_to_file(CHARACTER_SELECT_SCENE)
 
 
@@ -216,3 +236,19 @@ func _set_fighter_controls_enabled(enabled: bool) -> void:
 func _update_round_win_ui() -> void:
 	fighter_1_rounds_label.text = "P1 ROUNDS: %d" % fighter_1_round_wins
 	fighter_2_rounds_label.text = "P2 ROUNDS: %d" % fighter_2_round_wins
+
+
+func _update_campaign_ui() -> void:
+	var game_session: Node = get_node("/root/GameSession")
+	if not game_session.is_campaign_active():
+		campaign_progress_label.hide()
+		return
+	campaign_progress_label.show()
+	if game_session.is_final_fight():
+		campaign_progress_label.text = "FINAL FIGHT\n%s" % fighter_2.get_display_name().to_upper()
+	else:
+		campaign_progress_label.text = "FIGHT %d / %d\nVS %s" % [
+			game_session.current_campaign_index + 1,
+			game_session.campaign_opponents.size(),
+			fighter_2.get_display_name().to_upper(),
+		]

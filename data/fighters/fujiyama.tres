@@ -9,6 +9,8 @@
 script = ExtResource("1_character_data")
 character_id = &"fujiyama"
 display_name = "Fujiyama"
+alignment = 1
+campaign_tier = 2
 intro_text = "Let's begin the test."
 sprite_frames = ExtResource("4_frames")
 move_speed = 232.0
