@@ -1,10 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3]
+[gd_resource type="SpriteFrames" load_steps=16 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
-atlas = ExtResource("1_sheet")
-region = Rect2(0, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_002.png" id="3_idle_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_003.png" id="4_idle_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_004.png" id="5_idle_004"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
 atlas = ExtResource("1_sheet")
@@ -63,10 +63,22 @@ animations = [{
 "name": &"hurt",
 "speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_idle_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_idle_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_idle_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_idle_004")
+}],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 6.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
 "loop": false,

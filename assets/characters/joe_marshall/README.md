@@ -12,6 +12,9 @@ permission to use.
 ```text
 assets/characters/joe_marshall/
 ├── README.md
+├── SPRITE_MANIFEST.md
+├── design/
+│   └── README.md
 ├── joe_marshall_frames.tres
 ├── placeholder_sheet.svg
 └── sprites/
@@ -41,6 +44,55 @@ artist reference inputs. These files are not animation frames and must not ship.
 Game-ready assets are cleaned, stylized/cartoon sprite frames with transparent
 backgrounds plus the final `SpriteFrames` resource. These belong under `assets/`
 and may be committed.
+
+## AI-assisted production stages
+
+Use this staged workflow; do not generate all animations directly from the movie
+references:
+
+```text
+PRIVATE REFERENCE IMAGES
+reference/joe_marshall/
+        ↓
+APPROVED CANONICAL DESIGN
+assets/characters/joe_marshall/design/joe_canonical_design.png
+        ↓
+ANIMATION POSE CANDIDATES
+local development work under reference/joe_marshall/
+        ↓
+FINAL NORMALIZED SPRITE FRAMES
+assets/characters/joe_marshall/sprites/<animation>/
+        ↓
+GODOT SPRITEFRAMES
+assets/characters/joe_marshall/joe_marshall_frames.tres
+```
+
+The movie screenshots are private/local source references. Once the canonical
+cartoon design is approved, it becomes the primary consistency reference for
+every generation request. Use source screenshots only as secondary references
+for details that the canonical sheet does not resolve.
+
+Save the one approved full-body canonical design at:
+
+```text
+assets/characters/joe_marshall/design/joe_canonical_design.png
+```
+
+Do not save exploratory generations or rejected pose candidates in `assets/`.
+Keep those under the ignored `reference/joe_marshall/` workspace. Only approved
+design artwork and normalized game-ready PNGs belong in shipped assets.
+
+The canonical design must show a stylized/cartoon fighting-game character with:
+
+- the full body visible in a neutral, right-facing fighting stance;
+- one internally consistent identity, outfit, hairstyle, and set of proportions;
+- a clear silhouette that remains readable at game scale;
+- a transparent or cleanly removable background;
+- enough resolution and margin to normalize poses onto the 512x512 frame canvas.
+
+Every animation request should include this approved design as its primary image
+reference. Generate one small pose batch at a time so identity, outfit, scale,
+and baseline drift can be corrected before the next animation.
 
 Useful reference coverage includes:
 
@@ -88,7 +140,7 @@ Do not rename these animations; `Fighter` requests them directly.
 
 | Animation | Initial frames | Loop | Temporary FPS |
 |---|---:|:---:|---:|
-| `idle` | 4-6 | yes | 5 |
+| `idle` | 4-6 | yes | 6 |
 | `walk` | 6-8 | yes | 8 |
 | `jump` | 3-5 | no | 6 |
 | `crouch` | 2-3 | no | 5 |
@@ -110,27 +162,29 @@ fallback to `idle`.
 
 ## Production checklist
 
-Produce and approve the animation sets in this order:
+Approve the canonical design first. Then produce the initial AI-assisted batch
+in this order:
 
-1. `idle` — current and only required production target;
-2. `walk`;
-3. `punch`;
-4. `kick`;
-5. `crouch`;
-6. `block`;
-7. `hurt`;
-8. `jump`;
-9. `ko`;
-10. `special_1`;
-11. `special_2`.
+1. `idle` — 4 frames;
+2. `punch` — 5 frames;
+3. `kick` — 6 frames;
+4. `walk` — 6 frames;
+5. `crouch` — 2 frames;
+6. `block` — 2 frames.
 
-For the first delivery, provide only `idle_001.png` through the final idle frame.
+`jump`, `hurt`, `ko`, `special_1`, and `special_2` are explicitly outside this
+first batch and remain placeholder-backed.
+
+For the first delivery, provide only `idle_001.png` through `idle_004.png`.
 Review the design, source scale, alpha edges, baseline stability, import settings,
 and in-game readability before applying the same design to other animations.
 
 Replacing `idle` does not require rebuilding the resource: open the existing
 `idle` animation, remove its one placeholder frame, and add the approved idle
 PNGs. Do not remove or alter the placeholder frames in the other ten animations.
+
+The exact first-batch filenames and acceptance checks are listed in
+`SPRITE_MANIFEST.md`.
 
 ## Local reference extraction example
 
