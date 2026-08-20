@@ -122,8 +122,9 @@ to map one-to-one to animation frames.
 The current placeholder is roughly 128 pixels tall in gameplay. For initial
 512-pixel source frames, use Godot's texture import **Size Limit = 128** so the
 new art fits the existing arena without changing physics or shared Fighter code.
-This is a temporary presentation setting and can be retuned later as one visual
-scale decision for the roster.
+Joe currently uses `CharacterData.visual_scale = 1.5`, applied by a sprite-only
+root that pivots at the floor baseline. Other characters retain the default
+`1.0`. This does not scale collision or attack geometry.
 
 Use zero-padded filenames inside the matching animation directory:
 

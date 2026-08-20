@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
@@ -11,6 +11,53 @@ size = Vector2(1152, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(64, 648)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_background"]
+bg_color = Color(0.075, 0.012, 0.02, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.88, 0.91, 0.94, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_fill"]
+bg_color = Color(0.207843, 0.788235, 0.407843, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_intro_bubble"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.97, 0.98, 1, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.16, 0.2, 0.28, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.28)
+shadow_size = 4
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="Theme" id="Theme_hud"]
+Label/colors/font_color = Color(0.96, 0.98, 1, 1)
+Label/colors/font_outline_color = Color(0.025, 0.035, 0.055, 0.95)
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 16
 
 [node name="TestArena" type="Node2D"]
 script = ExtResource("2_round_controller")
@@ -61,6 +108,7 @@ kick_action = &"p2_kick"
 opponent = NodePath("../Fighter1")
 
 [node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="Controls" type="Control" parent="HUD"]
 layout_mode = 3
@@ -70,6 +118,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = SubResource("Theme_hud")
 
 [node name="Fighter1Label" type="Label" parent="HUD/Controls"]
 layout_mode = 0
@@ -77,6 +126,9 @@ offset_left = 32.0
 offset_top = 4.0
 offset_right = 132.0
 offset_bottom = 27.0
+theme_override_colors/font_color = Color(0.52, 0.86, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
 text = "PLAYER 1"
 
 [node name="Fighter1HealthBar" type="ProgressBar" parent="HUD/Controls"]
@@ -84,9 +136,11 @@ layout_mode = 0
 offset_left = 32.0
 offset_top = 28.0
 offset_right = 472.0
-offset_bottom = 60.0
+offset_bottom = 64.0
 value = 100.0
 show_percentage = false
+theme_override_styles/background = SubResource("StyleBoxFlat_health_background")
+theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 
 [node name="Fighter2Label" type="Label" parent="HUD/Controls"]
 layout_mode = 1
@@ -98,6 +152,9 @@ offset_top = 4.0
 offset_right = -32.0
 offset_bottom = 27.0
 grow_horizontal = 0
+theme_override_colors/font_color = Color(1, 0.69, 0.58, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
 text = "PLAYER 2"
 horizontal_alignment = 2
 
@@ -109,18 +166,21 @@ anchor_right = 1.0
 offset_left = -472.0
 offset_top = 28.0
 offset_right = -32.0
-offset_bottom = 60.0
+offset_bottom = 64.0
 grow_horizontal = 0
 value = 100.0
 fill_mode = 1
 show_percentage = false
+theme_override_styles/background = SubResource("StyleBoxFlat_health_background")
+theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 
 [node name="Fighter1RoundsLabel" type="Label" parent="HUD/Controls"]
 layout_mode = 0
 offset_left = 32.0
-offset_top = 64.0
+offset_top = 68.0
 offset_right = 192.0
-offset_bottom = 87.0
+offset_bottom = 91.0
+theme_override_colors/font_color = Color(0.98, 0.82, 0.38, 1)
 text = "P1 ROUNDS: 0"
 
 [node name="Fighter2RoundsLabel" type="Label" parent="HUD/Controls"]
@@ -129,10 +189,11 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -192.0
-offset_top = 64.0
+offset_top = 68.0
 offset_right = -32.0
-offset_bottom = 87.0
+offset_bottom = 91.0
 grow_horizontal = 0
+theme_override_colors/font_color = Color(0.98, 0.82, 0.38, 1)
 text = "P2 ROUNDS: 0"
 horizontal_alignment = 2
 
@@ -143,6 +204,9 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 50.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.34, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
 text = "FIGHT 1 / 7"
 horizontal_alignment = 1
 
@@ -154,6 +218,8 @@ anchor_right = 1.0
 offset_top = 96.0
 offset_bottom = 142.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.42, 1)
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
 text = "PLAYER 1 WINS"
 horizontal_alignment = 1
@@ -166,20 +232,27 @@ anchor_right = 1.0
 offset_top = 154.0
 offset_bottom = 190.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(0.54, 0.92, 1, 1)
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 24
 text = "SPECIAL MOVE"
 horizontal_alignment = 1
 
 [node name="IntroBubble" type="PanelContainer" parent="HUD/Controls"]
 visible = false
-custom_minimum_size = Vector2(280, 90)
+custom_minimum_size = Vector2(180, 72)
 layout_mode = 0
-offset_right = 280.0
-offset_bottom = 90.0
+offset_right = 180.0
+offset_bottom = 72.0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_intro_bubble")
 
 [node name="Label" type="Label" parent="HUD/Controls/IntroBubble"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.07, 0.09, 0.13, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 17
 text = "INTRO TEXT"
 horizontal_alignment = 1
 vertical_alignment = 1

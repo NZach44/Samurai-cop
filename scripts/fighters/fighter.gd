@@ -93,8 +93,9 @@ const ANIMATION_KO: StringName = &"ko"
 @export_range(0.0, 1.0, 0.05) var block_knockback_multiplier: float = 0.40
 
 @onready var visuals: Node2D = $Visuals
-@onready var animated_sprite: AnimatedSprite2D = $Visuals/AnimatedSprite2D
-@onready var fallback_visuals: Node2D = $Visuals/FallbackVisuals
+@onready var sprite_root: Node2D = $Visuals/SpriteRoot
+@onready var animated_sprite: AnimatedSprite2D = $Visuals/SpriteRoot/AnimatedSprite2D
+@onready var fallback_visuals: Node2D = $Visuals/SpriteRoot/FallbackVisuals
 @onready var punch_hit_box: Area2D = $Visuals/PunchHitBox
 @onready var punch_hit_box_shape: CollisionShape2D = $Visuals/PunchHitBox/CollisionShape2D
 @onready var hurt_box_shape: CollisionShape2D = $HurtBox/CollisionShape2D
@@ -832,6 +833,41 @@ func get_display_name() -> String:
 	return name
 
 
+func get_visual_bounds_in_canvas() -> Rect2:
+	if animated_sprite.visible and animated_sprite.sprite_frames != null:
+		var frame_texture: Texture2D = animated_sprite.sprite_frames.get_frame_texture(
+			animated_sprite.animation,
+			animated_sprite.frame
+		)
+		if frame_texture == null:
+			return Rect2(get_global_transform_with_canvas().origin, Vector2.ZERO)
+		var texture_size: Vector2 = frame_texture.get_size()
+		var local_position: Vector2 = animated_sprite.offset
+		if animated_sprite.centered:
+			local_position -= texture_size * 0.5
+		var local_rect := Rect2(local_position, texture_size)
+		var canvas_transform: Transform2D = animated_sprite.get_global_transform_with_canvas()
+		var corners: Array[Vector2] = [
+			canvas_transform * local_rect.position,
+			canvas_transform * Vector2(local_rect.end.x, local_rect.position.y),
+			canvas_transform * local_rect.end,
+			canvas_transform * Vector2(local_rect.position.x, local_rect.end.y),
+		]
+		var minimum_point: Vector2 = corners[0]
+		var maximum_point: Vector2 = corners[0]
+		for corner: Vector2 in corners:
+			minimum_point = minimum_point.min(corner)
+			maximum_point = maximum_point.max(corner)
+		return Rect2(minimum_point, maximum_point - minimum_point)
+
+	var fighter_screen_position: Vector2 = get_global_transform_with_canvas().origin
+	var fallback_scale: float = character_data.visual_scale if character_data != null else 1.0
+	return Rect2(
+		fighter_screen_position + Vector2(-24.0, -64.0) * fallback_scale,
+		Vector2(48.0, 128.0) * fallback_scale
+	)
+
+
 func get_move_speed() -> float:
 	return character_data.move_speed if character_data != null else move_speed
 
@@ -873,6 +909,10 @@ func _restore_default_attack_hitbox() -> void:
 
 
 func _configure_character_visual() -> void:
+	var character_visual_scale: float = (
+		character_data.visual_scale if character_data != null else 1.0
+	)
+	sprite_root.scale = Vector2.ONE * maxf(character_visual_scale, 0.01)
 	if character_data != null and character_data.sprite_frames != null:
 		animated_sprite.sprite_frames = character_data.sprite_frames
 		animated_sprite.show()

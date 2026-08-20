@@ -18,7 +18,16 @@ const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 @export var special_move_message_duration: float = 0.8
 @export var intro_duration: float = 1.7
 @export var intro_start_delay: float = 0.5
+@export var intro_bubble_gap: float = 20.0
+@export var intro_bubble_screen_margin: float = 16.0
+@export var intro_bubble_hud_clearance: float = 96.0
+@export var intro_bubble_min_width: float = 180.0
+@export var intro_bubble_max_width: float = 320.0
 @export var mobile_floor_clearance: float = 24.0
+
+const HEALTH_GREEN: Color = Color("35c968")
+const HEALTH_ORANGE: Color = Color("f0a43c")
+const HEALTH_RED: Color = Color("e5484d")
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
@@ -112,6 +121,21 @@ func _apply_mobile_safe_area() -> void:
 func _on_health_changed(current_health: int, max_health: int, health_bar: ProgressBar) -> void:
 	health_bar.max_value = max_health
 	health_bar.value = current_health
+	var health_ratio: float = (
+		float(current_health) / float(max_health) if max_health > 0 else 0.0
+	)
+	var health_color: Color = HEALTH_RED
+	if health_ratio >= 0.60:
+		health_color = HEALTH_GREEN
+	elif health_ratio >= 0.30:
+		health_color = HEALTH_ORANGE
+	var fill_style := StyleBoxFlat.new()
+	fill_style.bg_color = health_color
+	fill_style.corner_radius_top_left = 4
+	fill_style.corner_radius_top_right = 4
+	fill_style.corner_radius_bottom_left = 4
+	fill_style.corner_radius_bottom_right = 4
+	health_bar.add_theme_stylebox_override("fill", fill_style)
 
 
 func _on_special_move_started(move_name: String) -> void:
@@ -200,7 +224,9 @@ func _play_fighter_intro(fighter: Fighter) -> void:
 		intro_voice_player.play()
 
 	if not data.intro_text.is_empty():
-		intro_label.text = data.intro_text
+		_configure_intro_bubble_text(data.intro_text)
+		# Container sizing is deferred; wait one locked frame before using final bounds.
+		await get_tree().process_frame
 		_position_intro_bubble(fighter)
 		intro_bubble.show()
 
@@ -211,21 +237,66 @@ func _play_fighter_intro(fighter: Fighter) -> void:
 
 
 func _position_intro_bubble(fighter: Fighter) -> void:
-	var fighter_screen_position: Vector2 = fighter.get_global_transform_with_canvas().origin
 	var viewport_size: Vector2 = get_viewport_rect().size
 	var bubble_size: Vector2 = intro_bubble.size
-	var desired_position := fighter_screen_position + Vector2(-bubble_size.x * 0.5, -170.0)
+	var visual_bounds: Rect2 = fighter.get_visual_bounds_in_canvas()
+	var desired_position := Vector2(
+		visual_bounds.get_center().x - bubble_size.x * 0.5,
+		visual_bounds.position.y - intro_bubble_gap - bubble_size.y
+	)
+	var maximum_x: float = maxf(
+		viewport_size.x - bubble_size.x - intro_bubble_screen_margin,
+		intro_bubble_screen_margin
+	)
+	if desired_position.y < intro_bubble_hud_clearance:
+		var place_on_right: bool = visual_bounds.get_center().x < viewport_size.x * 0.5
+		desired_position.x = (
+			visual_bounds.end.x + intro_bubble_gap
+			if place_on_right
+			else visual_bounds.position.x - bubble_size.x - intro_bubble_gap
+		)
+		desired_position.y = visual_bounds.position.y
 	desired_position.x = clampf(
 		desired_position.x,
-		16.0,
-		maxf(viewport_size.x - bubble_size.x - 16.0, 16.0)
+		intro_bubble_screen_margin,
+		maximum_x
 	)
 	desired_position.y = clampf(
 		desired_position.y,
-		96.0,
-		maxf(viewport_size.y - bubble_size.y - 16.0, 96.0)
+		intro_bubble_hud_clearance,
+		maxf(
+			viewport_size.y - bubble_size.y - intro_bubble_screen_margin,
+			intro_bubble_hud_clearance
+		)
 	)
 	intro_bubble.position = desired_position
+
+
+func _configure_intro_bubble_text(text: String) -> void:
+	var font: Font = intro_label.get_theme_font("font")
+	var font_size: int = intro_label.get_theme_font_size("font_size")
+	var text_width: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	var bubble_width: float = clampf(
+		text_width + 32.0,
+		intro_bubble_min_width,
+		intro_bubble_max_width
+	)
+	var available_text_width: float = maxf(bubble_width - 32.0, 1.0)
+	var estimated_lines: int = maxi(ceili(text_width / available_text_width), 1)
+	var bubble_height: float = clampf(
+		float(estimated_lines * font.get_height(font_size)) + 24.0,
+		72.0,
+		160.0
+	)
+	intro_label.custom_minimum_size = Vector2(
+		available_text_width,
+		maxf(bubble_height - 24.0, 1.0)
+	)
+	intro_label.size = intro_label.custom_minimum_size
+	intro_label.text = text
+	intro_bubble.custom_minimum_size = Vector2(bubble_width, bubble_height)
+	intro_bubble.size = intro_bubble.custom_minimum_size
+	intro_bubble.queue_sort()
 
 
 func _finish_match(winner: Fighter, winner_number: int) -> void:

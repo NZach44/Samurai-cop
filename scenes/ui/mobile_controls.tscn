@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/mobile_controls.gd" id="1_mobile_controls"]
 
@@ -7,6 +7,12 @@ radius = 26.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_action"]
 radius = 34.0
+
+[sub_resource type="Theme" id="Theme_mobile_controls"]
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0.015, 0.025, 0.045, 0.95)
+Label/constants/outline_size = 4
+Label/font_sizes/font_size = 22
 
 [node name="MobileControls" type="CanvasLayer"]
 layer = 20
@@ -20,6 +26,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = SubResource("Theme_mobile_controls")
 
 [node name="ControlZone" type="ColorRect" parent="Layout"]
 layout_mode = 1
@@ -30,7 +37,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
-color = Color(0.035, 0.05, 0.09, 0.72)
+color = Color(0.025, 0.04, 0.075, 0.82)
 
 [node name="TopBorder" type="ColorRect" parent="Layout/ControlZone"]
 layout_mode = 1
@@ -39,7 +46,7 @@ anchor_right = 1.0
 offset_bottom = 2.0
 grow_horizontal = 2
 mouse_filter = 2
-color = Color(0.2, 0.48, 0.72, 0.5)
+color = Color(0.28, 0.64, 0.94, 0.78)
 
 [node name="LeftControls" type="Control" parent="Layout/ControlZone"]
 layout_mode = 1
@@ -58,9 +65,13 @@ visibility_mode = 0
 action = &"p1_jump"
 shape = SubResource("CircleShape2D_direction")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Up"]
+polygon = PackedVector2Array(0, -30, 21, -21, 30, 0, 21, 21, 0, 30, -21, 21, -30, 0, -21, -21)
+color = Color(0.02, 0.07, 0.14, 0.86)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Up"]
 polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
-color = Color(0.12, 0.45, 0.78, 0.46)
+color = Color(0.12, 0.5, 0.9, 0.72)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Up"]
 offset_left = -26.0
@@ -79,9 +90,13 @@ visibility_mode = 0
 action = &"p1_left"
 shape = SubResource("CircleShape2D_direction")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Left"]
+polygon = PackedVector2Array(0, -30, 21, -21, 30, 0, 21, 21, 0, 30, -21, 21, -30, 0, -21, -21)
+color = Color(0.02, 0.07, 0.14, 0.86)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Left"]
 polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
-color = Color(0.12, 0.45, 0.78, 0.46)
+color = Color(0.12, 0.5, 0.9, 0.72)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Left"]
 offset_left = -26.0
@@ -100,9 +115,13 @@ visibility_mode = 0
 action = &"p1_right"
 shape = SubResource("CircleShape2D_direction")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Right"]
+polygon = PackedVector2Array(0, -30, 21, -21, 30, 0, 21, 21, 0, 30, -21, 21, -30, 0, -21, -21)
+color = Color(0.02, 0.07, 0.14, 0.86)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Right"]
 polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
-color = Color(0.12, 0.45, 0.78, 0.46)
+color = Color(0.12, 0.5, 0.9, 0.72)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Right"]
 offset_left = -26.0
@@ -121,9 +140,13 @@ visibility_mode = 0
 action = &"p1_crouch"
 shape = SubResource("CircleShape2D_direction")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Down"]
+polygon = PackedVector2Array(0, -30, 21, -21, 30, 0, 21, 21, 0, 30, -21, 21, -30, 0, -21, -21)
+color = Color(0.02, 0.07, 0.14, 0.86)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/LeftControls/Down"]
 polygon = PackedVector2Array(0, -26, 18, -18, 26, 0, 18, 18, 0, 26, -18, 18, -26, 0, -18, -18)
-color = Color(0.12, 0.45, 0.78, 0.46)
+color = Color(0.12, 0.5, 0.9, 0.72)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/LeftControls/Down"]
 offset_left = -26.0
@@ -156,9 +179,13 @@ visibility_mode = 0
 action = &"p1_punch"
 shape = SubResource("CircleShape2D_action")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/RightControls/Punch"]
+polygon = PackedVector2Array(0, -38, 27, -27, 38, 0, 27, 27, 0, 38, -27, 27, -38, 0, -27, -27)
+color = Color(0.12, 0.055, 0.015, 0.9)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Punch"]
 polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
-color = Color(0.9, 0.32, 0.12, 0.5)
+color = Color(1, 0.5, 0.12, 0.76)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Punch"]
 offset_left = -34.0
@@ -177,9 +204,13 @@ visibility_mode = 0
 action = &"p1_kick"
 shape = SubResource("CircleShape2D_action")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/RightControls/Kick"]
+polygon = PackedVector2Array(0, -38, 27, -27, 38, 0, 27, 27, 0, 38, -27, 27, -38, 0, -27, -27)
+color = Color(0.13, 0.02, 0.03, 0.9)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Kick"]
 polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
-color = Color(0.82, 0.18, 0.25, 0.5)
+color = Color(0.95, 0.2, 0.25, 0.76)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Kick"]
 offset_left = -34.0
@@ -198,9 +229,13 @@ visibility_mode = 0
 action = &"p1_block"
 shape = SubResource("CircleShape2D_action")
 
+[node name="Backdrop" type="Polygon2D" parent="Layout/ControlZone/RightControls/Block"]
+polygon = PackedVector2Array(0, -38, 27, -27, 38, 0, 27, 27, 0, 38, -27, 27, -38, 0, -27, -27)
+color = Color(0.015, 0.11, 0.07, 0.9)
+
 [node name="Visual" type="Polygon2D" parent="Layout/ControlZone/RightControls/Block"]
 polygon = PackedVector2Array(0, -34, 24, -24, 34, 0, 24, 24, 0, 34, -24, 24, -34, 0, -24, -24)
-color = Color(0.16, 0.68, 0.38, 0.5)
+color = Color(0.16, 0.75, 0.37, 0.76)
 
 [node name="Label" type="Label" parent="Layout/ControlZone/RightControls/Block"]
 offset_left = -34.0

@@ -19,15 +19,20 @@ script = ExtResource("2_cpu_controller")
 
 [node name="Visuals" type="Node2D" parent="."]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+[node name="SpriteRoot" type="Node2D" parent="Visuals"]
+position = Vector2(0, 64)
 
-[node name="FallbackVisuals" type="Node2D" parent="Visuals"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals/SpriteRoot"]
+position = Vector2(0, -64)
 
-[node name="PlaceholderVisual" type="Polygon2D" parent="Visuals/FallbackVisuals"]
+[node name="FallbackVisuals" type="Node2D" parent="Visuals/SpriteRoot"]
+position = Vector2(0, -64)
+
+[node name="PlaceholderVisual" type="Polygon2D" parent="Visuals/SpriteRoot/FallbackVisuals"]
 polygon = PackedVector2Array(-24, -64, 24, -64, 24, 64, -24, 64)
 color = Color(0.18, 0.72, 0.9, 1)
 
-[node name="FacingMarker" type="Polygon2D" parent="Visuals/FallbackVisuals"]
+[node name="FacingMarker" type="Polygon2D" parent="Visuals/SpriteRoot/FallbackVisuals"]
 polygon = PackedVector2Array(24, -10, 40, 0, 24, 10)
 color = Color(0.95, 0.95, 0.8, 1)
 
