@@ -24,29 +24,29 @@ Expected source specification for every listed file:
 
 ### Walk — 6 frames
 
-- [ ] `sprites/walk/walk_001.png`
-- [ ] `sprites/walk/walk_002.png`
-- [ ] `sprites/walk/walk_003.png`
-- [ ] `sprites/walk/walk_004.png`
-- [ ] `sprites/walk/walk_005.png`
-- [ ] `sprites/walk/walk_006.png`
+- [x] `sprites/walk/walk_001.png`
+- [x] `sprites/walk/walk_002.png`
+- [x] `sprites/walk/walk_003.png`
+- [x] `sprites/walk/walk_004.png`
+- [x] `sprites/walk/walk_005.png`
+- [x] `sprites/walk/walk_006.png`
 
 ### Punch — 5 frames
 
-- [ ] `sprites/punch/punch_001.png`
-- [ ] `sprites/punch/punch_002.png`
-- [ ] `sprites/punch/punch_003.png`
-- [ ] `sprites/punch/punch_004.png`
-- [ ] `sprites/punch/punch_005.png`
+- [x] `sprites/punch/punch_001.png`
+- [x] `sprites/punch/punch_002.png`
+- [x] `sprites/punch/punch_003.png`
+- [x] `sprites/punch/punch_004.png`
+- [x] `sprites/punch/punch_005.png`
 
 ### Kick — 6 frames
 
-- [ ] `sprites/kick/kick_001.png`
-- [ ] `sprites/kick/kick_002.png`
-- [ ] `sprites/kick/kick_003.png`
-- [ ] `sprites/kick/kick_004.png`
-- [ ] `sprites/kick/kick_005.png`
-- [ ] `sprites/kick/kick_006.png`
+- [x] `sprites/kick/kick_001.png`
+- [x] `sprites/kick/kick_002.png`
+- [x] `sprites/kick/kick_003.png`
+- [x] `sprites/kick/kick_004.png`
+- [x] `sprites/kick/kick_005.png`
+- [x] `sprites/kick/kick_006.png`
 
 ### Crouch — 2 frames
 
@@ -88,9 +88,9 @@ incomplete production sequence with its placeholder.
 
 | Animation | Required frames | FPS | Loop | Contact-pose guide |
 |---|---:|---:|:---:|---|
-| `walk` | 6 | 8 | yes | Weight shift, lead step, passing pose, trail step, recovery, loop closure |
-| `punch` | 5 | 10 | no | Full extension is frame 3 |
-| `kick` | 6 | 10 | no | Full extension is frame 4 |
+| `walk` | 6 | 9 | yes | Weight shift, lead step, passing pose, trail step, recovery, loop closure |
+| `punch` | 5 | 12 | no | Full extension is frame 3 |
+| `kick` | 6 | 12 | no | Full extension is frame 4 |
 
 These frame rates are visual starting points only. Fighter startup, active, and
 recovery timers remain authoritative, and artwork integration must not change

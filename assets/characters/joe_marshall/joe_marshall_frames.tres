@@ -1,22 +1,31 @@
-[gd_resource type="SpriteFrames" load_steps=16 format=3]
+[gd_resource type="SpriteFrames" load_steps=30 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_002.png" id="3_idle_002"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_003.png" id="4_idle_003"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_004.png" id="5_idle_004"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
-atlas = ExtResource("1_sheet")
-region = Rect2(48, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_001.png" id="6_walk_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_002.png" id="7_walk_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_003.png" id="8_walk_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_004.png" id="9_walk_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_005.png" id="10_walk_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/walk/walk_006.png" id="11_walk_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/punch/punch_001.png" id="12_punch_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/punch/punch_002.png" id="13_punch_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/punch/punch_003.png" id="14_punch_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/punch/punch_004.png" id="15_punch_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/punch/punch_005.png" id="16_punch_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_001.png" id="17_kick_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_002.png" id="18_kick_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_003.png" id="19_kick_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_004.png" id="20_kick_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_005.png" id="21_kick_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/kick/kick_006.png" id="22_kick_006"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
 atlas = ExtResource("1_sheet")
 region = Rect2(96, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(144, 0, 48, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
 atlas = ExtResource("1_sheet")
@@ -33,10 +42,6 @@ region = Rect2(288, 0, 48, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
 atlas = ExtResource("1_sheet")
 region = Rect2(336, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
-atlas = ExtResource("1_sheet")
-region = Rect2(384, 0, 48, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
 atlas = ExtResource("1_sheet")
@@ -85,20 +90,53 @@ animations = [{
 "name": &"jump",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_kick_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_kick_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_kick_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_kick_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_kick_005")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_kick_006")
+}],
 "loop": false,
 "name": &"kick",
-"speed": 10.0
+"speed": 12.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
 "loop": false,
 "name": &"ko",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_punch_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_punch_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_punch_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_punch_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_punch_005")
+}],
 "loop": false,
 "name": &"punch",
-"speed": 10.0
+"speed": 12.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
 "loop": false,
@@ -110,8 +148,26 @@ animations = [{
 "name": &"special_2",
 "speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_walk_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_walk_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_walk_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_walk_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_walk_005")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_walk_006")
+}],
 "loop": true,
 "name": &"walk",
-"speed": 8.0
+"speed": 9.0
 }]
