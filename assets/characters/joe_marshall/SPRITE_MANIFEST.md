@@ -78,3 +78,23 @@ Unexpected files are any PNGs in these six animation directories that are not
 listed above. Missing files are unchecked manifest entries. Dimension or alpha
 problems should be fixed in the source frame before SpriteFrames integration,
 not compensated for with Fighter transforms or collision changes.
+
+## Core animation integration settings
+
+Integrate each animation as one complete set. If any file in a set is missing,
+leave that animation's existing placeholder frame in
+`joe_marshall_frames.tres`; do not add broken texture references or mix an
+incomplete production sequence with its placeholder.
+
+| Animation | Required frames | FPS | Loop | Contact-pose guide |
+|---|---:|---:|:---:|---|
+| `walk` | 6 | 8 | yes | Weight shift, lead step, passing pose, trail step, recovery, loop closure |
+| `punch` | 5 | 10 | no | Full extension is frame 3 |
+| `kick` | 6 | 10 | no | Full extension is frame 4 |
+
+These frame rates are visual starting points only. Fighter startup, active, and
+recovery timers remain authoritative, and artwork integration must not change
+movement speed, damage, knockback, or hitbox timing. All three sets reuse Joe's
+single `CharacterData.visual_scale` and the shared right-facing artwork plus
+`AnimatedSprite2D.flip_h`; do not introduce animation-specific scaling or
+left-facing duplicates.
