@@ -145,9 +145,12 @@ Do not rename these animations; `Fighter` requests them directly.
 | `walk` | 6-8 | yes | 8 |
 | `jump` | 3-5 | no | 6 |
 | `crouch` | 2-3 | no | 5 |
+| `crouch_block` | placeholder | no | 5 |
 | `block` | 2-3 | no | 5 |
 | `punch` | 4-6 | no | 10 |
 | `kick` | 5-7 | no | 10 |
+| `crouch_punch` | placeholder | no | 8 |
+| `crouch_kick` | placeholder | no | 8 |
 | `hurt` | 2-4 | no | 8 |
 | `special_1` | 6-10 | no | 10 |
 | `special_2` | 6-10 | no | 10 |

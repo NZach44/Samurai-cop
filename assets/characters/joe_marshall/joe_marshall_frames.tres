@@ -63,6 +63,21 @@ animations = [{
 "name": &"crouch",
 "speed": 5.0
 }, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
+"loop": false,
+"name": &"crouch_block",
+"speed": 5.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
+"loop": false,
+"name": &"crouch_kick",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
+"loop": false,
+"name": &"crouch_punch",
+"speed": 8.0
+}, {
 "frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
 "loop": false,
 "name": &"hurt",

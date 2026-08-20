@@ -1,6 +1,16 @@
 extends CharacterBody2D
 class_name Fighter
 
+enum AttackLevel {
+	MID,
+	LOW,
+}
+
+enum AttackPosture {
+	STANDING,
+	CROUCHING,
+}
+
 class NormalAttackData:
 	extends RefCounted
 	var attack_id: StringName
@@ -12,8 +22,11 @@ class NormalAttackData:
 	var knockback: float
 	var hitbox_size: Vector2
 	var hitbox_offset_x: float
+	var hitbox_offset_y: float
 	var animation_name: StringName
 	var grounded_only: bool
+	var attack_level: AttackLevel
+	var attack_posture: AttackPosture
 
 class CommandInput:
 	extends RefCounted
@@ -36,6 +49,7 @@ enum ControlMode {
 enum FighterState {
 	NORMAL,
 	CROUCHING,
+	CROUCH_BLOCKING,
 	ATTACKING,
 	BLOCKING,
 	HIT_STUN,
@@ -47,9 +61,12 @@ const ANIMATION_IDLE: StringName = &"idle"
 const ANIMATION_WALK: StringName = &"walk"
 const ANIMATION_JUMP: StringName = &"jump"
 const ANIMATION_CROUCH: StringName = &"crouch"
+const ANIMATION_CROUCH_BLOCK: StringName = &"crouch_block"
 const ANIMATION_BLOCK: StringName = &"block"
 const ANIMATION_PUNCH: StringName = &"punch"
 const ANIMATION_KICK: StringName = &"kick"
+const ANIMATION_CROUCH_PUNCH: StringName = &"crouch_punch"
+const ANIMATION_CROUCH_KICK: StringName = &"crouch_kick"
 const ANIMATION_HURT: StringName = &"hurt"
 const ANIMATION_SPECIAL_1: StringName = &"special_1"
 const ANIMATION_SPECIAL_2: StringName = &"special_2"
@@ -73,6 +90,7 @@ const ANIMATION_KO: StringName = &"ko"
 @export_range(0.1, 2.0, 0.05) var command_buffer_lifetime: float = 0.7
 @export_range(3, 10, 1) var command_buffer_capacity: int = 8
 @export var debug_command_input: bool = false
+@export var debug_attack_selection: bool = false
 @export var opponent: Node2D
 @export var punch_damage: int = 10
 @export var punch_knockback_speed: float = 300.0
@@ -87,6 +105,24 @@ const ANIMATION_KO: StringName = &"ko"
 @export var kick_hitbox_width: float = 64.0
 @export var kick_hitbox_height: float = 40.0
 @export var kick_hitbox_offset_x: float = 58.0
+@export var low_punch_damage: int = 9
+@export var low_punch_knockback_speed: float = 260.0
+@export var low_punch_startup_time: float = 0.11
+@export var low_punch_active_time: float = 0.09
+@export var low_punch_recovery_time: float = 0.18
+@export var low_punch_hitbox_width: float = 42.0
+@export var low_punch_hitbox_height: float = 24.0
+@export var low_punch_hitbox_offset_x: float = 42.0
+@export var low_punch_hitbox_offset_y: float = 22.0
+@export var low_kick_damage: int = 12
+@export var low_kick_knockback_speed: float = 320.0
+@export var low_kick_startup_time: float = 0.16
+@export var low_kick_active_time: float = 0.11
+@export var low_kick_recovery_time: float = 0.25
+@export var low_kick_hitbox_width: float = 64.0
+@export var low_kick_hitbox_height: float = 22.0
+@export var low_kick_hitbox_offset_x: float = 56.0
+@export var low_kick_hitbox_offset_y: float = 38.0
 @export var crouch_hurtbox_height: float = 72.0
 @export_range(0.0, 1.0, 0.05) var blocked_damage_multiplier: float = 0.20
 @export var block_stun_duration: float = 0.16
@@ -112,13 +148,18 @@ var active_attack_damage: int = 0
 var active_attack_knockback: float = 0.0
 var active_attack_name: String = "Punch"
 var active_attack_animation: StringName = ANIMATION_PUNCH
+var active_attack_level: AttackLevel = AttackLevel.MID
+var active_attack_posture: AttackPosture = AttackPosture.STANDING
 var default_hitbox_size: Vector2
 var default_hitbox_position: Vector2
 var facing_direction: float = 1.0
 var missing_animation_warnings: Dictionary = {}
 var punch_attack: NormalAttackData
 var kick_attack: NormalAttackData
+var low_punch_attack: NormalAttackData
+var low_kick_attack: NormalAttackData
 var block_stun_time_remaining: float = 0.0
+var block_stun_was_crouching: bool = false
 var standing_hurtbox_size: Vector2
 var standing_hurtbox_position: Vector2
 var command_buffer: Array[CommandInput] = []
@@ -365,11 +406,17 @@ func request_jump() -> void:
 
 
 func request_punch() -> void:
-	_start_punch()
+	if fighter_state == FighterState.CROUCHING:
+		_start_low_punch()
+	else:
+		_start_punch()
 
 
 func request_kick() -> void:
-	_start_kick()
+	if fighter_state == FighterState.CROUCHING:
+		_start_low_kick()
+	else:
+		_start_kick()
 
 
 func request_special(slot: int) -> void:
@@ -395,8 +442,14 @@ func _update_block_stun(delta: float) -> void:
 	block_stun_time_remaining = maxf(block_stun_time_remaining - delta, 0.0)
 	if is_zero_approx(block_stun_time_remaining):
 		_set_fighter_state(FighterState.NORMAL)
+		block_stun_was_crouching = false
 		if control_mode == ControlMode.CPU and controls_enabled:
 			_handle_cpu_input(0.0)
+		elif controls_enabled:
+			_update_posture(
+				Input.is_action_pressed(crouch_action),
+				Input.is_action_pressed(block_action)
+			)
 
 
 func _face_opponent() -> void:
@@ -459,8 +512,11 @@ func _configure_normal_attacks() -> void:
 		punch_knockback_speed,
 		default_hitbox_size,
 		default_hitbox_position.x,
+		default_hitbox_position.y,
 		ANIMATION_PUNCH,
-		false
+		false,
+		AttackLevel.MID,
+		AttackPosture.STANDING
 	)
 	kick_attack = _create_normal_attack(
 		&"kick",
@@ -472,8 +528,43 @@ func _configure_normal_attacks() -> void:
 		kick_knockback_speed,
 		Vector2(kick_hitbox_width, kick_hitbox_height),
 		kick_hitbox_offset_x,
+		default_hitbox_position.y,
 		ANIMATION_KICK,
-		false
+		false,
+		AttackLevel.MID,
+		AttackPosture.STANDING
+	)
+	low_punch_attack = _create_normal_attack(
+		&"low_punch",
+		"Low Punch",
+		low_punch_damage,
+		low_punch_startup_time,
+		low_punch_active_time,
+		low_punch_recovery_time,
+		low_punch_knockback_speed,
+		Vector2(low_punch_hitbox_width, low_punch_hitbox_height),
+		low_punch_hitbox_offset_x,
+		low_punch_hitbox_offset_y,
+		ANIMATION_CROUCH_PUNCH,
+		true,
+		AttackLevel.LOW,
+		AttackPosture.CROUCHING
+	)
+	low_kick_attack = _create_normal_attack(
+		&"low_kick",
+		"Low Kick",
+		low_kick_damage,
+		low_kick_startup_time,
+		low_kick_active_time,
+		low_kick_recovery_time,
+		low_kick_knockback_speed,
+		Vector2(low_kick_hitbox_width, low_kick_hitbox_height),
+		low_kick_hitbox_offset_x,
+		low_kick_hitbox_offset_y,
+		ANIMATION_CROUCH_KICK,
+		true,
+		AttackLevel.LOW,
+		AttackPosture.CROUCHING
 	)
 
 
@@ -487,8 +578,11 @@ func _create_normal_attack(
 	knockback: float,
 	hitbox_size: Vector2,
 	hitbox_offset_x: float,
+	hitbox_offset_y: float,
 	animation_name: StringName,
-	grounded_only: bool
+	grounded_only: bool,
+	attack_level: AttackLevel,
+	attack_posture: AttackPosture
 ) -> NormalAttackData:
 	var attack := NormalAttackData.new()
 	attack.attack_id = attack_id
@@ -500,8 +594,11 @@ func _create_normal_attack(
 	attack.knockback = knockback
 	attack.hitbox_size = hitbox_size
 	attack.hitbox_offset_x = hitbox_offset_x
+	attack.hitbox_offset_y = hitbox_offset_y
 	attack.animation_name = animation_name
 	attack.grounded_only = grounded_only
+	attack.attack_level = attack_level
+	attack.attack_posture = attack_posture
 	return attack
 
 
@@ -513,11 +610,24 @@ func _start_kick() -> void:
 	_start_normal_attack(kick_attack)
 
 
+func _start_low_punch() -> void:
+	_start_normal_attack(low_punch_attack)
+
+
+func _start_low_kick() -> void:
+	_start_normal_attack(low_kick_attack)
+
+
 func _start_normal_attack(attack: NormalAttackData) -> void:
-	if attack == null or not can_start_attack():
+	if attack == null or not _can_start_normal_attack(attack):
 		return
 	if attack.grounded_only and not is_on_floor():
 		return
+	if debug_attack_selection:
+		print("Selected attack: %s (%s)" % [
+			attack.attack_id,
+			AttackPosture.keys()[attack.attack_posture],
+		])
 	_start_attack(
 		attack.display_name,
 		attack.damage,
@@ -527,7 +637,10 @@ func _start_normal_attack(attack: NormalAttackData) -> void:
 		attack.recovery_time,
 		attack.hitbox_size,
 		attack.hitbox_offset_x,
-		attack.animation_name
+		attack.hitbox_offset_y,
+		attack.animation_name,
+		attack.attack_level,
+		attack.attack_posture
 	)
 
 
@@ -547,12 +660,24 @@ func _start_special(
 		special_move.recovery_time,
 		Vector2(special_move.hitbox_width, special_move.hitbox_height),
 		special_move.hitbox_offset_x,
-		animation_name
+		default_hitbox_position.y,
+		animation_name,
+		AttackLevel.MID,
+		AttackPosture.STANDING
 	)
 
 
 func can_move() -> bool:
-	return controls_enabled and fighter_state in [FighterState.NORMAL, FighterState.ATTACKING]
+	return (
+		controls_enabled
+		and (
+			fighter_state == FighterState.NORMAL
+			or (
+				fighter_state == FighterState.ATTACKING
+				and active_attack_posture == AttackPosture.STANDING
+			)
+		)
+	)
 
 
 func can_jump() -> bool:
@@ -563,16 +688,46 @@ func can_crouch() -> bool:
 	return (
 		controls_enabled
 		and is_on_floor()
-		and fighter_state in [FighterState.NORMAL, FighterState.CROUCHING]
+		and fighter_state in [
+			FighterState.NORMAL,
+			FighterState.CROUCHING,
+			FighterState.CROUCH_BLOCKING,
+			FighterState.BLOCKING,
+		]
 	)
 
 
 func can_block() -> bool:
-	return controls_enabled and is_on_floor() and fighter_state == FighterState.NORMAL
+	return (
+		controls_enabled
+		and is_on_floor()
+		and fighter_state in [FighterState.NORMAL, FighterState.BLOCKING]
+	)
+
+
+func can_crouch_block() -> bool:
+	return (
+		controls_enabled
+		and is_on_floor()
+		and fighter_state in [
+			FighterState.NORMAL,
+			FighterState.CROUCHING,
+			FighterState.CROUCH_BLOCKING,
+			FighterState.BLOCKING,
+		]
+	)
 
 
 func can_start_attack() -> bool:
 	return controls_enabled and fighter_state == FighterState.NORMAL
+
+
+func _can_start_normal_attack(attack: NormalAttackData) -> bool:
+	if not controls_enabled:
+		return false
+	if attack.attack_posture == AttackPosture.CROUCHING:
+		return fighter_state == FighterState.CROUCHING and is_on_floor()
+	return fighter_state == FighterState.NORMAL
 
 
 func is_performing_attack() -> bool:
@@ -629,16 +784,20 @@ func _start_attack(
 	recovery_time: float,
 	hitbox_size: Vector2,
 	hitbox_offset_x: float,
-	animation_name: StringName
+	hitbox_offset_y: float,
+	animation_name: StringName,
+	attack_level: AttackLevel,
+	attack_posture: AttackPosture
 ) -> void:
-	_set_fighter_state(FighterState.ATTACKING)
 	hit_target_ids.clear()
 	active_attack_name = attack_name
 	active_attack_damage = get_scaled_damage(base_damage)
 	active_attack_knockback = knockback_speed
 	active_attack_animation = animation_name
-	_configure_attack_hitbox(hitbox_size, hitbox_offset_x)
-	_update_animation()
+	active_attack_level = attack_level
+	active_attack_posture = attack_posture
+	_configure_attack_hitbox(hitbox_size, hitbox_offset_x, hitbox_offset_y)
+	_set_fighter_state(FighterState.ATTACKING)
 	attack_sequence_id += 1
 	var current_attack_id: int = attack_sequence_id
 	await get_tree().create_timer(startup_time).timeout
@@ -657,7 +816,17 @@ func _start_attack(
 	if not _is_attack_sequence_current(current_attack_id):
 		return
 	_restore_default_attack_hitbox()
-	_set_fighter_state(FighterState.NORMAL)
+	var return_to_crouch: bool = (
+		active_attack_posture == AttackPosture.CROUCHING
+		and control_mode == ControlMode.HUMAN
+		and controls_enabled
+		and is_on_floor()
+		and Input.is_action_pressed(crouch_action)
+	)
+	_set_fighter_state(
+		FighterState.CROUCHING if return_to_crouch else FighterState.NORMAL
+	)
+	active_attack_posture = AttackPosture.STANDING
 
 
 func _is_attack_sequence_current(sequence_id: int) -> bool:
@@ -677,7 +846,8 @@ func _on_punch_hit_box_area_entered(hurt_box: Area2D) -> void:
 		active_attack_damage,
 		active_attack_knockback,
 		self,
-		active_attack_name
+		active_attack_name,
+		active_attack_level
 	)
 
 
@@ -685,15 +855,16 @@ func receive_hit(
 	damage: int,
 	knockback_speed: float,
 	attacker: Fighter,
-	attack_name: String = "Punch"
+	attack_name: String = "Punch",
+	attack_level: AttackLevel = AttackLevel.MID
 ) -> void:
 	if fighter_state == FighterState.DEFEATED:
 		return
-	var attack_was_blocked: bool = _can_block_attack(attacker)
+	var attack_was_blocked: bool = _can_block_attack(attacker, attack_level)
 	if attack_was_blocked:
 		_resolve_block(damage, knockback_speed, attacker, attack_name)
 	else:
-		_resolve_normal_hit(damage, knockback_speed, attacker, attack_name)
+		_resolve_normal_hit(damage, knockback_speed, attacker, attack_name, attack_level)
 	if control_mode == ControlMode.CPU:
 		if attack_was_blocked:
 			cpu_controller.register_blocked_opponent_attack()
@@ -707,6 +878,7 @@ func _resolve_block(
 	attacker: Fighter,
 	attack_name: String
 ) -> void:
+	block_stun_was_crouching = fighter_state == FighterState.CROUCH_BLOCKING
 	_cancel_attack(FighterState.BLOCK_STUN)
 	block_stun_time_remaining = block_stun_duration
 	var blocked_damage: int = maxi(roundi(float(damage) * blocked_damage_multiplier), 0)
@@ -726,7 +898,8 @@ func _resolve_normal_hit(
 	damage: int,
 	knockback_speed: float,
 	attacker: Fighter,
-	attack_name: String
+	attack_name: String,
+	attack_level: AttackLevel
 ) -> void:
 	_cancel_attack(FighterState.HIT_STUN)
 	block_stun_time_remaining = 0.0
@@ -746,6 +919,14 @@ func _resolve_normal_hit(
 	elif attack_name == "Kick":
 		print("KICK HIT: %s hit %s for %d damage (%d health remaining)" % [
 			attacker.get_display_name(),
+			get_display_name(),
+			damage_dealt,
+			current_health,
+		])
+	elif attack_level == AttackLevel.LOW:
+		print("LOW HIT: %s used %s on %s for %d damage (%d health remaining)" % [
+			attacker.get_display_name(),
+			attack_name,
 			get_display_name(),
 			damage_dealt,
 			current_health,
@@ -773,18 +954,23 @@ func _apply_knockback(attacker: Fighter, knockback_speed: float) -> void:
 	velocity.x = knockback_direction * knockback_speed
 
 
-func _can_block_attack(attacker: Fighter) -> bool:
+func _can_block_attack(attacker: Fighter, attack_level: AttackLevel) -> bool:
 	if (
-		fighter_state != FighterState.BLOCKING
+		fighter_state not in [FighterState.BLOCKING, FighterState.CROUCH_BLOCKING]
 		or not controls_enabled
 		or not is_on_floor()
 	):
 		return false
 	var attacker_direction: float = signf(attacker.global_position.x - global_position.x)
-	return not is_zero_approx(attacker_direction) and is_equal_approx(
-		attacker_direction,
-		facing_direction
+	var attack_is_in_front: bool = (
+		not is_zero_approx(attacker_direction)
+		and is_equal_approx(attacker_direction, facing_direction)
 	)
+	if not attack_is_in_front:
+		return false
+	if attack_level == AttackLevel.LOW:
+		return fighter_state == FighterState.CROUCH_BLOCKING
+	return true
 
 
 func _finish_damage_resolution() -> void:
@@ -895,17 +1081,25 @@ func get_scaled_damage(base_damage: int) -> int:
 	return maxi(roundi(float(base_damage) * power_multiplier), 0)
 
 
-func _configure_attack_hitbox(hitbox_size: Vector2, hitbox_offset_x: float) -> void:
+func _configure_attack_hitbox(
+	hitbox_size: Vector2,
+	hitbox_offset_x: float,
+	hitbox_offset_y: float
+) -> void:
 	var hitbox_rectangle: RectangleShape2D = punch_hit_box_shape.shape as RectangleShape2D
 	hitbox_rectangle.size = hitbox_size
 	punch_hit_box.position = Vector2(
 		absf(hitbox_offset_x) * facing_direction,
-		default_hitbox_position.y
+		hitbox_offset_y
 	)
 
 
 func _restore_default_attack_hitbox() -> void:
-	_configure_attack_hitbox(default_hitbox_size, default_hitbox_position.x)
+	_configure_attack_hitbox(
+		default_hitbox_size,
+		default_hitbox_position.x,
+		default_hitbox_position.y
+	)
 
 
 func _configure_character_visual() -> void:
@@ -928,17 +1122,13 @@ func _update_posture(crouch_held: bool, block_held: bool) -> void:
 	if fighter_state not in [
 		FighterState.NORMAL,
 		FighterState.CROUCHING,
+		FighterState.CROUCH_BLOCKING,
 		FighterState.BLOCKING,
 	]:
 		return
-	if (
-		fighter_state == FighterState.BLOCKING
-		and block_held
-		and controls_enabled
-		and is_on_floor()
-	):
-		return
-	if crouch_held and can_crouch():
+	if crouch_held and block_held and can_crouch_block():
+		_set_fighter_state(FighterState.CROUCH_BLOCKING)
+	elif crouch_held and can_crouch():
 		_set_fighter_state(FighterState.CROUCHING)
 	elif block_held and can_block():
 		_set_fighter_state(FighterState.BLOCKING)
@@ -949,7 +1139,7 @@ func _update_posture(crouch_held: bool, block_held: bool) -> void:
 func _set_fighter_state(new_state: FighterState) -> void:
 	if fighter_state == new_state:
 		return
-	var was_crouching: bool = fighter_state == FighterState.CROUCHING
+	var was_crouching: bool = _state_uses_crouching_hurtbox(fighter_state)
 	fighter_state = new_state
 	if fighter_state in [
 		FighterState.HIT_STUN,
@@ -957,10 +1147,21 @@ func _set_fighter_state(new_state: FighterState) -> void:
 		FighterState.DEFEATED,
 	]:
 		_clear_command_buffer()
-	var is_crouching: bool = fighter_state == FighterState.CROUCHING
+	var is_crouching: bool = _state_uses_crouching_hurtbox(fighter_state)
 	if was_crouching != is_crouching:
 		_update_hurtbox_for_posture(is_crouching)
 	_update_animation()
+
+
+func _state_uses_crouching_hurtbox(state: FighterState) -> bool:
+	return (
+		state in [FighterState.CROUCHING, FighterState.CROUCH_BLOCKING]
+		or (
+			state == FighterState.ATTACKING
+			and active_attack_posture == AttackPosture.CROUCHING
+		)
+		or (state == FighterState.BLOCK_STUN and block_stun_was_crouching)
+	)
 
 
 func _update_hurtbox_for_posture(is_crouching: bool) -> void:
@@ -986,7 +1187,13 @@ func _update_animation() -> void:
 		_play_animation_if_available(ANIMATION_KO)
 	elif fighter_state == FighterState.HIT_STUN:
 		_play_animation_if_available(ANIMATION_HURT)
-	elif fighter_state in [FighterState.BLOCK_STUN, FighterState.BLOCKING]:
+	elif fighter_state == FighterState.BLOCK_STUN:
+		_play_animation_if_available(
+			ANIMATION_CROUCH_BLOCK if block_stun_was_crouching else ANIMATION_BLOCK
+		)
+	elif fighter_state == FighterState.CROUCH_BLOCKING:
+		_play_animation_if_available(ANIMATION_CROUCH_BLOCK)
+	elif fighter_state == FighterState.BLOCKING:
 		_play_animation_if_available(ANIMATION_BLOCK)
 	elif fighter_state == FighterState.ATTACKING:
 		_play_animation_if_available(active_attack_animation)
@@ -1006,13 +1213,21 @@ func _play_animation_if_available(animation_name: StringName) -> void:
 
 	var selected_animation: StringName = animation_name
 	if not animated_sprite.sprite_frames.has_animation(selected_animation):
+		var fallback_animation: StringName = ANIMATION_IDLE
+		if animation_name in [
+			ANIMATION_CROUCH_PUNCH,
+			ANIMATION_CROUCH_KICK,
+			ANIMATION_CROUCH_BLOCK,
+		]:
+			fallback_animation = ANIMATION_CROUCH
 		if not missing_animation_warnings.has(animation_name):
 			missing_animation_warnings[animation_name] = true
-			push_warning("%s is missing animation '%s'; falling back to idle." % [
+			push_warning("%s is missing animation '%s'; falling back to '%s'." % [
 				get_display_name(),
 				animation_name,
+				fallback_animation,
 			])
-		selected_animation = ANIMATION_IDLE
+		selected_animation = fallback_animation
 
 	if not animated_sprite.sprite_frames.has_animation(selected_animation):
 		animated_sprite.stop()
@@ -1028,3 +1243,7 @@ func _cancel_attack(next_state: FighterState = FighterState.NORMAL) -> void:
 	punch_hit_box.set_deferred("monitoring", false)
 	_restore_default_attack_hitbox()
 	_set_fighter_state(next_state)
+	active_attack_posture = AttackPosture.STANDING
+	active_attack_level = AttackLevel.MID
+	if next_state != FighterState.BLOCK_STUN:
+		block_stun_was_crouching = false

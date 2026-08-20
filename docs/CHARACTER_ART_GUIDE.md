@@ -96,9 +96,12 @@ idle
 walk
 jump
 crouch
+crouch_block
 block
 punch
 kick
+crouch_punch
+crouch_kick
 hurt
 special_1
 special_2
