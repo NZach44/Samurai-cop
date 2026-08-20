@@ -6,3 +6,8 @@ exports/
 *.tmp
 .DS_Store
 Thumbs.db
+
+# Local source/reference media is never shipped. Keep the .gdignore marker tracked.
+/reference/*
+!/reference/.gdignore
+/source_media/
