@@ -22,6 +22,9 @@ assets/characters/joe_marshall/
     ├── walk/
     ├── jump/
     ├── crouch/
+    ├── crouch_punch/
+    ├── crouch_kick/
+    ├── crouch_block/
     ├── block/
     ├── punch/
     ├── kick/
@@ -141,17 +144,17 @@ Do not rename these animations; `Fighter` requests them directly.
 
 | Animation | Initial frames | Loop | Temporary FPS |
 |---|---:|:---:|---:|
-| `idle` | 4-6 | yes | 6 |
-| `walk` | 6-8 | yes | 8 |
-| `jump` | 3-5 | no | 6 |
-| `crouch` | 2-3 | no | 5 |
-| `crouch_block` | placeholder | no | 5 |
+| `idle` | 4 | yes | 6 |
+| `walk` | 6 | yes | 9 |
+| `jump` | 5 | no | 10 |
+| `crouch` | 3 | no | 8 |
+| `crouch_block` | 3 | no | 8 |
 | `block` | 2-3 | no | 5 |
-| `punch` | 4-6 | no | 10 |
-| `kick` | 5-7 | no | 10 |
-| `crouch_punch` | placeholder | no | 8 |
-| `crouch_kick` | placeholder | no | 8 |
-| `hurt` | 2-4 | no | 8 |
+| `punch` | 5 | no | 12 |
+| `kick` | 6 | no | 12 |
+| `crouch_punch` | 5 | no | 12 |
+| `crouch_kick` | 6 | no | 12 |
+| `hurt` | 3 | no | 12 |
 | `special_1` | 6-10 | no | 10 |
 | `special_2` | 6-10 | no | 10 |
 | `ko` | 5-8 | no | 6 |
@@ -166,18 +169,54 @@ fallback to `idle`.
 
 ## Production checklist
 
-Approve the canonical design first. Then produce the initial AI-assisted batch
+Approve the canonical design first. The initial AI-assisted core batch was
+planned
 in this order:
 
 1. `idle` — 4 frames;
 2. `punch` — 5 frames;
 3. `kick` — 6 frames;
 4. `walk` — 6 frames;
-5. `crouch` — 2 frames;
+5. `crouch` — 3 frames;
 6. `block` — 2 frames.
 
-`jump`, `hurt`, `ko`, `special_1`, and `special_2` are explicitly outside this
-first batch and remain placeholder-backed.
+`jump`, `hurt`, `ko`, `special_1`, and `special_2` were outside that first
+batch. Artwork is added only through later explicit batches.
+
+The next defense/air/hurt batch is prepared for incremental delivery in this
+order:
+
+1. `crouch` — 3 frames;
+2. `crouch_punch` — 5 frames;
+3. `crouch_kick` — 6 frames;
+4. `crouch_block` — 3 frames;
+5. `jump` — 5 frames;
+6. `hurt` — 3 frames.
+
+Each set is integrated only when every expected frame for that animation is
+present and validated. Until then, its existing placeholder remains assigned in
+`joe_marshall_frames.tres`. `special_1`, `special_2`, and `ko` remain outside
+this batch.
+
+### Defense/air/hurt pose guide
+
+- `crouch`: standing transition, lowering pose, stable crouching guard.
+- `crouch_punch`: crouching guard, startup, low contact extension, retraction,
+  crouching guard. Joe remains visibly crouched in every frame.
+- `crouch_kick`: crouching guard, chamber, initial low extension, full low
+  contact pose, retraction, crouching guard.
+- `crouch_block`: enter crouch guard, brace, stable defensive crouch. The final
+  pose remains visible while crouch block or crouch block stun is held.
+- `jump`: takeoff anticipation, rising, apex, falling, landing presentation.
+  The Fighter selects these frames from vertical velocity. CharacterBody2D
+  physics—not artwork—provides all vertical motion.
+- `hurt`: impact, maximum recoil, recovery presentation. Fighter hit stun—not
+  animation duration—controls when Joe may act again.
+
+The Fighter's existing animation priority remains authoritative: KO, hurt,
+block/block stun, attack, airborne, crouch, walk, then idle. In particular,
+`crouch_punch` and `crouch_kick` remain selected for their complete attacks,
+while a real hit interrupts either with `hurt`.
 
 For the first delivery, provide only `idle_001.png` through `idle_004.png`.
 Review the design, source scale, alpha edges, baseline stability, import settings,

@@ -1198,13 +1198,39 @@ func _update_animation() -> void:
 	elif fighter_state == FighterState.ATTACKING:
 		_play_animation_if_available(active_attack_animation)
 	elif not is_on_floor():
-		_play_animation_if_available(ANIMATION_JUMP)
+		_update_jump_animation()
 	elif fighter_state == FighterState.CROUCHING:
 		_play_animation_if_available(ANIMATION_CROUCH)
 	elif not is_zero_approx(velocity.x):
 		_play_animation_if_available(ANIMATION_WALK)
 	else:
 		_play_animation_if_available(ANIMATION_IDLE)
+
+
+func _update_jump_animation() -> void:
+	_play_animation_if_available(ANIMATION_JUMP)
+	if (
+		animated_sprite.sprite_frames == null
+		or animated_sprite.animation != ANIMATION_JUMP
+		or animated_sprite.sprite_frames.get_frame_count(ANIMATION_JUMP) < 5
+	):
+		return
+
+	# Five-frame jump sets follow physics velocity; artwork never drives motion.
+	var jump_speed: float = maxf(get_jump_velocity(), 1.0)
+	var target_frame: int
+	if velocity.y < -jump_speed * 0.60:
+		target_frame = 0
+	elif velocity.y < -jump_speed * 0.12:
+		target_frame = 1
+	elif velocity.y <= jump_speed * 0.12:
+		target_frame = 2
+	elif velocity.y < jump_speed * 0.60:
+		target_frame = 3
+	else:
+		target_frame = 4
+	animated_sprite.set_frame_and_progress(target_frame, 0.0)
+	animated_sprite.pause()
 
 
 func _play_animation_if_available(animation_name: StringName) -> void:

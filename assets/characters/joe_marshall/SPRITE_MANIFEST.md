@@ -1,8 +1,8 @@
-# Joe core animation manifest
+# Joe production animation manifest
 
-This manifest defines the first AI-generated production batch. The game does not
-require these files to exist: Joe's current `SpriteFrames` retains placeholder
-textures until an approved batch is assigned animation by animation.
+This manifest tracks Joe's AI-generated production batches. The game does not
+require future files to exist: Joe's current `SpriteFrames` retains placeholder
+textures until an approved, complete set is assigned animation by animation.
 
 Expected source specification for every listed file:
 
@@ -48,22 +48,62 @@ Expected source specification for every listed file:
 - [x] `sprites/kick/kick_005.png`
 - [x] `sprites/kick/kick_006.png`
 
-### Crouch — 2 frames
+### Crouch — 3 frames
 
-- [ ] `sprites/crouch/crouch_001.png`
-- [ ] `sprites/crouch/crouch_002.png`
+- [x] `sprites/crouch/crouch_001.png`
+- [x] `sprites/crouch/crouch_002.png`
+- [x] `sprites/crouch/crouch_003.png`
 
 ### Block — 2 frames
 
 - [ ] `sprites/block/block_001.png`
 - [ ] `sprites/block/block_002.png`
 
-Total expected core-batch frames: **25**.
+### Crouch punch — 5 frames
+
+- [x] `sprites/crouch_punch/crouch_punch_001.png`
+- [x] `sprites/crouch_punch/crouch_punch_002.png`
+- [x] `sprites/crouch_punch/crouch_punch_003.png`
+- [x] `sprites/crouch_punch/crouch_punch_004.png`
+- [x] `sprites/crouch_punch/crouch_punch_005.png`
+
+### Crouch kick — 6 frames
+
+- [x] `sprites/crouch_kick/crouch_kick_001.png`
+- [x] `sprites/crouch_kick/crouch_kick_002.png`
+- [x] `sprites/crouch_kick/crouch_kick_003.png`
+- [x] `sprites/crouch_kick/crouch_kick_004.png`
+- [x] `sprites/crouch_kick/crouch_kick_005.png`
+- [x] `sprites/crouch_kick/crouch_kick_006.png`
+
+### Crouch block — 3 frames
+
+- [x] `sprites/crouch_block/crouch_block_001.png`
+- [x] `sprites/crouch_block/crouch_block_002.png`
+- [x] `sprites/crouch_block/crouch_block_003.png`
+
+### Jump — 5 frames
+
+- [x] `sprites/jump/jump_001.png`
+- [x] `sprites/jump/jump_002.png`
+- [x] `sprites/jump/jump_003.png`
+- [x] `sprites/jump/jump_004.png`
+- [x] `sprites/jump/jump_005.png`
+
+### Hurt — 3 frames
+
+- [x] `sprites/hurt/hurt_001.png`
+- [x] `sprites/hurt/hurt_002.png`
+- [x] `sprites/hurt/hurt_003.png`
+
+Total expected frames currently listed: **48**. The defense/air/hurt batch
+(`crouch`, `crouch_punch`, `crouch_kick`, `crouch_block`, `jump`, and `hurt`)
+contains **25** frames.
 
 ## Batch acceptance checklist
 
 - [ ] Every expected filename exists with continuous zero-padded numbering.
-- [ ] No extra PNG or wrong-prefix file exists in the six core directories.
+- [ ] No extra PNG or wrong-prefix file exists in the listed production directories.
 - [ ] Every PNG is 512x512 RGBA with a transparent background.
 - [ ] Identity, outfit, hairstyle, proportions, outline, and shading match the
       approved `design/joe_canonical_design.png`.
@@ -91,10 +131,22 @@ incomplete production sequence with its placeholder.
 | `walk` | 6 | 9 | yes | Weight shift, lead step, passing pose, trail step, recovery, loop closure |
 | `punch` | 5 | 12 | no | Full extension is frame 3 |
 | `kick` | 6 | 12 | no | Full extension is frame 4 |
+| `crouch` | 3 | 8 | no | Final frame is the held crouching guard |
+| `crouch_punch` | 5 | 12 | no | Low extension/contact is frame 3 |
+| `crouch_kick` | 6 | 12 | no | Low extension/contact is frame 4 |
+| `crouch_block` | 3 | 8 | no | Final frame is the held defensive pose |
+| `jump` | 5 | 10 | no | Frames selected from vertical velocity; physics controls motion |
+| `hurt` | 3 | 12 | no | Visual reaction only; hit stun controls duration |
 
 These frame rates are visual starting points only. Fighter startup, active, and
 recovery timers remain authoritative, and artwork integration must not change
-movement speed, damage, knockback, or hitbox timing. All three sets reuse Joe's
+movement speed, damage, knockback, or hitbox timing. All sets reuse Joe's
 single `CharacterData.visual_scale` and the shared right-facing artwork plus
 `AnimatedSprite2D.flip_h`; do not introduce animation-specific scaling or
 left-facing duplicates.
+
+For `crouch`, `crouch_block`, and other persistent postures, a non-looping
+animation naturally remains on its final frame while gameplay holds the state.
+All low-attack frames must remain visibly crouched and use the shared normalized
+canvas; artwork must never compensate by moving the Fighter body or resizing a
+HurtBox or hitbox.
