@@ -71,6 +71,9 @@ const ANIMATION_HURT: StringName = &"hurt"
 const ANIMATION_SPECIAL_1: StringName = &"special_1"
 const ANIMATION_SPECIAL_2: StringName = &"special_2"
 const ANIMATION_KO: StringName = &"ko"
+const DEFAULT_SPECIAL_PROJECTILE_PATH: String = (
+	"res://scenes/combat/special_projectile.tscn"
+)
 
 @export var move_speed: float = 240.0
 @export var jump_velocity: float = 600.0
@@ -150,6 +153,10 @@ var active_attack_name: String = "Punch"
 var active_attack_animation: StringName = ANIMATION_PUNCH
 var active_attack_level: AttackLevel = AttackLevel.MID
 var active_attack_posture: AttackPosture = AttackPosture.STANDING
+var active_attack_hit_stun_duration: float = -1.0
+var active_attack_block_stun_duration: float = -1.0
+var active_attack_forward_speed: float = 0.0
+var active_attack_reach_override: float = 0.0
 var default_hitbox_size: Vector2
 var default_hitbox_position: Vector2
 var facing_direction: float = 1.0
@@ -192,6 +199,8 @@ func _physics_process(delta: float) -> void:
 		_handle_control_input(delta)
 	else:
 		velocity.x = 0.0
+	if fighter_state == FighterState.ATTACKING and active_attack_forward_speed > 0.0:
+		velocity.x = facing_direction * active_attack_forward_speed
 
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -650,9 +659,19 @@ func _start_special(
 ) -> void:
 	if special_move == null or not can_start_attack():
 		return
-	special_move_started.emit(special_move.display_name)
+	var resolved_animation: StringName = (
+		special_move.animation_name
+		if not special_move.animation_name.is_empty()
+		else animation_name
+	)
+	var attack_level: AttackLevel = (
+		AttackLevel.LOW
+		if special_move.attack_level == SpecialMoveData.AttackLevel.LOW
+		else AttackLevel.MID
+	)
+	special_move_started.emit(special_move.display_title)
 	_start_attack(
-		special_move.display_name,
+		special_move.display_title,
 		special_move.damage,
 		special_move.knockback,
 		special_move.startup_time,
@@ -660,10 +679,11 @@ func _start_special(
 		special_move.recovery_time,
 		Vector2(special_move.hitbox_width, special_move.hitbox_height),
 		special_move.hitbox_offset_x,
-		default_hitbox_position.y,
-		animation_name,
-		AttackLevel.MID,
-		AttackPosture.STANDING
+		special_move.hitbox_offset_y,
+		resolved_animation,
+		attack_level,
+		AttackPosture.STANDING,
+		special_move
 	)
 
 
@@ -675,6 +695,7 @@ func can_move() -> bool:
 			or (
 				fighter_state == FighterState.ATTACKING
 				and active_attack_posture == AttackPosture.STANDING
+				and is_zero_approx(active_attack_forward_speed)
 			)
 		)
 	)
@@ -757,12 +778,16 @@ func get_special_attack_reach(slot: int) -> float:
 	var special_move: SpecialMoveData = get_special_move(slot)
 	if special_move == null:
 		return 0.0
+	if special_move.behavior == SpecialMoveData.SpecialBehavior.PROJECTILE:
+		return special_move.projectile_max_distance
 	return absf(special_move.hitbox_offset_x) + special_move.hitbox_width * 0.5
 
 
 func get_current_attack_reach() -> float:
 	if not is_performing_attack():
 		return 0.0
+	if active_attack_reach_override > 0.0:
+		return active_attack_reach_override
 	var hitbox_rectangle: RectangleShape2D = punch_hit_box_shape.shape as RectangleShape2D
 	return absf(punch_hit_box.position.x) + hitbox_rectangle.size.x * 0.5
 
@@ -787,7 +812,8 @@ func _start_attack(
 	hitbox_offset_y: float,
 	animation_name: StringName,
 	attack_level: AttackLevel,
-	attack_posture: AttackPosture
+	attack_posture: AttackPosture,
+	special_move: SpecialMoveData = null
 ) -> void:
 	hit_target_ids.clear()
 	active_attack_name = attack_name
@@ -796,6 +822,24 @@ func _start_attack(
 	active_attack_animation = animation_name
 	active_attack_level = attack_level
 	active_attack_posture = attack_posture
+	active_attack_hit_stun_duration = (
+		special_move.hit_stun_duration if special_move != null else -1.0
+	)
+	active_attack_block_stun_duration = (
+		special_move.block_stun_duration if special_move != null else -1.0
+	)
+	active_attack_forward_speed = (
+		special_move.movement_speed
+		if special_move != null
+		and special_move.behavior == SpecialMoveData.SpecialBehavior.FLYING_KICK
+		else 0.0
+	)
+	active_attack_reach_override = (
+		special_move.projectile_max_distance
+		if special_move != null
+		and special_move.behavior == SpecialMoveData.SpecialBehavior.PROJECTILE
+		else 0.0
+	)
 	_configure_attack_hitbox(hitbox_size, hitbox_offset_x, hitbox_offset_y)
 	_set_fighter_state(FighterState.ATTACKING)
 	attack_sequence_id += 1
@@ -805,7 +849,10 @@ func _start_attack(
 		return
 
 	attack_is_active = true
-	punch_hit_box.set_deferred("monitoring", true)
+	if special_move != null and special_move.behavior == SpecialMoveData.SpecialBehavior.PROJECTILE:
+		_spawn_special_projectile(special_move)
+	else:
+		punch_hit_box.set_deferred("monitoring", true)
 	await get_tree().create_timer(active_time).timeout
 	if not _is_attack_sequence_current(current_attack_id):
 		return
@@ -815,6 +862,7 @@ func _start_attack(
 	await get_tree().create_timer(recovery_time).timeout
 	if not _is_attack_sequence_current(current_attack_id):
 		return
+	var attack_used_forward_movement: bool = active_attack_forward_speed > 0.0
 	_restore_default_attack_hitbox()
 	var return_to_crouch: bool = (
 		active_attack_posture == AttackPosture.CROUCHING
@@ -826,7 +874,37 @@ func _start_attack(
 	_set_fighter_state(
 		FighterState.CROUCHING if return_to_crouch else FighterState.NORMAL
 	)
+	if attack_used_forward_movement:
+		velocity.x = 0.0
 	active_attack_posture = AttackPosture.STANDING
+	active_attack_hit_stun_duration = -1.0
+	active_attack_block_stun_duration = -1.0
+	active_attack_forward_speed = 0.0
+	active_attack_reach_override = 0.0
+
+
+func _spawn_special_projectile(special_move: SpecialMoveData) -> void:
+	var projectile_packed_scene: PackedScene = (
+		special_move.projectile_scene
+		if special_move.projectile_scene != null
+		else load(DEFAULT_SPECIAL_PROJECTILE_PATH) as PackedScene
+	)
+	if projectile_packed_scene == null:
+		push_warning("Could not load projectile scene for %s." % special_move.special_id)
+		return
+	var projectile: Area2D = projectile_packed_scene.instantiate() as Area2D
+	if projectile == null or not projectile.has_method("configure"):
+		push_warning("%s has an invalid projectile scene." % special_move.special_id)
+		if projectile != null:
+			projectile.queue_free()
+		return
+	get_tree().current_scene.add_child(projectile)
+	projectile.global_position = global_position + Vector2(
+		absf(special_move.hitbox_offset_x) * facing_direction,
+		special_move.hitbox_offset_y
+	)
+	projectile.add_to_group("special_projectiles")
+	projectile.configure(self, special_move, facing_direction)
 
 
 func _is_attack_sequence_current(sequence_id: int) -> bool:
@@ -847,7 +925,9 @@ func _on_punch_hit_box_area_entered(hurt_box: Area2D) -> void:
 		active_attack_knockback,
 		self,
 		active_attack_name,
-		active_attack_level
+		active_attack_level,
+		active_attack_hit_stun_duration,
+		active_attack_block_stun_duration
 	)
 
 
@@ -856,15 +936,30 @@ func receive_hit(
 	knockback_speed: float,
 	attacker: Fighter,
 	attack_name: String = "Punch",
-	attack_level: AttackLevel = AttackLevel.MID
+	attack_level: AttackLevel = AttackLevel.MID,
+	attack_hit_stun_duration: float = -1.0,
+	attack_block_stun_duration: float = -1.0
 ) -> void:
 	if fighter_state == FighterState.DEFEATED:
 		return
 	var attack_was_blocked: bool = _can_block_attack(attacker, attack_level)
 	if attack_was_blocked:
-		_resolve_block(damage, knockback_speed, attacker, attack_name)
+		_resolve_block(
+			damage,
+			knockback_speed,
+			attacker,
+			attack_name,
+			attack_block_stun_duration
+		)
 	else:
-		_resolve_normal_hit(damage, knockback_speed, attacker, attack_name, attack_level)
+		_resolve_normal_hit(
+			damage,
+			knockback_speed,
+			attacker,
+			attack_name,
+			attack_level,
+			attack_hit_stun_duration
+		)
 	if control_mode == ControlMode.CPU:
 		if attack_was_blocked:
 			cpu_controller.register_blocked_opponent_attack()
@@ -876,11 +971,16 @@ func _resolve_block(
 	damage: int,
 	knockback_speed: float,
 	attacker: Fighter,
-	attack_name: String
+	attack_name: String,
+	attack_block_stun_duration: float
 ) -> void:
 	block_stun_was_crouching = fighter_state == FighterState.CROUCH_BLOCKING
 	_cancel_attack(FighterState.BLOCK_STUN)
-	block_stun_time_remaining = block_stun_duration
+	block_stun_time_remaining = (
+		attack_block_stun_duration
+		if attack_block_stun_duration >= 0.0
+		else block_stun_duration
+	)
 	var blocked_damage: int = maxi(roundi(float(damage) * blocked_damage_multiplier), 0)
 	var damage_dealt: int = _apply_damage(blocked_damage)
 	_apply_knockback(attacker, knockback_speed * block_knockback_multiplier)
@@ -899,13 +999,18 @@ func _resolve_normal_hit(
 	knockback_speed: float,
 	attacker: Fighter,
 	attack_name: String,
-	attack_level: AttackLevel
+	attack_level: AttackLevel,
+	attack_hit_stun_duration: float
 ) -> void:
 	_cancel_attack(FighterState.HIT_STUN)
 	block_stun_time_remaining = 0.0
 	var damage_dealt: int = _apply_damage(damage)
 	_apply_knockback(attacker, knockback_speed)
-	hit_stun_time_remaining = hit_stun_duration
+	hit_stun_time_remaining = (
+		attack_hit_stun_duration
+		if attack_hit_stun_duration >= 0.0
+		else hit_stun_duration
+	)
 	if control_mode == ControlMode.CPU:
 		cpu_controller.stop()
 
@@ -1271,5 +1376,9 @@ func _cancel_attack(next_state: FighterState = FighterState.NORMAL) -> void:
 	_set_fighter_state(next_state)
 	active_attack_posture = AttackPosture.STANDING
 	active_attack_level = AttackLevel.MID
+	active_attack_hit_stun_duration = -1.0
+	active_attack_block_stun_duration = -1.0
+	active_attack_forward_speed = 0.0
+	active_attack_reach_override = 0.0
 	if next_state != FighterState.BLOCK_STUN:
 		block_stun_was_crouching = false

@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"nurse_special_2"
-display_name = "Test Push Back"
+special_id = &"nurse_syringe"
+display_title = "Would You Like To F*** Me?"
 command = Array[int]([3, 0, 5])
-damage = 17
-startup_time = 0.22
-active_time = 0.12
-recovery_time = 0.34
-knockback = 395.0
-hitbox_width = 76.0
-hitbox_height = 46.0
-hitbox_offset_x = 62.0
+behavior = 2
+damage = 11
+startup_time = 0.28
+active_time = 0.06
+recovery_time = 0.4
+hit_stun_duration = 0.23
+block_stun_duration = 0.15
+knockback = 260.0
+hitbox_offset_x = 54.0
+hitbox_offset_y = -28.0
+animation_name = &"special_2"
+projectile_speed = 245.0
+projectile_lifetime = 2.2
+projectile_max_distance = 440.0
+projectile_damage = 11
+projectile_size = Vector2(22, 18)
+projectile_color = Color(1, 0.34, 0.55, 1)

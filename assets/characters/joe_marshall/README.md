@@ -149,7 +149,7 @@ Do not rename these animations; `Fighter` requests them directly.
 | `jump` | 5 | no | 10 |
 | `crouch` | 3 | no | 8 |
 | `crouch_block` | 3 | no | 8 |
-| `block` | 2-3 | no | 5 |
+| `block` | 4 | no | 10 |
 | `punch` | 5 | no | 12 |
 | `kick` | 6 | no | 12 |
 | `crouch_punch` | 5 | no | 12 |
@@ -178,7 +178,7 @@ in this order:
 3. `kick` — 6 frames;
 4. `walk` — 6 frames;
 5. `crouch` — 3 frames;
-6. `block` — 2 frames.
+6. `block` — 4 frames.
 
 `jump`, `hurt`, `ko`, `special_1`, and `special_2` were outside that first
 batch. Artwork is added only through later explicit batches.

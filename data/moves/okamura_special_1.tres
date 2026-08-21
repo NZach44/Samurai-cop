@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"okamura_special_1"
-display_name = "Test Quick Entry"
+special_id = &"okamura_shuriken"
+display_title = "Shuriken!"
 command = Array[int]([0, 0, 4])
-damage = 14
-startup_time = 0.15
-active_time = 0.1
-recovery_time = 0.26
-knockback = 340.0
-hitbox_width = 64.0
-hitbox_height = 40.0
-hitbox_offset_x = 57.0
+behavior = 2
+damage = 13
+startup_time = 0.2
+active_time = 0.05
+recovery_time = 0.3
+hit_stun_duration = 0.24
+block_stun_duration = 0.15
+knockback = 300.0
+hitbox_offset_x = 54.0
+hitbox_offset_y = -27.0
+animation_name = &"special_1"
+projectile_speed = 320.0
+projectile_lifetime = 1.8
+projectile_max_distance = 440.0
+projectile_damage = 13
+projectile_size = Vector2(24, 24)
+projectile_color = Color(0.72, 0.78, 0.86, 1)

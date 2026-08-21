@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"nurse_special_1"
-display_name = "Test Quick Check"
+special_id = &"nurse_stethoscope"
+display_title = "Would You Like To Touch What You See?"
 command = Array[int]([0, 0, 4])
+behavior = 2
 damage = 13
-startup_time = 0.13
-active_time = 0.1
-recovery_time = 0.24
-knockback = 325.0
-hitbox_width = 66.0
-hitbox_height = 40.0
-hitbox_offset_x = 58.0
+startup_time = 0.22
+active_time = 0.06
+recovery_time = 0.32
+hit_stun_duration = 0.24
+block_stun_duration = 0.15
+knockback = 290.0
+hitbox_offset_x = 54.0
+hitbox_offset_y = -24.0
+animation_name = &"special_1"
+projectile_speed = 240.0
+projectile_lifetime = 2.1
+projectile_max_distance = 420.0
+projectile_damage = 13
+projectile_size = Vector2(34, 20)
+projectile_color = Color(0.42, 0.86, 0.82, 1)

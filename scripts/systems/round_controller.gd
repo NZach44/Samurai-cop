@@ -138,10 +138,10 @@ func _on_health_changed(current_health: int, max_health: int, health_bar: Progre
 	health_bar.add_theme_stylebox_override("fill", fill_style)
 
 
-func _on_special_move_started(move_name: String) -> void:
+func _on_special_move_started(display_title: String) -> void:
 	special_message_sequence_id += 1
 	var current_message_id: int = special_message_sequence_id
-	special_move_label.text = move_name
+	special_move_label.text = display_title
 	special_move_label.show()
 	await get_tree().create_timer(special_move_message_duration).timeout
 	if current_message_id == special_message_sequence_id:
@@ -182,6 +182,7 @@ func _on_fighter_defeated(loser: Fighter) -> void:
 func _start_round() -> void:
 	match_state = MatchState.ROUND_START
 	_set_fighter_controls_enabled(false)
+	_clear_special_projectiles()
 	fighter_1.reset_for_round(fighter_1_spawn_position)
 	fighter_2.reset_for_round(fighter_2_spawn_position)
 	winner_label.hide()
@@ -338,6 +339,11 @@ func _set_fighter_controls_enabled(enabled: bool) -> void:
 	if not enabled:
 		special_message_sequence_id += 1
 		special_move_label.hide()
+
+
+func _clear_special_projectiles() -> void:
+	for projectile: Node in get_tree().get_nodes_in_group("special_projectiles"):
+		projectile.queue_free()
 
 
 func _update_round_win_ui() -> void:

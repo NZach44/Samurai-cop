@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"jennifer_special_1"
-display_name = "Test Swift Palm"
+special_id = &"jennifer_birthday"
+display_title = "Happy Birthday To Me"
 command = Array[int]([0, 0, 4])
-damage = 14
-startup_time = 0.16
-active_time = 0.11
-recovery_time = 0.27
-knockback = 345.0
-hitbox_width = 68.0
-hitbox_height = 40.0
-hitbox_offset_x = 58.0
+behavior = 2
+damage = 13
+startup_time = 0.24
+active_time = 0.06
+recovery_time = 0.32
+hit_stun_duration = 0.24
+block_stun_duration = 0.15
+knockback = 290.0
+hitbox_offset_x = 54.0
+hitbox_offset_y = -24.0
+animation_name = &"special_1"
+projectile_speed = 230.0
+projectile_lifetime = 2.2
+projectile_max_distance = 420.0
+projectile_damage = 13
+projectile_size = Vector2(42, 28)
+projectile_color = Color(1, 0.52, 0.68, 1)

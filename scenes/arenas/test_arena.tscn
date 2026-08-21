@@ -230,14 +230,18 @@ visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 154.0
-offset_bottom = 190.0
+offset_left = 96.0
+offset_top = 148.0
+offset_right = -96.0
+offset_bottom = 212.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.54, 0.92, 1, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.98, 0.84, 0.28, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 25
 text = "SPECIAL MOVE"
 horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="IntroBubble" type="PanelContainer" parent="HUD/Controls"]
 visible = false

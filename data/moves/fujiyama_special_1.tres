@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"fujiyama_special_1"
-display_name = "Test Palm Arc"
+special_id = &"fujiyama_piano"
+display_title = "I Want His Head On This Piano"
 command = Array[int]([0, 0, 4])
-damage = 16
-startup_time = 0.2
-active_time = 0.12
-recovery_time = 0.31
-knockback = 370.0
-hitbox_width = 68.0
-hitbox_height = 48.0
-hitbox_offset_x = 58.0
+behavior = 2
+damage = 20
+startup_time = 0.4
+active_time = 0.08
+recovery_time = 0.5
+hit_stun_duration = 0.3
+block_stun_duration = 0.18
+knockback = 420.0
+hitbox_offset_x = 64.0
+hitbox_offset_y = -30.0
+animation_name = &"special_1"
+projectile_speed = 180.0
+projectile_lifetime = 2.4
+projectile_max_distance = 360.0
+projectile_damage = 20
+projectile_size = Vector2(78, 56)
+projectile_color = Color(0.52, 0.31, 0.16, 1)

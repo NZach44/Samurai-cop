@@ -8,10 +8,10 @@
 [resource]
 script = ExtResource("1_character_data")
 character_id = &"nurse"
-display_name = "Nurse"
+display_name = "Wild Nurse"
 alignment = 0
 campaign_tier = 0
-intro_text = "Stay calm and focused."
+intro_text = "Do you like what you see?"
 sprite_frames = ExtResource("4_frames")
 move_speed = 268.0
 jump_velocity = 615.0

@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"frank_special_2"
-display_name = "Test Forward Drive"
+special_id = &"frank_shoot_him"
+display_title = "Shoot Him... SHOOT!"
 command = Array[int]([3, 0, 5])
-damage = 19
-startup_time = 0.27
-active_time = 0.14
-recovery_time = 0.4
-knockback = 420.0
-hitbox_width = 72.0
-hitbox_height = 46.0
-hitbox_offset_x = 60.0
+behavior = 2
+damage = 12
+startup_time = 0.28
+active_time = 0.06
+recovery_time = 0.42
+hit_stun_duration = 0.24
+block_stun_duration = 0.15
+knockback = 280.0
+hitbox_offset_x = 52.0
+hitbox_offset_y = -28.0
+animation_name = &"special_2"
+projectile_speed = 260.0
+projectile_lifetime = 2.0
+projectile_max_distance = 440.0
+projectile_damage = 12
+projectile_size = Vector2(24, 12)
+projectile_color = Color(1, 0.82, 0.25, 1)

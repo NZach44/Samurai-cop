@@ -4,14 +4,23 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"peggy_special_1"
-display_name = "Test Snap Strike"
+special_id = &"peggy_handcuffs"
+display_title = "You And I Got Nothin' To Do, Let's F***"
 command = Array[int]([0, 0, 4])
+behavior = 2
 damage = 13
-startup_time = 0.14
-active_time = 0.1
-recovery_time = 0.25
-knockback = 330.0
-hitbox_width = 64.0
-hitbox_height = 38.0
-hitbox_offset_x = 57.0
+startup_time = 0.22
+active_time = 0.06
+recovery_time = 0.34
+hit_stun_duration = 0.24
+block_stun_duration = 0.15
+knockback = 290.0
+hitbox_offset_x = 54.0
+hitbox_offset_y = -24.0
+animation_name = &"special_1"
+projectile_speed = 250.0
+projectile_lifetime = 2.1
+projectile_max_distance = 420.0
+projectile_damage = 13
+projectile_size = Vector2(34, 18)
+projectile_color = Color(0.7, 0.76, 0.84, 1)

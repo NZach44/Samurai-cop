@@ -188,7 +188,7 @@ func _create_character_button(character: CharacterData) -> Button:
 
 
 func _special_name(special_move: SpecialMoveData) -> String:
-	return special_move.display_name if special_move != null else "Unavailable"
+	return special_move.display_title if special_move != null else "Unavailable"
 
 
 func _relative_speed(value: float) -> String:

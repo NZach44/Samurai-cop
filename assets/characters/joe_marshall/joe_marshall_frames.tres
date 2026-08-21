@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=52 format=3]
+[gd_resource type="SpriteFrames" load_steps=55 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
@@ -47,6 +47,10 @@
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/hurt/hurt_001.png" id="45_hurt_001"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/hurt/hurt_002.png" id="46_hurt_002"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/hurt/hurt_003.png" id="47_hurt_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_001.png" id="48_block_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_002.png" id="49_block_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_003.png" id="50_block_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_004.png" id="51_block_004"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
 atlas = ExtResource("1_sheet")
@@ -60,16 +64,24 @@ region = Rect2(288, 0, 48, 128)
 atlas = ExtResource("1_sheet")
 region = Rect2(336, 0, 48, 128)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
-
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("48_block_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_block_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_block_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_block_004")
+}],
 "loop": false,
 "name": &"block",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,

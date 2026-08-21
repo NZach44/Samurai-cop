@@ -4,14 +4,20 @@
 
 [resource]
 script = ExtResource("1_special")
-move_id = &"fujiyama_special_2"
-display_name = "Test Heavy Step"
+special_id = &"fujiyama_fight_me"
+display_title = "To Fight Us? To Fight ME!"
 command = Array[int]([3, 0, 5])
-damage = 20
-startup_time = 0.29
-active_time = 0.15
-recovery_time = 0.43
-knockback = 440.0
-hitbox_width = 74.0
+behavior = 1
+damage = 18
+startup_time = 0.18
+active_time = 0.18
+recovery_time = 0.42
+hit_stun_duration = 0.27
+block_stun_duration = 0.16
+knockback = 380.0
+hitbox_width = 80.0
 hitbox_height = 52.0
 hitbox_offset_x = 61.0
+hitbox_offset_y = -24.0
+animation_name = &"special_2"
+movement_speed = 180.0

@@ -54,10 +54,12 @@ Expected source specification for every listed file:
 - [x] `sprites/crouch/crouch_002.png`
 - [x] `sprites/crouch/crouch_003.png`
 
-### Block — 2 frames
+### Block — 4 frames
 
-- [ ] `sprites/block/block_001.png`
-- [ ] `sprites/block/block_002.png`
+- [x] `sprites/block/block_001.png`
+- [x] `sprites/block/block_002.png`
+- [x] `sprites/block/block_003.png`
+- [x] `sprites/block/block_004.png`
 
 ### Crouch punch — 5 frames
 
@@ -96,7 +98,7 @@ Expected source specification for every listed file:
 - [x] `sprites/hurt/hurt_002.png`
 - [x] `sprites/hurt/hurt_003.png`
 
-Total expected frames currently listed: **48**. The defense/air/hurt batch
+Total expected frames currently listed: **50**. The defense/air/hurt batch
 (`crouch`, `crouch_punch`, `crouch_kick`, `crouch_block`, `jump`, and `hurt`)
 contains **25** frames.
 
@@ -131,6 +133,7 @@ incomplete production sequence with its placeholder.
 | `walk` | 6 | 9 | yes | Weight shift, lead step, passing pose, trail step, recovery, loop closure |
 | `punch` | 5 | 12 | no | Full extension is frame 3 |
 | `kick` | 6 | 12 | no | Full extension is frame 4 |
+| `block` | 4 | 10 | no | Final frame is the held standing guard |
 | `crouch` | 3 | 8 | no | Final frame is the held crouching guard |
 | `crouch_punch` | 5 | 12 | no | Low extension/contact is frame 3 |
 | `crouch_kick` | 6 | 12 | no | Low extension/contact is frame 4 |
