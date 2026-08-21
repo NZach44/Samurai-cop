@@ -155,8 +155,8 @@ Do not rename these animations; `Fighter` requests them directly.
 | `crouch_punch` | 5 | no | 12 |
 | `crouch_kick` | 6 | no | 12 |
 | `hurt` | 3 | no | 12 |
-| `special_1` | 6-10 | no | 10 |
-| `special_2` | 6-10 | no | 10 |
+| `special_1` | 8 | no | 12 |
+| `special_2` | 8 | no | 12 |
 | `ko` | 5-8 | no | 6 |
 
 These values are development guidelines. Combat startup, active, and recovery
@@ -217,6 +217,56 @@ The Fighter's existing animation priority remains authoritative: KO, hurt,
 block/block stun, attack, airborne, crouch, walk, then idle. In particular,
 `crouch_punch` and `crouch_kick` remain selected for their complete attacks,
 while a real hit interrupts either with `hurt`.
+
+### Joe final special-art batch
+
+Joe's two final special animation slots are prepared as independent eight-frame
+sets. Until every frame in a set is approved, that animation keeps its current
+placeholder atlas frame in `joe_marshall_frames.tres`.
+
+`special_1` presents **What Katana Means?**, a katana strike:
+
+1. ready stance;
+2. draw katana;
+3. raise/wind-up;
+4. begin slash;
+5. full-contact katana slash;
+6. follow-through;
+7. recovery;
+8. return toward guard.
+
+The katana is drawn as part of the animation artwork. It is not a separate
+weapon node, inventory item, or physics object. The existing one-hit melee
+special hitbox remains authoritative even if the illustrated blade extends
+beyond Joe's body.
+
+`special_2` presents **Bingo!**, a flying kick:
+
+1. forward preparation;
+2. launch;
+3. rising/knee chamber;
+4. flying kick begins;
+5. full kick extension/contact;
+6. air recovery;
+7. landing;
+8. return to guard.
+
+Both animations are non-looping at an initial visual rate of 12 FPS. The
+artwork is purely visual: SpecialMoveData controls startup, active time,
+recovery, damage, hitboxes, and Bingo's finite forward movement. The animation
+must never move the CharacterBody2D or redefine contact timing.
+
+Save approved right-facing production frames at:
+
+```text
+sprites/special_1/special_1_001.png ... special_1_008.png
+sprites/special_2/special_2_001.png ... special_2_008.png
+```
+
+Every frame uses the existing 512x512 RGBA canvas, common baseline, Joe visual
+scale, and `flip_h` facing convention. Integration later requires replacing
+only the matching placeholder frames in `joe_marshall_frames.tres`; no Fighter
+or special-gameplay code should change.
 
 For the first delivery, provide only `idle_001.png` through `idle_004.png`.
 Review the design, source scale, alpha edges, baseline stability, import settings,

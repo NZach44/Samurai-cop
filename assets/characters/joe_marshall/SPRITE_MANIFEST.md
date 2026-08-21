@@ -98,9 +98,31 @@ Expected source specification for every listed file:
 - [x] `sprites/hurt/hurt_002.png`
 - [x] `sprites/hurt/hurt_003.png`
 
-Total expected frames currently listed: **50**. The defense/air/hurt batch
+### Special 1 — 8 frames
+
+- [x] `sprites/special_1/special_1_001.png`
+- [x] `sprites/special_1/special_1_002.png`
+- [x] `sprites/special_1/special_1_003.png`
+- [x] `sprites/special_1/special_1_004.png`
+- [x] `sprites/special_1/special_1_005.png`
+- [x] `sprites/special_1/special_1_006.png`
+- [x] `sprites/special_1/special_1_007.png`
+- [x] `sprites/special_1/special_1_008.png`
+
+### Special 2 — 8 frames
+
+- [ ] `sprites/special_2/special_2_001.png`
+- [ ] `sprites/special_2/special_2_002.png`
+- [ ] `sprites/special_2/special_2_003.png`
+- [ ] `sprites/special_2/special_2_004.png`
+- [ ] `sprites/special_2/special_2_005.png`
+- [ ] `sprites/special_2/special_2_006.png`
+- [ ] `sprites/special_2/special_2_007.png`
+- [ ] `sprites/special_2/special_2_008.png`
+
+Total expected frames currently listed: **66**. The defense/air/hurt batch
 (`crouch`, `crouch_punch`, `crouch_kick`, `crouch_block`, `jump`, and `hurt`)
-contains **25** frames.
+contains **25** frames, and the final special batch contains **16** frames.
 
 ## Batch acceptance checklist
 
@@ -116,7 +138,7 @@ contains **25** frames.
 - [ ] Only the completed animation is replaced in `joe_marshall_frames.tres`;
       incomplete animations retain their placeholder frames.
 
-Unexpected files are any PNGs in these six animation directories that are not
+Unexpected files are any PNGs in the listed animation directories that are not
 listed above. Missing files are unchecked manifest entries. Dimension or alpha
 problems should be fixed in the source frame before SpriteFrames integration,
 not compensated for with Fighter transforms or collision changes.
@@ -140,6 +162,8 @@ incomplete production sequence with its placeholder.
 | `crouch_block` | 3 | 8 | no | Final frame is the held defensive pose |
 | `jump` | 5 | 10 | no | Frames selected from vertical velocity; physics controls motion |
 | `hurt` | 3 | 12 | no | Visual reaction only; hit stun controls duration |
+| `special_1` | 8 | 12 | no | Katana contact pose is frame 5; melee hitbox timing remains authoritative |
+| `special_2` | 8 | 12 | no | Flying-kick contact pose is frame 5; Fighter movement remains authoritative |
 
 These frame rates are visual starting points only. Fighter startup, active, and
 recovery timers remain authoritative, and artwork integration must not change
