@@ -111,14 +111,14 @@ Expected source specification for every listed file:
 
 ### Special 2 — 8 frames
 
-- [ ] `sprites/special_2/special_2_001.png`
-- [ ] `sprites/special_2/special_2_002.png`
-- [ ] `sprites/special_2/special_2_003.png`
-- [ ] `sprites/special_2/special_2_004.png`
-- [ ] `sprites/special_2/special_2_005.png`
-- [ ] `sprites/special_2/special_2_006.png`
-- [ ] `sprites/special_2/special_2_007.png`
-- [ ] `sprites/special_2/special_2_008.png`
+- [x] `sprites/special_2/special_2_001.png`
+- [x] `sprites/special_2/special_2_002.png`
+- [x] `sprites/special_2/special_2_003.png`
+- [x] `sprites/special_2/special_2_004.png`
+- [x] `sprites/special_2/special_2_005.png`
+- [x] `sprites/special_2/special_2_006.png`
+- [x] `sprites/special_2/special_2_007.png`
+- [x] `sprites/special_2/special_2_008.png`
 
 Total expected frames currently listed: **66**. The defense/air/hurt batch
 (`crouch`, `crouch_punch`, `crouch_kick`, `crouch_block`, `jump`, and `hurt`)

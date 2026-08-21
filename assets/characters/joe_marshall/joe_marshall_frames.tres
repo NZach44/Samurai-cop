@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=62 format=3]
+[gd_resource type="SpriteFrames" load_steps=69 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
@@ -59,10 +59,14 @@
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_006.png" id="57_special_1_006"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_007.png" id="58_special_1_007"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_008.png" id="59_special_1_008"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_001.png" id="60_special_2_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_002.png" id="61_special_2_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_003.png" id="62_special_2_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_004.png" id="63_special_2_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_005.png" id="64_special_2_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_006.png" id="65_special_2_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_007.png" id="66_special_2_007"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_008.png" id="67_special_2_008"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
 atlas = ExtResource("1_sheet")
@@ -286,7 +290,31 @@ animations = [{
 "name": &"special_1",
 "speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("60_special_2_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_special_2_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_special_2_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_special_2_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_special_2_005")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_special_2_006")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_special_2_007")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_special_2_008")
+}],
 "loop": false,
 "name": &"special_2",
 "speed": 12.0
