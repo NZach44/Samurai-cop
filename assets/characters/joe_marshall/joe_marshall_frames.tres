@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=69 format=3]
+[gd_resource type="SpriteFrames" load_steps=76 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
@@ -67,10 +67,14 @@
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_006.png" id="65_special_2_006"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_007.png" id="66_special_2_007"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_2/special_2_008.png" id="67_special_2_008"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_001.png" id="68_ko_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_002.png" id="69_ko_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_003.png" id="70_ko_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_004.png" id="71_ko_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_005.png" id="72_ko_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_006.png" id="73_ko_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_007.png" id="74_ko_007"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/ko/ko_008.png" id="75_ko_008"]
 
 [resource]
 animations = [{
@@ -236,10 +240,34 @@ animations = [{
 "name": &"kick",
 "speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("68_ko_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69_ko_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_ko_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_ko_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_ko_005")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73_ko_006")
+}, {
+"duration": 1.0,
+"texture": ExtResource("74_ko_007")
+}, {
+"duration": 1.0,
+"texture": ExtResource("75_ko_008")
+}],
 "loop": false,
 "name": &"ko",
-"speed": 6.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,

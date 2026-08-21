@@ -157,7 +157,7 @@ Do not rename these animations; `Fighter` requests them directly.
 | `hurt` | 3 | no | 12 |
 | `special_1` | 8 | no | 12 |
 | `special_2` | 8 | no | 12 |
-| `ko` | 5-8 | no | 6 |
+| `ko` | 8 | no | 10 |
 
 These values are development guidelines. Combat startup, active, and recovery
 timers remain authoritative; animation duration does not change hitbox timing.

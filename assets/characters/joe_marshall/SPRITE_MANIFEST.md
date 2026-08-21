@@ -120,7 +120,18 @@ Expected source specification for every listed file:
 - [x] `sprites/special_2/special_2_007.png`
 - [x] `sprites/special_2/special_2_008.png`
 
-Total expected frames currently listed: **66**. The defense/air/hurt batch
+### KO — 8 frames
+
+- [x] `sprites/ko/ko_001.png`
+- [x] `sprites/ko/ko_002.png`
+- [x] `sprites/ko/ko_003.png`
+- [x] `sprites/ko/ko_004.png`
+- [x] `sprites/ko/ko_005.png`
+- [x] `sprites/ko/ko_006.png`
+- [x] `sprites/ko/ko_007.png`
+- [x] `sprites/ko/ko_008.png`
+
+Total expected frames currently listed: **74**. The defense/air/hurt batch
 (`crouch`, `crouch_punch`, `crouch_kick`, `crouch_block`, `jump`, and `hurt`)
 contains **25** frames, and the final special batch contains **16** frames.
 
@@ -164,6 +175,7 @@ incomplete production sequence with its placeholder.
 | `hurt` | 3 | 12 | no | Visual reaction only; hit stun controls duration |
 | `special_1` | 8 | 12 | no | Katana contact pose is frame 5; melee hitbox timing remains authoritative |
 | `special_2` | 8 | 12 | no | Flying-kick contact pose is frame 5; Fighter movement remains authoritative |
+| `ko` | 8 | 10 | no | Final fallen pose remains held while Fighter stays defeated |
 
 These frame rates are visual starting points only. Fighter startup, active, and
 recovery timers remain authoritative, and artwork integration must not change
