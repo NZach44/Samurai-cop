@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "description": "Visual-only production metadata. Combat timing, damage, collision, and fighter state do not belong here.",
+  "canvas": { "width": 512, "height": 512, "mode": "RGBA", "facing": "right", "target_ground_baseline": 488 },
+  "reference_character": "joe_marshall",
+  "animation_order": ["idle", "walk", "punch", "kick", "crouch", "crouch_punch", "crouch_kick", "block", "crouch_block", "jump", "hurt", "special_1", "special_2", "ko"],
+  "animations": {
+    "idle": { "frame_count": 4, "fps": 6.0, "loop": true, "hold_final": false, "grounded": true },
+    "walk": { "frame_count": 6, "fps": 9.0, "loop": true, "hold_final": false, "grounded": true },
+    "punch": { "frame_count": 5, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "kick": { "frame_count": 6, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "crouch": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
+    "crouch_punch": { "frame_count": 5, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "crouch_kick": { "frame_count": 6, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "block": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
+    "crouch_block": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
+    "jump": { "frame_count": 5, "fps": 10.0, "loop": false, "hold_final": false, "grounded": false },
+    "hurt": { "frame_count": 3, "fps": 10.0, "loop": false, "hold_final": true, "grounded": true },
+    "special_1": { "frame_count": 8, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "special_2": { "frame_count": 8, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
+    "ko": { "frame_count": 8, "fps": 10.0, "loop": false, "hold_final": true, "grounded": true }
+  },
+  "characters": {
+    "joe_marshall": { "sprite_frames": "res://assets/characters/joe_marshall/joe_marshall_frames.tres", "visual_scale_override": 1.5, "normalization_scale": 1.0, "animations": { "block": { "frame_count": 4, "fps": 10.0 }, "hurt": { "fps": 12.0 } } },
+    "frank_washington": { "sprite_frames": "res://assets/characters/frank_washington/frank_washington_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "yamashita": { "sprite_frames": "res://assets/characters/yamashita/yamashita_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "fujiyama": { "sprite_frames": "res://assets/characters/fujiyama/fujiyama_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "jennifer": { "sprite_frames": "res://assets/characters/jennifer/jennifer_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "peggy": { "sprite_frames": "res://assets/characters/peggy/peggy_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "okamura": { "sprite_frames": "res://assets/characters/okamura/okamura_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
+    "nurse": { "sprite_frames": "res://assets/characters/nurse/nurse_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} }
+  }
+}

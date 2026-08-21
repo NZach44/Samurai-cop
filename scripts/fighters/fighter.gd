@@ -170,10 +170,12 @@ var block_stun_was_crouching: bool = false
 var standing_hurtbox_size: Vector2
 var standing_hurtbox_position: Vector2
 var command_buffer: Array[CommandInput] = []
+var default_sprite_root_position: Vector2
 
 
 func _ready() -> void:
 	_clear_command_buffer()
+	default_sprite_root_position = sprite_root.position
 	current_health = max_health
 	punch_hit_box_shape.shape = punch_hit_box_shape.shape.duplicate()
 	var hitbox_rectangle: RectangleShape2D = punch_hit_box_shape.shape as RectangleShape2D
@@ -1211,7 +1213,11 @@ func _configure_character_visual() -> void:
 	var character_visual_scale: float = (
 		character_data.visual_scale if character_data != null else 1.0
 	)
+	var character_visual_offset: Vector2 = (
+		character_data.visual_offset if character_data != null else Vector2.ZERO
+	)
 	sprite_root.scale = Vector2.ONE * maxf(character_visual_scale, 0.01)
+	sprite_root.position = default_sprite_root_position + character_visual_offset
 	if character_data != null and character_data.sprite_frames != null:
 		animated_sprite.sprite_frames = character_data.sprite_frames
 		animated_sprite.show()

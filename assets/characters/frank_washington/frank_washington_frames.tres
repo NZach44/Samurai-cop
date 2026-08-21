@@ -1,26 +1,47 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3]
+[gd_resource type="SpriteFrames" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/placeholder_sheet.svg" id="1_sheet"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_001.png" id="2_lsagf"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_002.png" id="3_3vcff"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_003.png" id="4_ol53v"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_004.png" id="5_ke8d5"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_001.png" id="6_xcqdb"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_002.png" id="7_7b8lf"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_003.png" id="8_0viyv"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_004.png" id="9_rl0hv"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_005.png" id="10_m37fp"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_006.png" id="11_s2u4j"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_001.png" id="12_f6wdd"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_002.png" id="13_qp07y"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_003.png" id="14_0cm22"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_004.png" id="15_5gp0f"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_005.png" id="16_1ds6a"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_001.png" id="17_l2lgn"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_002.png" id="18_qd2wb"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_003.png" id="19_3s1jk"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_004.png" id="20_bmsfi"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_005.png" id="21_irppw"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_006.png" id="22_ueip4"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
 atlas = ExtResource("1_sheet")
-region = Rect2(0, 0, 48, 128)
+region = Rect2(480, 0, 48, 128)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
 atlas = ExtResource("1_sheet")
-region = Rect2(48, 0, 48, 128)
+region = Rect2(432, 0, 48, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
+atlas = ExtResource("1_sheet")
+region = Rect2(192, 0, 48, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
 atlas = ExtResource("1_sheet")
 region = Rect2(96, 0, 48, 128)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
 atlas = ExtResource("1_sheet")
-region = Rect2(144, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
-atlas = ExtResource("1_sheet")
-region = Rect2(192, 0, 48, 128)
+region = Rect2(336, 0, 48, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
 atlas = ExtResource("1_sheet")
@@ -30,76 +51,144 @@ region = Rect2(240, 0, 48, 128)
 atlas = ExtResource("1_sheet")
 region = Rect2(288, 0, 48, 128)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
-atlas = ExtResource("1_sheet")
-region = Rect2(384, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(432, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
-
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_block")
+}],
+"loop": 1,
 "name": &"block",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crouch")
+}],
+"loop": 1,
 "name": &"crouch",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hurt")
+}],
+"loop": 0,
 "name": &"hurt",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_lsagf")
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
-"loop": false,
+"duration": 1.0,
+"texture": ExtResource("3_3vcff")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ol53v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ke8d5")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jump")
+}],
+"loop": 0,
 "name": &"jump",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
-"loop": false,
-"name": &"kick",
-"speed": 5.0
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_xcqdb")
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
-"loop": false,
+"duration": 1.0,
+"texture": ExtResource("7_7b8lf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_0viyv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_rl0hv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_m37fp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_s2u4j")
+}],
+"loop": 0,
+"name": &"kick",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ko")
+}],
+"loop": 0,
 "name": &"ko",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
-"loop": false,
-"name": &"punch",
-"speed": 5.0
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_f6wdd")
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
-"loop": false,
+"duration": 1.0,
+"texture": ExtResource("13_qp07y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_0cm22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_5gp0f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_1ds6a")
+}],
+"loop": 0,
+"name": &"punch",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_special_1")
+}],
+"loop": 0,
 "name": &"special_1",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_special_2")
+}],
+"loop": 0,
 "name": &"special_2",
 "speed": 5.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_l2lgn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_qd2wb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_3s1jk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_bmsfi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_irppw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_ueip4")
+}],
+"loop": 1,
 "name": &"walk",
-"speed": 5.0
+"speed": 9.0
 }]

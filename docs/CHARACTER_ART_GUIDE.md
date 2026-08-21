@@ -1,140 +1,153 @@
-# Character art guide
+# Character Art Guide
 
-This guide keeps externally-created, game-ready character artwork consistent
-across the shared Fighter scene. It describes production constraints, not any
-specific actor likeness. Character-specific observations should be recorded in
-`docs/characters/` only after reviewing authorized local references.
+## 1. Purpose
 
-## Visual direction
+This document defines the visual production standard for all fighter sprite artwork. Joe Marshall is currently the technical reference implementation. It governs game-ready files under `assets/`; private screenshots and other source references remain under the Git-ignored `reference/` tree.
 
-- Use a readable, stylized/cartoon 2D fighting-game treatment rather than raw
-  screenshots or photorealistic cutouts.
-- Preserve a coherent drawing language across the roster: comparable body
-  proportions, line weight, shading complexity, perspective, and color value.
-- Use strong silhouettes that remain legible at the small in-game display size.
-- Keep facial and clothing details simplified enough for inexpensive mobile and
-  Web targets.
+## 2. Canvas Standard
 
-## Reference material
+Every production sprite frame must be:
 
-Raw video, extracted screenshots, temporary crops, and art/reference inputs are
-local development material under `reference/`. They must not be copied into
-`assets/` or shipped. The reference directory is excluded from Git and Godot's
-import/export scan.
+- PNG;
+- 512x512;
+- RGBA;
+- transparent background;
+- free of baked checkerboards, UI, labels, frame numbers, and borders;
+- free of glow or matte around the whole character unless it is an intentional local effect.
 
-Each character has a local directory:
+## 3. Facing Convention
 
-```text
-reference/
-├── joe_marshall/
-├── frank_washington/
-├── fujiyama/
-├── yamashita/
-├── okamura/
-├── jennifer/
-├── peggy/
-└── nurse/
-```
+All source artwork faces right. Left-facing gameplay uses `AnimatedSprite2D.flip_h`; do not create duplicate left-facing frames.
 
-Existing reference filenames are intentionally left unchanged. For new files,
-prefer category-based, zero-padded names:
+## 4. Visual Scale
 
-```text
-face_01.png
-face_02.png
-body_01.png
-body_02.png
-clothing_01.png
-action_01.png
-```
+Characters use a consistent apparent scale and must remain readable on small Android screens. Joe Marshall's completed production art is the current technical reference. A 512x512 canvas does not imply that visible artwork should fill the canvas: visible alpha bounds determine apparent scale.
 
-Add a more specific suffix only when it improves clarity, for example
-`body_3quarter_01.png`. References guide a coherent design; they do not map
-directly to animation frames.
+A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. The art manifest's optional visual-scale override is production metadata; applying it to CharacterData remains an explicit integration decision.
 
-## Canvas, scale, and baseline
+## 5. Ground Baseline
 
-- Game-ready source frames are RGBA PNGs on a `512x512` transparent canvas.
-- Use a side-on fighting-game camera with a consistent, mild three-quarter view
-  of the torso and face. Avoid changing camera elevation or perspective between
-  animations.
-- Author the default pose facing right. The shared Fighter mirrors it with
-  `AnimatedSprite2D.flip_h` when facing left.
-- Center neutral poses near `x = 256`.
-- Place the soles on the common ground baseline at approximately `y = 488`,
-  leaving a small transparent safety margin below.
-- As a starting roster scale, keep a normal standing character roughly 410-450
-  source pixels tall. Body-build differences may alter width and height modestly,
-  but should not imply different gameplay collision.
-- Align every frame by the feet and intended body center, not by each frame's
-  nontransparent bounding box.
-- Remove avoidable whitespace while preserving the fixed canvas and room needed
-  by limbs or effects.
+Grounded animations share a consistent feet baseline: idle, walk, punch, kick, crouch, block, hurt, grounded portions of specials, and the KO final pose. Changing animation must not make the fighter float or sink. Normalize the artwork, not the `CharacterBody2D` position.
 
-For the current placeholder-scale arena, initially import 512-pixel frames with
-Godot **Process > Size Limit = 128**. Apply the same import convention to a full
-animation set. Retune visual scale centrally later rather than moving individual
-Fighter physics bodies.
+## 6. Animation Names
 
-## Transparency and rendering
+Standard production animation names are:
 
-- Background pixels must be genuinely transparent, not a checkerboard or solid
-  matte baked into the image.
-- Avoid bright fringe pixels left from background removal.
-- Use consistent outline color and line weight across frames and characters.
-- Keep shading simple and consistent, such as one main light direction and a
-  small number of value bands.
-- Check readability against both bright and dark arena backgrounds.
-- Import sprite PNGs losslessly with mipmaps disabled for the initial 2D setup.
+`idle`, `walk`, `punch`, `kick`, `crouch`, `crouch_punch`, `crouch_kick`, `block`, `crouch_block`, `jump`, `hurt`, `special_1`, `special_2`, and `ko`.
 
-## Required animation names
+## 7. Recommended Frame Counts
 
-The shared Fighter expects these names exactly:
+| Animation | Frames |
+|---|---:|
+| idle | 4 |
+| walk | 6 |
+| punch | 5 |
+| kick | 6 |
+| crouch | 3 |
+| crouch_punch | 5 |
+| crouch_kick | 6 |
+| block | 3 |
+| crouch_block | 3 |
+| jump | 5 |
+| hurt | 3 |
+| special_1 | 6–8 |
+| special_2 | 6–8 |
+| ko | 6–8 |
+
+Per-character manifest overrides are allowed when justified. Joe's completed four-frame standing block, for example, is recorded as an override rather than changing the shared default.
+
+## 8. Recommended Animation Speeds
+
+| Animation | FPS | Playback |
+|---|---:|---|
+| idle | 6 | loop |
+| walk | 9 | loop |
+| punch | 12 | non-looping |
+| kick | 12 | non-looping |
+| crouch | 8 | settle and hold final pose |
+| crouch_punch | 12 | non-looping |
+| crouch_kick | 12 | non-looping |
+| block | 8 | settle and hold final pose |
+| crouch_block | 8 | settle and hold final pose |
+| jump | 10 | non-looping |
+| hurt | 10 | non-looping; hold final when required |
+| special_1 | 12 | non-looping default |
+| special_2 | 12 | non-looping default |
+| ko | 10 | non-looping; hold final pose |
+
+Gameplay state decides how long held states remain visible. Sprite FPS never redefines attack, stun, movement, or round timing.
+
+## 9. Folder Structure
 
 ```text
-idle
-walk
-jump
-crouch
-crouch_block
-block
-punch
-kick
-crouch_punch
-crouch_kick
-hurt
-special_1
-special_2
-ko
+assets/characters/<character_id>/
+├── design/
+│   └── <character_id>_canonical_design.png
+└── sprites/
+    ├── idle/
+    ├── walk/
+    ├── punch/
+    ├── kick/
+    ├── crouch/
+    ├── crouch_punch/
+    ├── crouch_kick/
+    ├── block/
+    ├── crouch_block/
+    ├── jump/
+    ├── hurt/
+    ├── special_1/
+    ├── special_2/
+    └── ko/
 ```
 
-Use matching, zero-padded frame names such as `walk_001.png` and
-`special_2_003.png`. Only `idle` and `walk` normally loop. Other animations are
-state/combat presentations and normally do not loop.
+Private source/reference material belongs in `reference/<character_id>/`, never in `assets/`.
 
-Animations may be replaced incrementally because one `SpriteFrames` resource can
-contain a mixture of real PNG textures and placeholder atlas textures. Missing
-animation names continue to use the Fighter's existing safe `idle` fallback.
+## 10. Filename Convention
 
-## Gameplay separation
+Use `<animation>_001.png`, `<animation>_002.png`, and so on. Examples: `walk_001.png`, `crouch_kick_004.png`, `special_1_006.png`, and `ko_008.png`. Numbers are three-digit zero-padded so filename sorting is deterministic.
 
-Sprite animation represents gameplay state but does not control it. Do not alter
-attack startup, active, recovery, hitbox timing, `CharacterBody2D` collision,
-HurtBox, push/spacing behavior, or attack hitboxes to compensate for artwork.
-Correct visual scale, centering, and feet alignment in the art/import pipeline.
+## 11. Canonical Character Design
 
-## Character note checklist
+Before generating animation frames, create and approve one canonical design image. It defines face, hair, body proportions, clothing, colors, accessories, silhouette, and overall cartoon style. Use that approved image as the primary consistency reference for every animation; private screenshots become secondary references.
 
-Record only confirmed visual-development decisions in each file under
-`docs/characters/`:
+## 12. Transparency Rules
 
-- body build and proportion adjustments;
-- clothing shapes and palette;
-- hair shape and palette;
-- simplified facial traits;
-- primary silhouette cues;
-- neutral fighting stance ideas;
-- notable accessories and whether they remain readable in motion.
+Reject artwork with gray or white halos, a blue glow around the entire body, a baked checkerboard, opaque rectangular backgrounds, or semi-transparent panel backgrounds. Intentional local sword slashes, muzzle flashes, dust, blood, and projectile trails may use partial alpha. Background-like partial alpha spanning large portions of the canvas is an error.
 
-Use `TODO` rather than inventing details that are not clear in the local
-references.
+## 13. Animation vs Gameplay
+
+Artwork is visual only. Sprite dimensions must not automatically alter `CharacterBody2D` collision, HurtBox, PushBox, attack hitboxes, movement speed, jump physics, damage, or attack timing. Gameplay remains authoritative.
+
+## 14. Special Moves
+
+Each fighter has exactly two special-art slots, `special_1` and `special_2`. Special titles are UI text and must not be baked into sprite artwork. Do not bake move titles, speech bubbles, or HUD elements into sprite PNGs.
+
+## 15. Intro Quotes
+
+Intro quote text and optional audio are separate from sprite artwork. Never embed quote text in a character frame.
+
+## 16. KO Artwork
+
+KO frames require extra QA because fallen poses are wider than standing poses. Check for oversized content, gray/white matte, a final pose that rests on the floor, and readability at the normal fighter scale. Apply one coherent visual normalization across the animation, not arbitrary per-frame gameplay transforms.
+
+## 17. Mobile Readability
+
+Always test landscape mobile sizes. Faces, limbs, attack poses, and weapon silhouettes must remain legible on smaller Android phones without overlapping the health HUD, touch-control zone, or arena boundaries.
+
+## 18. QA Checklist
+
+Before integration verify:
+
+- 512x512 RGBA with real transparent pixels;
+- no baked background or unexpected alpha halo;
+- expected frame count and deterministic filenames;
+- consistent apparent scale and grounded baseline;
+- no accidental crop, missing limbs, or neighboring sprite fragments;
+- no labels, header text, borders, or UI;
+- animation/contact poses read clearly at mobile size.
+
+Run the automated validator and inspect its contact sheet; neither replaces human visual review.
+
+## 19. Joe Marshall Reference
+
+Joe Marshall's completed production sprite set is the current reference for technical scale, baseline, naming, animation organization, and transparency quality. Future characters follow the same technical standards while retaining their own body proportions and visual identity. The validator reads Joe without modifying his PNGs.

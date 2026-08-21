@@ -11,3 +11,4 @@ Thumbs.db
 /reference/*
 !/reference/.gdignore
 /source_media/
+/artifacts/character_art/

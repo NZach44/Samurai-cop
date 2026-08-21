@@ -20,6 +20,7 @@ enum CampaignTier {
 @export var intro_audio: AudioStream
 @export var sprite_frames: SpriteFrames
 @export_range(0.25, 3.0, 0.05) var visual_scale: float = 1.0
+@export var visual_offset: Vector2 = Vector2.ZERO
 @export var move_speed: float = 240.0
 @export var jump_velocity: float = 600.0
 @export_range(0.1, 3.0, 0.05) var power_multiplier: float = 1.0
