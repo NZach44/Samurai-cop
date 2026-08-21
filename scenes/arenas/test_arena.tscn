@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
@@ -52,6 +52,22 @@ corner_radius_bottom_left = 8
 shadow_color = Color(0, 0, 0, 0.28)
 shadow_size = 4
 shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_special_announcement"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(0.035, 0.055, 0.09, 0.82)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.84, 0.28, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="Theme" id="Theme_hud"]
 Label/colors/font_color = Color(0.96, 0.98, 1, 1)
@@ -225,23 +241,52 @@ theme_override_font_sizes/font_size = 32
 text = "PLAYER 1 WINS"
 horizontal_alignment = 1
 
-[node name="SpecialMoveLabel" type="Label" parent="HUD/Controls"]
+[node name="P1SpecialAnnouncement" type="PanelContainer" parent="HUD/Controls"]
 visible = false
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 96.0
-offset_top = 148.0
-offset_right = -96.0
-offset_bottom = 212.0
+anchor_right = 0.48
+offset_left = 32.0
+offset_top = 100.0
+offset_right = -12.0
+offset_bottom = 170.0
 grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_special_announcement")
+
+[node name="Title" type="Label" parent="HUD/Controls/P1SpecialAnnouncement"]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.84, 0.28, 1)
-theme_override_constants/outline_size = 7
-theme_override_font_sizes/font_size = 25
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 20
 text = "SPECIAL MOVE"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+max_lines_visible = 2
+
+[node name="P2SpecialAnnouncement" type="PanelContainer" parent="HUD/Controls"]
+visible = false
+layout_mode = 1
+anchor_left = 0.52
+anchor_right = 1.0
+offset_left = 12.0
+offset_top = 100.0
+offset_right = -32.0
+offset_bottom = 170.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_special_announcement")
+
+[node name="Title" type="Label" parent="HUD/Controls/P2SpecialAnnouncement"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.84, 0.28, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 20
+text = "SPECIAL MOVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+max_lines_visible = 2
 
 [node name="IntroBubble" type="PanelContainer" parent="HUD/Controls"]
 visible = false

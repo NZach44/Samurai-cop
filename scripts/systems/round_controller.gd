@@ -42,7 +42,14 @@ const HEALTH_RED: Color = Color("e5484d")
 @onready var fighter_2_rounds_label: Label = $HUD/Controls/Fighter2RoundsLabel
 @onready var campaign_progress_label: Label = $HUD/Controls/CampaignProgressLabel
 @onready var winner_label: Label = $HUD/Controls/WinnerLabel
-@onready var special_move_label: Label = $HUD/Controls/SpecialMoveLabel
+@onready var p1_special_announcement: PanelContainer = (
+	$HUD/Controls/P1SpecialAnnouncement
+)
+@onready var p2_special_announcement: PanelContainer = (
+	$HUD/Controls/P2SpecialAnnouncement
+)
+@onready var p1_special_title: Label = $HUD/Controls/P1SpecialAnnouncement/Title
+@onready var p2_special_title: Label = $HUD/Controls/P2SpecialAnnouncement/Title
 @onready var intro_bubble: PanelContainer = $HUD/Controls/IntroBubble
 @onready var intro_label: Label = $HUD/Controls/IntroBubble/Label
 @onready var intro_voice_player: AudioStreamPlayer = $IntroVoicePlayer
@@ -53,7 +60,8 @@ var fighter_1_round_wins: int = 0
 var fighter_2_round_wins: int = 0
 var round_number: int = 1
 var match_state: MatchState = MatchState.ROUND_START
-var special_message_sequence_id: int = 0
+var p1_special_message_sequence_id: int = 0
+var p2_special_message_sequence_id: int = 0
 var desktop_floor_position: Vector2
 var desktop_fighter_1_position: Vector2
 var desktop_fighter_2_position: Vector2
@@ -84,8 +92,8 @@ func _ready() -> void:
 	fighter_2.health_changed.connect(_on_health_changed.bind(fighter_2_health_bar))
 	fighter_1.defeated.connect(_on_fighter_defeated)
 	fighter_2.defeated.connect(_on_fighter_defeated)
-	fighter_1.special_move_started.connect(_on_special_move_started)
-	fighter_2.special_move_started.connect(_on_special_move_started)
+	fighter_1.special_move_started.connect(_on_special_move_started.bind(1))
+	fighter_2.special_move_started.connect(_on_special_move_started.bind(2))
 
 	_on_health_changed(fighter_1.current_health, fighter_1.max_health, fighter_1_health_bar)
 	_on_health_changed(fighter_2.current_health, fighter_2.max_health, fighter_2_health_bar)
@@ -138,14 +146,23 @@ func _on_health_changed(current_health: int, max_health: int, health_bar: Progre
 	health_bar.add_theme_stylebox_override("fill", fill_style)
 
 
-func _on_special_move_started(display_title: String) -> void:
-	special_message_sequence_id += 1
-	var current_message_id: int = special_message_sequence_id
-	special_move_label.text = display_title
-	special_move_label.show()
-	await get_tree().create_timer(special_move_message_duration).timeout
-	if current_message_id == special_message_sequence_id:
-		special_move_label.hide()
+func _on_special_move_started(display_title: String, player_index: int) -> void:
+	if player_index == 1:
+		p1_special_message_sequence_id += 1
+		var current_message_id: int = p1_special_message_sequence_id
+		p1_special_title.text = display_title
+		p1_special_announcement.show()
+		await get_tree().create_timer(special_move_message_duration).timeout
+		if current_message_id == p1_special_message_sequence_id:
+			p1_special_announcement.hide()
+	elif player_index == 2:
+		p2_special_message_sequence_id += 1
+		var current_message_id: int = p2_special_message_sequence_id
+		p2_special_title.text = display_title
+		p2_special_announcement.show()
+		await get_tree().create_timer(special_move_message_duration).timeout
+		if current_message_id == p2_special_message_sequence_id:
+			p2_special_announcement.hide()
 
 
 func _on_fighter_defeated(loser: Fighter) -> void:
@@ -337,8 +354,16 @@ func _set_fighter_controls_enabled(enabled: bool) -> void:
 	fighter_1.set_controls_enabled(enabled)
 	fighter_2.set_controls_enabled(enabled)
 	if not enabled:
-		special_message_sequence_id += 1
-		special_move_label.hide()
+		_clear_special_announcements()
+
+
+func _clear_special_announcements() -> void:
+	p1_special_message_sequence_id += 1
+	p2_special_message_sequence_id += 1
+	p1_special_title.text = ""
+	p2_special_title.text = ""
+	p1_special_announcement.hide()
+	p2_special_announcement.hide()
 
 
 func _clear_special_projectiles() -> void:
