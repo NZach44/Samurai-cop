@@ -57,6 +57,10 @@ class PngImage:
     def long_axis(self) -> int:
         return max(self.visible_width, self.visible_height)
 
+    @property
+    def visible_alpha_pixels(self) -> int:
+        return self.width * self.height - self.transparent_pixels
+
 
 @dataclass(frozen=True)
 class ScaleAssessment:
@@ -73,6 +77,15 @@ class BaselineAssessment:
     measured: float
     target: float
     delta: float
+
+
+@dataclass(frozen=True)
+class NeutralAnchorAssessment:
+    status: str
+    multiplier: float
+    height_ratio: float
+    width_ratio: float
+    alpha_area_ratio: float
 
 
 class Report:
@@ -374,6 +387,8 @@ def calibrate_character_scale(manifest: dict, character_id: str) -> bool:
         print(f"CALIBRATION ERROR {character_id}: complete approved {reference_animation} art is required", file=sys.stderr)
         return False
     character_height = float(median(image.visible_height for image in character_images))
+    character_width = float(median(image.visible_width for image in character_images))
+    character_alpha_area = float(median(image.visible_alpha_pixels for image in character_images))
     reference_height = float(median(image.visible_height for image in reference_images))
     ratio = character_height / reference_height
     baseline = int(round(median(image.alpha_bounds[3] for image in character_images if image.alpha_bounds)))
@@ -381,6 +396,11 @@ def calibrate_character_scale(manifest: dict, character_id: str) -> bool:
         "reference_animation": reference_animation,
         "height_ratio_to_reference": round(ratio, 6),
         "target_baseline_y": baseline,
+        "approved_neutral_metrics": {
+            "median_visible_height": round(character_height, 6),
+            "median_visible_width": round(character_width, 6),
+            "median_alpha_area": round(character_alpha_area, 6),
+        },
     }
     print(
         f"CALIBRATED {character_id}: {reference_animation} median {character_height:.1f}px / "
@@ -405,8 +425,11 @@ def animation_digest(paths: Iterable[Path]) -> str:
 
 
 def batch_consistency_error(batch: dict) -> str | None:
-    if batch.get("status") not in {"ready", "reference"}:
-        return f"production batch status is {batch.get('status', 'missing')}"
+    if batch.get("status") not in {"approved", "reference"}:
+        return (
+            "generation group has no approved neutral-anchor calibration "
+            f"(status={batch.get('status', 'missing')})"
+        )
     multiplier = float(batch.get("batch_multiplier", 0.0))
     if multiplier <= 0.0:
         return "production batch multiplier is missing or invalid"
@@ -420,6 +443,66 @@ def batch_consistency_error(batch: dict) -> str | None:
                 f"{float(animation_multipliers[animation]):.6f}, batch uses {multiplier:.6f}"
             )
     return None
+
+
+def _metric_status(ratio: float, pass_tolerance: float, warning_tolerance: float) -> str:
+    deviation = abs(ratio - 1.0)
+    if deviation <= pass_tolerance:
+        return "PASS"
+    if deviation <= warning_tolerance:
+        return "WARNING"
+    return "ERROR"
+
+
+def assess_neutral_anchor(
+    manifest: dict,
+    anchor: PngImage,
+    approved_idle: list[PngImage],
+    approved_metrics: dict | None = None,
+) -> NeutralAnchorAssessment:
+    """Compare neutral anatomy after height calibration, never an action pose."""
+    approved_metrics = approved_metrics or {}
+    reference_height = float(approved_metrics.get("median_visible_height", median(image.visible_height for image in approved_idle)))
+    reference_width = float(approved_metrics.get("median_visible_width", median(image.visible_width for image in approved_idle)))
+    reference_area = float(approved_metrics.get("median_alpha_area", median(image.visible_alpha_pixels for image in approved_idle)))
+    multiplier = reference_height / float(anchor.visible_height)
+    height_ratio = float(anchor.visible_height) / reference_height
+    width_ratio = float(anchor.visible_width) * multiplier / reference_width
+    alpha_area_ratio = float(anchor.visible_alpha_pixels) * multiplier * multiplier / reference_area
+    calibration = manifest["scale_calibration"]
+    statuses = (
+        _metric_status(
+            height_ratio,
+            float(calibration["neutral_anchor_height_pass_tolerance"]),
+            float(calibration["neutral_anchor_height_warning_tolerance"]),
+        ),
+        _metric_status(
+            width_ratio,
+            float(calibration["neutral_anchor_width_pass_tolerance"]),
+            float(calibration["neutral_anchor_width_warning_tolerance"]),
+        ),
+        _metric_status(
+            alpha_area_ratio,
+            float(calibration["neutral_anchor_area_pass_tolerance"]),
+            float(calibration["neutral_anchor_area_warning_tolerance"]),
+        ),
+    )
+    status = "ERROR" if "ERROR" in statuses else ("WARNING" if "WARNING" in statuses else "PASS")
+    return NeutralAnchorAssessment(status, multiplier, height_ratio, width_ratio, alpha_area_ratio)
+
+
+def report_neutral_anchor(batch_name: str, assessment: NeutralAnchorAssessment, report: Report) -> None:
+    message = (
+        f"height={assessment.height_ratio:.1%}, height-normalized width={assessment.width_ratio:.1%}, "
+        f"height-normalized alpha area={assessment.alpha_area_ratio:.1%}, "
+        f"multiplier={assessment.multiplier:.6f}"
+    )
+    if assessment.status == "ERROR":
+        report.error(f"{batch_name} neutral anchor", message)
+    elif assessment.status == "WARNING":
+        report.warning(f"{batch_name} neutral anchor", message)
+    else:
+        print(f"NEUTRAL ANCHOR PASS {batch_name}: {message}")
 
 
 def inspect_visual_quality(
@@ -727,6 +810,9 @@ def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: 
     if batch is None:
         report.error(batch_name, "batch metadata is missing")
         return output_root
+    if batch.get("status") == "requires_regeneration":
+        report.error(batch_name, batch.get("invalid_reason", "generation group requires regenerated source art"))
+        return output_root
     source_root = generated_batch_root(manifest, character_id) / batch_name
     if not source_root.is_dir():
         report.error(batch_name, f"original batch source is missing: {source_root.relative_to(PROJECT_ROOT)}")
@@ -734,16 +820,33 @@ def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: 
     animations = list(batch["animations"])
     anchor = batch.get("anchor", {"type": "scale_anchor"})
     approved_idle = [read_png(path) for path in expected_frame_paths(manifest, character_id, "idle") if path.is_file()]
-    approved_height = float(median(image.visible_height for image in approved_idle))
-    if anchor["type"] == "scale_anchor":
-        anchor_path = source_root / manifest["batch_contract"]["anchor_filename"]
+    if not approved_idle or any(image.alpha_bounds is None for image in approved_idle):
+        report.error(batch_name, "complete approved idle reference art is required")
+        return output_root
+    approved_metrics = (scale_profile(manifest, character_id) or {}).get("approved_neutral_metrics", {})
+    approved_height = float(approved_metrics.get("median_visible_height", median(image.visible_height for image in approved_idle)))
+    anchor_assessment: NeutralAnchorAssessment | None = None
+    if anchor["type"] in {"scale_anchor", "neutral_standing"}:
+        if batch.get("generation_group") and anchor["type"] != "neutral_standing":
+            report.error(batch_name, "generation group must declare a neutral_standing scale anchor")
+            return output_root
+        anchor_path = source_root / anchor.get("filename", manifest["batch_contract"]["anchor_filename"])
         if not anchor_path.is_file():
             report.error(batch_name, f"batch scale anchor is missing: {anchor_path.relative_to(PROJECT_ROOT)}")
             return output_root
-        incoming_height = float(read_png(anchor_path).visible_height)
+        anchor_image = read_png(anchor_path)
+        if anchor_image.alpha_bounds is None:
+            report.error(batch_name, "neutral scale anchor contains no visible artwork")
+            return output_root
+        anchor_assessment = assess_neutral_anchor(manifest, anchor_image, approved_idle, approved_metrics)
+        report_neutral_anchor(batch_name, anchor_assessment, report)
+        if anchor_assessment.status == "ERROR":
+            print("BATCH NORMALIZATION ABORTED: neutral anchor does not match approved anatomy")
+            return output_root
+        incoming_height = float(anchor_image.visible_height)
         reference_height = approved_height
         anchor_source = anchor_path.relative_to(PROJECT_ROOT).as_posix()
-    else:
+    elif anchor["type"] == "pose_ratio":
         anchor_animation = str(anchor["animation"])
         source_anchor_paths = [source_root / anchor_animation / path.name for path in expected_frame_paths(manifest, character_id, anchor_animation)]
         if not all(path.is_file() for path in source_anchor_paths):
@@ -753,6 +856,9 @@ def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: 
         references = reference_statistics(manifest, ["idle", anchor_animation])
         reference_height = approved_height * references[anchor_animation]["height"] / references["idle"]["height"]
         anchor_source = f"{anchor_animation} migration anchor"
+    else:
+        report.error(batch_name, f"unsupported anchor type: {anchor['type']}")
+        return output_root
     multiplier = reference_height / incoming_height
     baseline = int(scale_profile(manifest, character_id)["target_baseline_y"])
     print(f"BATCH SCALE {character_id}/{batch_name}: anchor={anchor_source}, {incoming_height:.1f}px -> {reference_height:.1f}px, multiplier={multiplier:.6f}, baseline={baseline}")
@@ -785,7 +891,7 @@ def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: 
             shutil.copy2(path, production_folder / path.name)
         output_digests[animation] = animation_digest(production_folder / path.name for path in paths)
     batch.update({
-        "status": "ready",
+        "status": "approved",
         "anchor_source": anchor_source,
         "anchor_measured_height": round(incoming_height, 6),
         "reference_measured_height": round(reference_height, 6),
@@ -795,6 +901,13 @@ def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: 
         "animation_multipliers": {animation: round(multiplier, 6) for animation in animations},
         "output_digests": output_digests,
     })
+    if anchor_assessment is not None:
+        batch["anchor_metrics"] = {
+            "height_ratio": round(anchor_assessment.height_ratio, 6),
+            "height_normalized_width_ratio": round(anchor_assessment.width_ratio, 6),
+            "height_normalized_alpha_area_ratio": round(anchor_assessment.alpha_area_ratio, 6),
+            "assessment": anchor_assessment.status.lower(),
+        }
     save_manifest(manifest)
     return output_root
 

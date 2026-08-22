@@ -53,17 +53,21 @@ Joe's completed production set is the global technical reference. Every producti
 python3 tools/character_art_pipeline.py frank_washington --calibrate-scale
 ```
 
-Calibration does not modify PNGs. It stores the approved idle animation, its measured median-height ratio to Joe idle, and the character's approved grounded baseline. Repeating the command with unchanged art is idempotent.
+Calibration does not modify PNGs. It stores the approved idle animation, its measured median-height ratio to Joe idle, the character's approved grounded baseline, and approved neutral median height, width, and occupied-alpha area. Repeating the command with unchanged art is idempotent.
 
 Character calibration establishes the approved master body scale. It does not assign target heights to later poses. A crouching person's alpha bounds are naturally shorter and must remain shorter without enlarging the head, torso, hands, or clothing.
 
-Every subsequent generation batch includes `scale_anchor.png` under `reference/<character_id>/generated_batches/<batch_name>/`. This local tree is excluded from Git and Godot imports. The pipeline compares that upright neutral anchor with the character's approved idle reference and calculates one multiplier for the entire batch. Every animation and frame in the batch records and uses exactly that multiplier.
+Every subsequent generation group includes `scale_anchor.png` under `reference/<character_id>/generated_batches/<group_name>/`. This local tree is excluded from Git and Godot imports. The anchor must be a full-body, upright, grounded neutral pose—not hurt, block, crouch, jump, attack, or KO. The pipeline compares it with that character's approved idle reference and calculates one multiplier for the group. Every animation and frame in the group records and uses exactly that multiplier.
 
-The calibrated target thresholds are:
+Use separate groups when animations were independently generated, even if they originated from one visual sheet. For example, `batch_c_jump`, `batch_c_hurt`, and `batch_c_ko` each require their own neutral anchor. This guards against image-generation scale drift between rows.
 
-- within ±8%: pass;
-- more than 8% through 15%: warning;
-- more than 15%: error.
+Neutral anchors are checked against approved character idle using:
+
+- visible height: ±8% pass, 8–12% warning, over 12% error;
+- height-normalized visible width: ±12% pass, 12–20% warning, over 20% error;
+- height-normalized occupied alpha area: ±25% pass, 25–40% warning, over 40% error.
+
+Width and alpha area are secondary anatomy checks. They reject a purported neutral anchor whose head, torso, or limbs have drifted even when its overall height looks plausible. They are never calculated from jump, hurt, crouch, attack, or KO frames.
 
 Grounded animation baselines pass within 8 pixels of the persistent character baseline, warn through 15 pixels, and error beyond 15 pixels. Individual frames are still compared loosely with their own animation median to catch sudden frame-to-frame growth.
 
@@ -110,13 +114,17 @@ python3 tools/character_art_pipeline.py frank_washington \
 
 This creates `artifacts/character_art/frank_washington_contact_sheet.png`, grouped and labeled by animation. That directory is ignored by Git. Use the sheet to spot identity drift, frame splitting errors, scale changes, baseline wobble, and unexpected fragments.
 
-## 8. Batch-anchored normalization
+## 8. Generation-group neutral-anchor normalization
 
 ```bash
-python3 tools/character_art_pipeline.py frank_washington --batch batch_c --normalize
+python3 tools/character_art_pipeline.py frank_washington --batch batch_c_jump --normalize
+python3 tools/character_art_pipeline.py frank_washington --batch batch_c_hurt --normalize
+python3 tools/character_art_pipeline.py frank_washington --batch batch_c_ko --normalize
 ```
 
-Original generated PNGs remain under `reference/<character_id>/generated_batches/<batch_name>/`. The tool measures `scale_anchor.png`, calculates `approved idle height / incoming anchor height`, and applies that one multiplier to every animation/frame listed for the batch in the manifest. It stages normalized output under `artifacts/character_art/` and promotes it only after the complete batch succeeds. The manifest records anchor source/height, reference height, multiplier, baseline, normalization version, animation membership, per-animation multiplier audit values, and output digests.
+Original generated PNGs remain under `reference/<character_id>/generated_batches/<group_name>/`. The tool first validates that group's neutral anchor against approved idle height, width, and alpha-area anatomy. It then calculates `approved idle height / incoming anchor height` and applies that one multiplier to every animation/frame listed for the group. It stages normalized output under `artifacts/character_art/` and promotes it only after the complete group succeeds. The manifest records anchor source/measurements, multiplier, baseline, normalization version, animation membership, per-animation multiplier audit values, and output digests.
+
+The old broken method compared an action pose with a corresponding pose target and gave each animation its own multiplier. That enlarged crouches and distorted anatomy. The current method uses only a neutral anchor generated with the source frames; action-pose height and KO width never drive scaling.
 
 Grounded output is centered on a clean 512x512 RGBA canvas and translated to the persistent baseline after scaling. Translation never changes body size. Width never controls scale merely because a limb, sword, or effect extends. If the uniform batch scale would clip an extended pose, normalization aborts promotion and requests art correction.
 
@@ -138,7 +146,7 @@ python3 tools/spriteframes_importer.py frank_washington
 python3 tools/spriteframes_importer.py --all
 ```
 
-The Python importer validates complete filename sets and batch metadata before replacement. It rejects a batch unless its status is ready/reference and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation. The importer also enforces the shared 128-pixel runtime texture limit; this uniform technical setting is not pose scaling.
+The Python importer validates complete filename sets and generation-group metadata before replacement. It rejects a group unless its status is `approved` (or `reference` for Joe) and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation. The importer also enforces the shared 128-pixel runtime texture limit; this uniform technical setting is not pose scaling.
 
 The importer snapshots the existing `.tres`, asks headless Godot to load/save the approved animation subset through `ResourceSaver`, and verifies that old animation names plus new `res://` texture references survived. If saving or verification fails, it atomically restores the original resource.
 
@@ -150,9 +158,9 @@ Recommended workflow for every roster character:
 2. Create the canonical design.
 3. Generate core art including approved idle.
 4. Calibrate character scale with `--calibrate-scale`.
-5. For every later batch, include `scale_anchor.png` with the original generated animation folders.
-6. Add the batch animation list to the manifest.
-7. Calculate and apply one multiplier: `python3 tools/character_art_pipeline.py CHARACTER --batch BATCH --normalize`.
+5. For every independently generated animation group, include a true neutral-standing `scale_anchor.png` with its source frames.
+6. Add one manifest generation group per independently generated source.
+7. Calculate and apply one multiplier: `python3 tools/character_art_pipeline.py CHARACTER --batch GENERATION_GROUP --normalize`.
 8. Translate grounded frames to the stored baseline (performed by the same command without resizing again).
 9. Validate the production animations.
 10. Generate/review a contact sheet.

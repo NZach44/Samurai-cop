@@ -25,11 +25,15 @@ Characters use a consistent apparent scale and must remain readable on small And
 
 A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. Each character also has one persistent production-art scale profile calibrated from approved idle art. Every later generated batch receives one anchor-derived multiplier shared by every pose in that batch; crouch and other short poses are never enlarged merely to match a reference bounding-box height.
 
-### Batch scale anchor
+### Generation-group neutral scale anchor
 
-Every newly generated batch must include one development-only `scale_anchor.png` made in the same generation batch as its animations. The anchor shows the same canonical character standing upright in a neutral pose, facing right, without FX, on a transparent background. Its apparent head, torso, hands, clothes, and overall anatomy establish that batch's intrinsic scale.
+Every independently generated animation source is a **generation group** and must include one development-only `scale_anchor.png` generated with those frames. Generate separate groups when an image service can vary intrinsic character scale between rows or requests.
+
+The anchor must show the full body upright in a neutral standing or normal fighting-neutral posture: feet naturally grounded, arms relaxed, facing right, transparent background, and no weapon, effect, or motion trail. A crouch, jump, recoil/hurt, block, attack, or fallen/KO pose is never a valid scale anchor. It should closely resemble the approved character idle in height, width, occupied alpha area, head size, torso scale, and limb thickness.
 
 Store incoming originals under `reference/<character_id>/generated_batches/<batch_name>/`, with `scale_anchor.png` beside animation subdirectories. This ignored, `.gdignore`-protected tree is local development material. The anchor is never copied into `sprites/` or imported into `SpriteFrames`.
+
+The neutral anchor determines one multiplier for its generation group. Every animation frame in that group uses that same multiplier. Animation pose bounds never determine scale: a naturally short crouch stays short, a tucked jump is not enlarged, and a wide KO pose is not shrunk. Grounded baseline correction happens afterward by translation only.
 
 ## 5. Ground Baseline
 

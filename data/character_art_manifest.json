@@ -13,7 +13,13 @@
     "pass_tolerance": 0.08,
     "warning_tolerance": 0.15,
     "baseline_pass_pixels": 8,
-    "baseline_warning_pixels": 15
+    "baseline_warning_pixels": 15,
+    "neutral_anchor_height_pass_tolerance": 0.08,
+    "neutral_anchor_height_warning_tolerance": 0.12,
+    "neutral_anchor_width_pass_tolerance": 0.12,
+    "neutral_anchor_width_warning_tolerance": 0.2,
+    "neutral_anchor_area_pass_tolerance": 0.25,
+    "neutral_anchor_area_warning_tolerance": 0.4
   },
   "batch_contract": {
     "normalization_version": 3,
@@ -208,11 +214,16 @@
       "scale_profile": {
         "reference_animation": "idle",
         "height_ratio_to_reference": 0.879144,
-        "target_baseline_y": 495
+        "target_baseline_y": 495,
+        "approved_neutral_metrics": {
+          "median_visible_height": 411.0,
+          "median_visible_width": 151.0,
+          "median_alpha_area": 37701.0
+        }
       },
       "production_batches": {
         "core": {
-          "status": "ready",
+          "status": "approved",
           "anchor_source": "approved idle",
           "anchor_measured_height": 411.0,
           "reference_measured_height": 411.0,
@@ -239,7 +250,7 @@
           }
         },
         "batch_b": {
-          "status": "ready",
+          "status": "approved",
           "anchor": {
             "type": "pose_ratio",
             "animation": "block"
@@ -272,6 +283,104 @@
             "block": "71c0e9bae51290ef48a1a4e4e628225b4d70617cfe65e5ff1797517b93f1d8f1",
             "crouch_block": "55410ffc0b78dc38bbf6fdccb2a05a20a10b5024d6d214c594a56cb9f52edac2"
           }
+        },
+        "batch_c": {
+          "status": "requires_regeneration",
+          "anchor": {
+            "type": "scale_anchor"
+          },
+          "animations": [],
+          "legacy_animations": [
+            "jump",
+            "hurt",
+            "ko"
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_c/scale_anchor.png",
+          "anchor_measured_height": 387.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 1.062016,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "jump": 1.062016,
+            "hurt": 1.062016,
+            "ko": 1.062016
+          },
+          "output_digests": {
+            "jump": "ddb908756b8e0e088eebe534b8a8295e2b0c31970bea4185c5e66696a3373741",
+            "hurt": "b816db45b0c3f84b0879bacca97d00b71c6b8ab6cabc203f0b8ed50d8c3686d4",
+            "ko": "793d7b1b48ac2cae35035505afc7ce046c9fde14ddd1e6760a111fb1a42b2ff6"
+          },
+          "invalid_reason": "The calibration image is a hurt/reaction pose, not a neutral standing scale anchor. Production output requires regeneration from independent neutral-anchored groups."
+        },
+        "batch_c_jump": {
+          "status": "approved",
+          "generation_group": true,
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "jump"
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_c_jump/scale_anchor.png",
+          "anchor_measured_height": 428.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 0.96028,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "jump": 0.96028
+          },
+          "output_digests": {
+            "jump": "ac4a227ae35b3b5518cdaa87eaf830a9f6153144d7e1c0af362fbe516e54240a"
+          },
+          "anchor_metrics": {
+            "height_ratio": 1.041363,
+            "height_normalized_width_ratio": 1.112908,
+            "height_normalized_alpha_area_ratio": 1.225727,
+            "assessment": "pass"
+          }
+        },
+        "batch_c_hurt": {
+          "status": "approved",
+          "generation_group": true,
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "hurt"
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_c_hurt/scale_anchor.png",
+          "anchor_measured_height": 453.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 0.907285,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "hurt": 0.907285
+          },
+          "output_digests": {
+            "hurt": "a4b71053f7a8904b3faf8269dba14e1738f511dfb1751c4ba6429ae7a71ba856"
+          },
+          "anchor_metrics": {
+            "height_ratio": 1.10219,
+            "height_normalized_width_ratio": 1.177668,
+            "height_normalized_alpha_area_ratio": 1.11369,
+            "assessment": "warning"
+          }
+        },
+        "batch_c_ko": {
+          "status": "requires_source",
+          "generation_group": true,
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "ko"
+          ]
         }
       },
       "animations": {}

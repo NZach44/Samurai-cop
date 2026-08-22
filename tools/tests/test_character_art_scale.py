@@ -8,7 +8,13 @@ from pathlib import Path
 TOOLS_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS_ROOT))
 
-from character_art_pipeline import PngImage, _resample_frame, batch_consistency_error, production_batch_for_animation
+from character_art_pipeline import (
+    PngImage,
+    _resample_frame,
+    assess_neutral_anchor,
+    batch_consistency_error,
+    production_batch_for_animation,
+)
 from spriteframes_importer import batch_import_failure
 
 
@@ -30,7 +36,7 @@ def manifest(multiplier: float = 0.86, crouch_multiplier: float | None = None) -
             "fighter": {
                 "production_batches": {
                     "batch": {
-                        "status": "ready",
+                        "status": "approved",
                         "batch_multiplier": multiplier,
                         "animations": ["crouch", "kick"],
                         "animation_multipliers": {"crouch": crouch_multiplier, "kick": multiplier},
@@ -42,6 +48,11 @@ def manifest(multiplier: float = 0.86, crouch_multiplier: float | None = None) -
 
 
 class BatchAnchoredScaleTests(unittest.TestCase):
+    def test_neutral_anchor_calibrates_generation_scale(self) -> None:
+        assessment = assess_neutral_anchor(anchor_manifest(), image(100, 400), [image(100, 400)])
+        self.assertEqual(assessment.status, "PASS")
+        self.assertEqual(assessment.multiplier, 1.0)
+
     def test_naturally_short_crouch_does_not_change_batch_scale(self) -> None:
         entry = production_batch_for_animation(manifest(), "fighter", "crouch")
         self.assertIsNone(batch_consistency_error(entry[1]))
@@ -77,6 +88,54 @@ class BatchAnchoredScaleTests(unittest.TestCase):
 
     def test_scale_anchor_is_not_a_gameplay_animation(self) -> None:
         self.assertNotIn("scale_anchor", manifest()["animation_order"])
+
+    def test_crouch_pose_height_cannot_drive_scale(self) -> None:
+        anchor = assess_neutral_anchor(anchor_manifest(), image(100, 400), [image(100, 400)])
+        self.assertEqual(anchor.multiplier, 1.0)
+        self.assertEqual(image(80, 200).visible_height, 200)
+
+    def test_jump_pose_height_cannot_drive_scale(self) -> None:
+        anchor = assess_neutral_anchor(anchor_manifest(), image(100, 400), [image(100, 400)])
+        self.assertEqual(anchor.multiplier, 1.0)
+        self.assertEqual(image(90, 240).visible_height, 240)
+
+    def test_ko_width_cannot_drive_scale(self) -> None:
+        anchor = assess_neutral_anchor(anchor_manifest(), image(100, 400), [image(100, 400)])
+        self.assertEqual(anchor.multiplier, 1.0)
+        self.assertEqual(image(420, 90).visible_width, 420)
+
+    def test_hurt_recoil_height_cannot_drive_scale(self) -> None:
+        anchor = assess_neutral_anchor(anchor_manifest(), image(100, 400), [image(100, 400)])
+        self.assertEqual(anchor.multiplier, 1.0)
+        self.assertEqual(image(140, 330).visible_height, 330)
+
+    def test_non_neutral_anchor_is_rejected_by_anatomy(self) -> None:
+        assessment = assess_neutral_anchor(anchor_manifest(), image(200, 380), [image(100, 400)])
+        self.assertEqual(assessment.status, "ERROR")
+        self.assertGreater(assessment.width_ratio, 2.0)
+
+    def test_twenty_percent_generation_scale_drift_is_rejected(self) -> None:
+        assessment = assess_neutral_anchor(anchor_manifest(), image(120, 480), [image(100, 400)])
+        self.assertEqual(assessment.status, "ERROR")
+
+    def test_unapproved_generation_group_cannot_be_imported(self) -> None:
+        pending = manifest()
+        pending["characters"]["fighter"]["production_batches"]["batch"]["status"] = "requires_source"
+        failure = batch_import_failure(pending, "fighter", "crouch", [])
+        self.assertIn("no approved neutral-anchor calibration", failure)
+
+
+def anchor_manifest() -> dict:
+    return {
+        "scale_calibration": {
+            "neutral_anchor_height_pass_tolerance": 0.08,
+            "neutral_anchor_height_warning_tolerance": 0.12,
+            "neutral_anchor_width_pass_tolerance": 0.12,
+            "neutral_anchor_width_warning_tolerance": 0.20,
+            "neutral_anchor_area_pass_tolerance": 0.25,
+            "neutral_anchor_area_warning_tolerance": 0.40,
+        }
+    }
 
 
 if __name__ == "__main__":

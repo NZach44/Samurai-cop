@@ -41,19 +41,23 @@
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_004.png" id="20_bmsfi"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_005.png" id="20_e675n"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_005.png" id="21_irppw"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/hurt/hurt_001.png" id="21_mus6w"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/hurt/hurt_002.png" id="22_4g53n"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_006.png" id="22_ueip4"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
-atlas = ExtResource("1_sheet")
-region = Rect2(192, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
-atlas = ExtResource("1_sheet")
-region = Rect2(96, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/hurt/hurt_003.png" id="23_8pyir"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/jump/jump_001.png" id="28_e675n"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/jump/jump_002.png" id="29_lrkee"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/jump/jump_003.png" id="30_p33gv"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/jump/jump_004.png" id="31_y4dv2"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/jump/jump_005.png" id="32_7sdso"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_001.png" id="39_42sm4"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_002.png" id="40_tvlle"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_003.png" id="41_1trhi"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_004.png" id="42_mbby1"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_005.png" id="43_rbeu4"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_006.png" id="44_7jciy"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_007.png" id="45_iacad"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_008.png" id="46_we0jx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
 atlas = ExtResource("1_sheet")
@@ -152,11 +156,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hurt")
+"texture": ExtResource("21_mus6w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_4g53n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_8pyir")
 }],
 "loop": 0,
 "name": &"hurt",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -177,11 +187,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_jump")
+"texture": ExtResource("28_e675n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_lrkee")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_p33gv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_y4dv2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_7sdso")
 }],
 "loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -208,11 +230,32 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ko")
+"texture": ExtResource("39_42sm4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_tvlle")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_1trhi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_mbby1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_rbeu4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_7jciy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_iacad")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_we0jx")
 }],
 "loop": 0,
 "name": &"ko",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
