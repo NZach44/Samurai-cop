@@ -12,9 +12,11 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import shutil
 import struct
 import sys
+import tempfile
 import zlib
 from collections import Counter
 from dataclasses import dataclass
@@ -51,6 +53,27 @@ class PngImage:
     def scale_metric(self) -> float:
         return math.sqrt(self.visible_width * self.visible_height)
 
+    @property
+    def long_axis(self) -> int:
+        return max(self.visible_width, self.visible_height)
+
+
+@dataclass(frozen=True)
+class ScaleAssessment:
+    status: str
+    metric_name: str
+    measured: float
+    target: float
+    ratio: float
+
+
+@dataclass(frozen=True)
+class BaselineAssessment:
+    status: str
+    measured: float
+    target: float
+    delta: float
+
 
 class Report:
     def __init__(self) -> None:
@@ -80,6 +103,20 @@ def load_manifest() -> dict:
         return json.load(handle)
 
 
+def save_manifest(manifest: dict) -> None:
+    descriptor, temporary_name = tempfile.mkstemp(prefix=".character_art_manifest.", suffix=".json", dir=MANIFEST_PATH.parent)
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            json.dump(manifest, handle, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_path, MANIFEST_PATH)
+    finally:
+        temporary_path.unlink(missing_ok=True)
+
+
 def animation_config(manifest: dict, character_id: str, animation: str) -> dict:
     result = dict(manifest["animations"][animation])
     result.update(manifest["characters"][character_id].get("animations", {}).get(animation, {}))
@@ -92,10 +129,15 @@ def expected_frame_paths(manifest: dict, character_id: str, animation: str) -> l
     return [folder / f"{animation}_{number:03d}.png" for number in range(1, frame_count + 1)]
 
 
+def generated_batch_root(manifest: dict, character_id: str) -> Path:
+    relative_root = manifest["batch_contract"]["source_root"].format(character_id=character_id)
+    return PROJECT_ROOT / relative_root
+
+
 def initialize_character_directories(manifest: dict, character_id: str) -> tuple[int, int]:
     """Create the manifest-defined production tree without touching existing files."""
     character_root = PROJECT_ROOT / "assets" / "characters" / character_id
-    expected_directories = [character_root, character_root / "design", character_root / "sprites"]
+    expected_directories = [character_root, character_root / "design", character_root / "sprites", generated_batch_root(manifest, character_id)]
     expected_directories.extend(character_root / "sprites" / animation for animation in manifest["animation_order"])
     created = existing = 0
     for directory in expected_directories:
@@ -242,10 +284,142 @@ def reference_statistics(manifest: dict, animations: Iterable[str]) -> dict[str,
         images = [image for image in images if image.alpha_bounds is not None]
         if images:
             result[animation] = {
+                "width": median(image.visible_width for image in images),
                 "height": median(image.visible_height for image in images),
+                "long_axis": median(image.long_axis for image in images),
                 "baseline": median(image.alpha_bounds[3] for image in images if image.alpha_bounds),
             }
     return result
+
+
+def scale_profile(manifest: dict, character_id: str) -> dict | None:
+    profile = manifest["characters"][character_id].get("scale_profile")
+    return profile if isinstance(profile, dict) else None
+
+
+def classify_ratio(manifest: dict, ratio: float) -> str:
+    calibration = manifest["scale_calibration"]
+    deviation = abs(ratio - 1.0)
+    if deviation <= float(calibration["pass_tolerance"]):
+        return "PASS"
+    if deviation <= float(calibration["warning_tolerance"]):
+        return "WARNING"
+    return "ERROR"
+
+
+def assess_animation_scale(
+    manifest: dict,
+    character_id: str,
+    animation: str,
+    images: list[PngImage],
+    references: dict[str, dict[str, float]],
+) -> ScaleAssessment | None:
+    profile = scale_profile(manifest, character_id)
+    reference = references.get(animation)
+    if not profile or not images or not reference:
+        return None
+    height_ratio = float(profile["height_ratio_to_reference"])
+    if animation == "ko":
+        metric_name = "long axis"
+        measured = float(median(image.long_axis for image in images))
+        target = float(reference["long_axis"]) * height_ratio
+    else:
+        metric_name = "height"
+        measured = float(median(image.visible_height for image in images))
+        target = float(reference["height"]) * height_ratio
+    ratio = measured / target if target > 0.0 else 0.0
+    return ScaleAssessment(classify_ratio(manifest, ratio), metric_name, measured, target, ratio)
+
+
+def assess_animation_baseline(
+    manifest: dict,
+    character_id: str,
+    animation: str,
+    images: list[PngImage],
+) -> BaselineAssessment | None:
+    profile = scale_profile(manifest, character_id)
+    if not profile or not images or not bool(animation_config(manifest, character_id, animation)["grounded"]):
+        return None
+    measured = float(median(image.alpha_bounds[3] for image in images if image.alpha_bounds))
+    target = float(profile["target_baseline_y"])
+    delta = measured - target
+    calibration = manifest["scale_calibration"]
+    if abs(delta) <= float(calibration["baseline_pass_pixels"]):
+        status = "PASS"
+    elif abs(delta) <= float(calibration["baseline_warning_pixels"]):
+        status = "WARNING"
+    else:
+        status = "ERROR"
+    return BaselineAssessment(status, measured, target, delta)
+
+
+def calibrate_character_scale(manifest: dict, character_id: str) -> bool:
+    reference_id = manifest["reference_character"]
+    existing_profile = scale_profile(manifest, character_id) or {}
+    reference_animation = str(existing_profile.get("reference_animation", "idle"))
+    character_images: list[PngImage] = []
+    reference_images: list[PngImage] = []
+    try:
+        for path in expected_frame_paths(manifest, character_id, reference_animation):
+            if path.is_file():
+                character_images.append(read_png(path))
+        for path in expected_frame_paths(manifest, reference_id, reference_animation):
+            if path.is_file():
+                reference_images.append(read_png(path))
+    except (OSError, ValueError, zlib.error) as error:
+        print(f"CALIBRATION ERROR {character_id}: {error}", file=sys.stderr)
+        return False
+    expected_count = int(animation_config(manifest, character_id, reference_animation)["frame_count"])
+    if len(character_images) != expected_count or not character_images or not reference_images:
+        print(f"CALIBRATION ERROR {character_id}: complete approved {reference_animation} art is required", file=sys.stderr)
+        return False
+    character_height = float(median(image.visible_height for image in character_images))
+    reference_height = float(median(image.visible_height for image in reference_images))
+    ratio = character_height / reference_height
+    baseline = int(round(median(image.alpha_bounds[3] for image in character_images if image.alpha_bounds)))
+    manifest["characters"][character_id]["scale_profile"] = {
+        "reference_animation": reference_animation,
+        "height_ratio_to_reference": round(ratio, 6),
+        "target_baseline_y": baseline,
+    }
+    print(
+        f"CALIBRATED {character_id}: {reference_animation} median {character_height:.1f}px / "
+        f"{reference_id} {reference_height:.1f}px = {ratio:.3%}; baseline y={baseline}"
+    )
+    return True
+
+
+def production_batch_for_animation(manifest: dict, character_id: str, animation: str) -> tuple[str, dict] | None:
+    for batch_name, batch in manifest["characters"][character_id].get("production_batches", {}).items():
+        if animation in batch.get("animations", []):
+            return batch_name, batch
+    return None
+
+
+def animation_digest(paths: Iterable[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(paths):
+        digest.update(path.name.encode("utf-8"))
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def batch_consistency_error(batch: dict) -> str | None:
+    if batch.get("status") not in {"ready", "reference"}:
+        return f"production batch status is {batch.get('status', 'missing')}"
+    multiplier = float(batch.get("batch_multiplier", 0.0))
+    if multiplier <= 0.0:
+        return "production batch multiplier is missing or invalid"
+    animation_multipliers = batch.get("animation_multipliers", {})
+    for animation in batch.get("animations", []):
+        if animation not in animation_multipliers:
+            return f"normalization multiplier is missing for {animation}"
+        if not math.isclose(float(animation_multipliers[animation]), multiplier, rel_tol=0.0, abs_tol=1e-6):
+            return (
+                f"inconsistent body scale inside production batch: {animation} uses "
+                f"{float(animation_multipliers[animation]):.6f}, batch uses {multiplier:.6f}"
+            )
+    return None
 
 
 def inspect_visual_quality(
@@ -295,22 +469,41 @@ def inspect_visual_quality(
             report.warning(subject, f"ground baseline differs from animation median by {delta:+.0f}px")
 
 
-def report_cross_character_height(animation: str, images: list[PngImage], reference: dict[str, float] | None, report: Report) -> None:
-    if animation == "ko":
-        print("HEIGHT NOT APPLICABLE ko: fallen poses use bounds/background QA instead")
+def report_batch_scale(
+    manifest: dict,
+    character_id: str,
+    animation: str,
+    images: list[PngImage],
+    report: Report,
+) -> None:
+    batch_entry = production_batch_for_animation(manifest, character_id, animation)
+    if batch_entry is None:
+        if images:
+            report.error(animation, "production animation is not assigned to a calibrated batch")
         return
-    if not images or not reference or reference.get("height", 0.0) <= 0.0:
+    batch_name, batch = batch_entry
+    error = batch_consistency_error(batch)
+    if error:
+        report.error(f"{animation} batch scale", f"{batch_name}: {error}")
         return
-    animation_height = median(image.visible_height for image in images)
-    reference_height = reference["height"]
-    ratio = animation_height / reference_height
-    message = f"median {animation_height:.1f}px / Joe {reference_height:.1f}px = {ratio:.1%}"
-    if ratio < 0.75 or ratio > 1.25:
-        report.error(f"{animation} height", message)
-    elif ratio < 0.85 or ratio > 1.15:
-        report.warning(f"{animation} height", message)
+    expected_digest = batch.get("output_digests", {}).get(animation)
+    if expected_digest:
+        paths = expected_frame_paths(manifest, character_id, animation)
+        if animation_digest(path for path in paths if path.is_file()) != expected_digest:
+            report.error(f"{animation} batch scale", f"{batch_name}: production files differ from calibrated batch output")
+            return
+    print(f"BATCH SCALE PASS {animation}: {character_id}/{batch_name} multiplier={float(batch['batch_multiplier']):.6f} SAME SCALE")
+
+    baseline = assess_animation_baseline(manifest, character_id, animation, images)
+    if baseline is None:
+        return
+    baseline_message = f"median y={baseline.measured:.1f}, target y={baseline.target:.1f}, delta={baseline.delta:+.1f}px"
+    if baseline.status == "ERROR":
+        report.error(f"{animation} baseline", baseline_message)
+    elif baseline.status == "WARNING":
+        report.warning(f"{animation} baseline", baseline_message)
     else:
-        print(f"HEIGHT PASS {animation}: {message}")
+        print(f"BASELINE PASS {animation}: {baseline_message}")
 
 
 def validate_character(
@@ -320,6 +513,7 @@ def validate_character(
     report: Report,
     animations: list[str],
     partial: bool,
+    normalizing: bool = False,
 ) -> dict[str, list[PngImage]]:
     print(f"\n=== {character_id} ===")
     sprite_root = PROJECT_ROOT / "assets" / "characters" / character_id / "sprites"
@@ -369,7 +563,7 @@ def validate_character(
         animation_height_median = median(image.visible_height for image in valid_images) if valid_images else None
         animation_bounds_scale_median = median(image.scale_metric for image in valid_images) if valid_images else None
         animation_baseline_median = median(image.alpha_bounds[3] for image in valid_images if image.alpha_bounds) if valid_images else None
-        report_cross_character_height(animation, valid_images, references.get(animation), report)
+        report_batch_scale(manifest, character_id, animation, valid_images, report)
         config = animation_config(manifest, character_id, animation)
         for path, image in images_by_path:
             before = report.errors + report.warnings
@@ -503,55 +697,105 @@ def create_contact_sheet(manifest: dict, character_id: str, animations: list[str
     return output
 
 
-def normalize_character(manifest: dict, character_id: str, report: Report, animations: list[str]) -> Path:
-    output_root = PROJECT_ROOT / "artifacts" / "character_art" / f"{character_id}_normalized"
+def _resample_frame(image: PngImage, multiplier: float, grounded: bool, baseline: int) -> bytearray | None:
+    min_x, min_y, max_x, max_y = image.alpha_bounds
+    source_center_x = (min_x + max_x) / 2.0
+    source_anchor_y = max_y if grounded else (min_y + max_y) / 2.0
+    target_anchor_y = baseline if grounded else image.height / 2.0
+    target_min_x = math.floor((min_x - source_center_x) * multiplier + image.width / 2.0)
+    target_max_x = math.ceil((max_x - source_center_x) * multiplier + image.width / 2.0)
+    target_min_y = math.floor((min_y - source_anchor_y) * multiplier + target_anchor_y)
+    target_max_y = math.ceil((max_y - source_anchor_y) * multiplier + target_anchor_y)
+    if target_min_x < 0 or target_min_y < 0 or target_max_x >= image.width or target_max_y >= image.height:
+        return None
+    output = bytearray(image.width * image.height * 4)
+    for target_y in range(target_min_y, target_max_y + 1):
+        source_y = round((target_y - target_anchor_y) / multiplier + source_anchor_y)
+        for target_x in range(target_min_x, target_max_x + 1):
+            source_x = round((target_x - image.width / 2.0) / multiplier + source_center_x)
+            if 0 <= source_x < image.width and 0 <= source_y < image.height:
+                source = (source_y * image.width + source_x) * 4
+                target = (target_y * image.width + target_x) * 4
+                output[target : target + 4] = image.rgba[source : source + 4]
+    return output
+
+
+def normalize_batch(manifest: dict, character_id: str, batch_name: str, report: Report) -> Path:
+    character = manifest["characters"][character_id]
+    batch = character.get("production_batches", {}).get(batch_name)
+    output_root = PROJECT_ROOT / "artifacts" / "character_art" / f"{character_id}_{batch_name}_normalized"
+    if batch is None:
+        report.error(batch_name, "batch metadata is missing")
+        return output_root
+    source_root = generated_batch_root(manifest, character_id) / batch_name
+    if not source_root.is_dir():
+        report.error(batch_name, f"original batch source is missing: {source_root.relative_to(PROJECT_ROOT)}")
+        return output_root
+    animations = list(batch["animations"])
+    anchor = batch.get("anchor", {"type": "scale_anchor"})
+    approved_idle = [read_png(path) for path in expected_frame_paths(manifest, character_id, "idle") if path.is_file()]
+    approved_height = float(median(image.visible_height for image in approved_idle))
+    if anchor["type"] == "scale_anchor":
+        anchor_path = source_root / manifest["batch_contract"]["anchor_filename"]
+        if not anchor_path.is_file():
+            report.error(batch_name, f"batch scale anchor is missing: {anchor_path.relative_to(PROJECT_ROOT)}")
+            return output_root
+        incoming_height = float(read_png(anchor_path).visible_height)
+        reference_height = approved_height
+        anchor_source = anchor_path.relative_to(PROJECT_ROOT).as_posix()
+    else:
+        anchor_animation = str(anchor["animation"])
+        source_anchor_paths = [source_root / anchor_animation / path.name for path in expected_frame_paths(manifest, character_id, anchor_animation)]
+        if not all(path.is_file() for path in source_anchor_paths):
+            report.error(batch_name, f"original migration anchor frames are missing under {source_root.relative_to(PROJECT_ROOT)}")
+            return output_root
+        incoming_height = float(median(read_png(path).visible_height for path in source_anchor_paths))
+        references = reference_statistics(manifest, ["idle", anchor_animation])
+        reference_height = approved_height * references[anchor_animation]["height"] / references["idle"]["height"]
+        anchor_source = f"{anchor_animation} migration anchor"
+    multiplier = reference_height / incoming_height
+    baseline = int(scale_profile(manifest, character_id)["target_baseline_y"])
+    print(f"BATCH SCALE {character_id}/{batch_name}: anchor={anchor_source}, {incoming_height:.1f}px -> {reference_height:.1f}px, multiplier={multiplier:.6f}, baseline={baseline}")
     if output_root.exists():
         shutil.rmtree(output_root)
-    normalization_scale = float(manifest["characters"][character_id].get("normalization_scale", 1.0))
-    if normalization_scale <= 0.0:
-        report.error(character_id, "normalization_scale must be greater than zero")
-        return output_root
-    target_baseline = int(manifest["canvas"]["target_ground_baseline"])
+    staged: dict[str, list[Path]] = {}
     for animation in animations:
         config = animation_config(manifest, character_id, animation)
-        for source_path in expected_frame_paths(manifest, character_id, animation):
-            if not source_path.is_file():
+        source_paths = [source_root / animation / path.name for path in expected_frame_paths(manifest, character_id, animation)]
+        if not all(path.is_file() for path in source_paths):
+            report.error(animation, f"complete original animation is required under {source_root.relative_to(PROJECT_ROOT)}")
+            continue
+        for source_path in source_paths:
+            image = read_png(source_path)
+            output = _resample_frame(image, multiplier, bool(config["grounded"]), baseline)
+            if output is None:
+                report.error(source_path.name, "uniform batch scale would clip artwork; regenerate or reposition it")
                 continue
-            try:
-                image = read_png(source_path)
-            except (ValueError, zlib.error) as error:
-                report.error(source_path.name, f"normalization skipped: {error}")
-                continue
-            if image.color_type != 6 or image.transparent_pixels == 0 or image.alpha_bounds is None:
-                report.error(source_path.name, "normalization refused because RGBA transparency is invalid")
-                continue
-            visible_ratio = (image.width * image.height - image.transparent_pixels) / (image.width * image.height)
-            if visible_ratio > 0.68 or image.edge_alpha_pixels > (image.width * 4 + image.height * 4) * 0.30:
-                report.error(source_path.name, "normalization refused because background contamination is suspicious")
-                continue
-            min_x, min_y, max_x, max_y = image.alpha_bounds
-            source_center_x = (min_x + max_x) / 2.0
-            source_anchor_y = max_y if config["grounded"] else (min_y + max_y) / 2.0
-            target_anchor_y = target_baseline if config["grounded"] else image.height / 2.0
-            target_min_x = math.floor((min_x - source_center_x) * normalization_scale + image.width / 2.0)
-            target_max_x = math.ceil((max_x - source_center_x) * normalization_scale + image.width / 2.0)
-            target_min_y = math.floor((min_y - source_anchor_y) * normalization_scale + target_anchor_y)
-            target_max_y = math.ceil((max_y - source_anchor_y) * normalization_scale + target_anchor_y)
-            if target_min_x < 0 or target_min_y < 0 or target_max_x >= image.width or target_max_y >= image.height:
-                report.error(source_path.name, "normalization would clip visible artwork; no normalized file was written")
-                continue
-            output = bytearray(image.width * image.height * 4)
-            for target_y in range(target_min_y, target_max_y + 1):
-                source_y = round((target_y - target_anchor_y) / normalization_scale + source_anchor_y)
-                for target_x in range(target_min_x, target_max_x + 1):
-                    source_x = round((target_x - image.width / 2.0) / normalization_scale + source_center_x)
-                    if not (0 <= source_x < image.width and 0 <= source_y < image.height):
-                        continue
-                    source = (source_y * image.width + source_x) * 4
-                    target = (target_y * image.width + target_x) * 4
-                    output[target : target + 4] = image.rgba[source : source + 4]
             target_path = output_root / animation / source_path.name
             write_rgba_png(target_path, image.width, image.height, output)
+            staged.setdefault(animation, []).append(target_path)
+    if report.errors or any(len(staged.get(animation, [])) != len(expected_frame_paths(manifest, character_id, animation)) for animation in animations):
+        print("BATCH NORMALIZATION ABORTED: production PNGs were not modified")
+        return output_root
+    output_digests: dict[str, str] = {}
+    for animation, paths in staged.items():
+        production_folder = PROJECT_ROOT / "assets" / "characters" / character_id / "sprites" / animation
+        production_folder.mkdir(parents=True, exist_ok=True)
+        for path in paths:
+            shutil.copy2(path, production_folder / path.name)
+        output_digests[animation] = animation_digest(production_folder / path.name for path in paths)
+    batch.update({
+        "status": "ready",
+        "anchor_source": anchor_source,
+        "anchor_measured_height": round(incoming_height, 6),
+        "reference_measured_height": round(reference_height, 6),
+        "batch_multiplier": round(multiplier, 6),
+        "baseline": baseline,
+        "normalization_version": int(manifest["batch_contract"]["normalization_version"]),
+        "animation_multipliers": {animation: round(multiplier, 6) for animation in animations},
+        "output_digests": output_digests,
+    })
+    save_manifest(manifest)
     return output_root
 
 
@@ -561,8 +805,14 @@ def parse_arguments() -> argparse.Namespace:
     target.add_argument("character_id", nargs="?", help="stable CharacterData id to process")
     target.add_argument("--all", action="store_true", help="validate all roster characters")
     parser.add_argument("--contact-sheet", action="store_true", help="write ignored visual-QA contact sheet(s)")
-    parser.add_argument("--normalize", action="store_true", help="write conservative normalized copies under ignored artifacts; never overwrites source")
+    parser.add_argument(
+        "--normalize",
+        action="store_true",
+        help="normalize one manifest batch from preserved source originals",
+    )
+    parser.add_argument("--batch", help="manifest production batch to normalize with one anchor-derived multiplier")
     parser.add_argument("--init", action="store_true", help="create manifest-defined design/sprite directories without touching existing art")
+    parser.add_argument("--calibrate-scale", action="store_true", help="calibrate persistent character scale from approved reference art")
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--animations", help="comma-separated animation names to validate strictly; all others are not checked")
     selection.add_argument("--available", action="store_true", help="validate only animation directories that currently contain PNG files")
@@ -601,6 +851,15 @@ def main() -> int:
         print(f"Unknown character id: {', '.join(unknown)}", file=sys.stderr)
         print(f"Known ids: {', '.join(character_ids)}", file=sys.stderr)
         return 2
+    if arguments.normalize and not arguments.batch:
+        print("--normalize requires --batch; independent per-animation normalization is disabled", file=sys.stderr)
+        return 2
+    if arguments.batch and not arguments.normalize:
+        print("--batch is currently used with --normalize", file=sys.stderr)
+        return 2
+    if arguments.batch and (arguments.animations or arguments.available):
+        print("--batch uses its manifest animation list; do not combine it with --animations/--available", file=sys.stderr)
+        return 2
     try:
         requested_animations = parse_requested_animations(manifest, arguments.animations)
     except ValueError as error:
@@ -613,8 +872,24 @@ def main() -> int:
             total_created += created
             total_existing += existing
         print(f"\nINIT COMPLETE: {total_created} directories created, {total_existing} already present")
-        if not arguments.contact_sheet and not arguments.normalize:
+        if not arguments.contact_sheet and not arguments.normalize and not arguments.calibrate_scale:
             return 0
+    if arguments.calibrate_scale:
+        calibration_ok = all(calibrate_character_scale(manifest, character_id) for character_id in targets)
+        if not calibration_ok:
+            return 1
+        save_manifest(manifest)
+        if not arguments.contact_sheet and not arguments.normalize and requested_animations is None and not arguments.available:
+            return 0
+    if arguments.normalize and arguments.batch:
+        report = Report()
+        for character_id in targets:
+            errors_before = report.errors
+            output = normalize_batch(manifest, character_id, arguments.batch, report)
+            if report.errors == errors_before:
+                print(f"NORMALIZED BATCH OUTPUT {output.relative_to(PROJECT_ROOT)}")
+        report.summary("BATCH NORMALIZATION")
+        return 1 if report.errors else 0
     selected_by_character: dict[str, list[str]] = {}
     for character_id in targets:
         if requested_animations is not None:
@@ -638,16 +913,13 @@ def main() -> int:
             print(f"\n=== {character_id} ===")
             print("NOT CHECKED: no animation directories currently contain PNG files")
         else:
-            validate_character(manifest, character_id, references, report, animations, partial)
+            validate_character(manifest, character_id, references, report, animations, partial, arguments.normalize)
         if arguments.contact_sheet:
             output = create_contact_sheet(manifest, character_id, animations)
             if output is None:
                 print(f"CONTACT SHEET SKIPPED {character_id}: no animations selected")
             else:
                 print(f"CONTACT SHEET {output.relative_to(PROJECT_ROOT)}")
-        if arguments.normalize:
-            output = normalize_character(manifest, character_id, report, animations)
-            print(f"NORMALIZED COPIES {output.relative_to(PROJECT_ROOT)}")
     report.summary("ALL CHARACTERS" if arguments.all else targets[0])
     return 1 if report.errors else 0
 

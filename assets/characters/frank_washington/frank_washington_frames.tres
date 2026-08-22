@@ -1,35 +1,47 @@
 [gd_resource type="SpriteFrames" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/placeholder_sheet.svg" id="1_sheet"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/block/block_001.png" id="1_ueip4"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_001.png" id="2_lsagf"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/block/block_002.png" id="2_m0vja"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_002.png" id="3_3vcff"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/block/block_003.png" id="3_a42uy"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_003.png" id="4_ol53v"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch/crouch_001.png" id="4_pv0t8"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch/crouch_002.png" id="5_3fxpg"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_004.png" id="5_ke8d5"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch/crouch_003.png" id="6_mw8rj"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_001.png" id="6_xcqdb"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_block/crouch_block_001.png" id="7_4yps0"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_002.png" id="7_7b8lf"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_003.png" id="8_0viyv"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_block/crouch_block_002.png" id="8_oit4a"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_block/crouch_block_003.png" id="9_k7ux8"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_004.png" id="9_rl0hv"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_001.png" id="10_cimo7"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_005.png" id="10_m37fp"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_002.png" id="11_ayjqu"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/kick/kick_006.png" id="11_s2u4j"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_001.png" id="12_f6wdd"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_003.png" id="12_mcg4c"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_004.png" id="13_2oey2"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_002.png" id="13_qp07y"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_003.png" id="14_0cm22"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_005.png" id="14_qpk54"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_004.png" id="15_5gp0f"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_kick/crouch_kick_006.png" id="15_l87rt"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/punch/punch_005.png" id="16_1ds6a"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_001.png" id="16_2w8wi"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_001.png" id="17_l2lgn"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_002.png" id="17_mus6w"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_003.png" id="18_4g53n"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_002.png" id="18_qd2wb"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_003.png" id="19_3s1jk"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_004.png" id="19_8pyir"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_004.png" id="20_bmsfi"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/crouch_punch/crouch_punch_005.png" id="20_e675n"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_005.png" id="21_irppw"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/walk/walk_006.png" id="22_ueip4"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(432, 0, 48, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
 atlas = ExtResource("1_sheet")
@@ -55,19 +67,88 @@ region = Rect2(288, 0, 48, 128)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_block")
+"texture": ExtResource("1_ueip4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_m0vja")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_a42uy")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"block",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_crouch")
+"texture": ExtResource("4_pv0t8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3fxpg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_mw8rj")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"crouch",
-"speed": 5.0
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_4yps0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_oit4a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_k7ux8")
+}],
+"loop": 0,
+"name": &"crouch_block",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_cimo7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_ayjqu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_mcg4c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_2oey2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_qpk54")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_l87rt")
+}],
+"loop": 0,
+"name": &"crouch_kick",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_2w8wi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_mus6w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_4g53n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_8pyir")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_e675n")
+}],
+"loop": 0,
+"name": &"crouch_punch",
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,

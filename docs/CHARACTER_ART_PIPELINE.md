@@ -45,19 +45,29 @@ Initialization creates only `design/`, `sprites/`, and the animation directories
 
 Files use `<animation>_<three-digit frame>.png`, starting at 001. Every production frame must be a non-interlaced 512x512, 8-bit RGBA PNG with actual transparent pixels. Artwork faces right; Godot supplies left-facing visuals with `flip_h`.
 
-## 5. Baseline and apparent scale
+## 5. Persistent scale calibration
 
-The validator derives a reference height and baseline per animation from Joe's completed production set. Cross-character apparent size uses the median visible alpha-bound **height**, not opaque area, width, or bounding-box area. This lets a slim fighter and a heavy fighter share a believable stature without forcing equal body width.
+Joe's completed production set is the global technical reference. Every production character has one persistent `scale_profile` in [`data/character_art_manifest.json`](../data/character_art_manifest.json). After the character's approved idle batch exists, calibrate it once:
 
-For each non-KO animation, the character median height is compared with the corresponding Joe animation median:
+```bash
+python3 tools/character_art_pipeline.py frank_washington --calibrate-scale
+```
 
-- 85%–115%: pass;
-- 75%–85% or 115%–125%: warning;
-- below 75% or above 125%: error.
+Calibration does not modify PNGs. It stores the approved idle animation, its measured median-height ratio to Joe idle, and the character's approved grounded baseline. Repeating the command with unchanged art is idempotent.
 
-Crouch uses Joe's crouch median rather than standing height. KO skips cross-character height comparison because a fallen pose is naturally wide and short; it retains alpha-coverage, edge, and loose within-animation bounds checks. Individual frames are compared mainly with their own animation median using height, so punch/kick limb extension does not count as body-scale growth merely because width changes.
+Character calibration establishes the approved master body scale. It does not assign target heights to later poses. A crouching person's alpha bounds are naturally shorter and must remain shorter without enlarging the head, torso, hands, or clothing.
 
-Grounded animations are also checked against their own baseline median. Human review remains necessary for intentional effects and unusual poses.
+Every subsequent generation batch includes `scale_anchor.png` under `reference/<character_id>/generated_batches/<batch_name>/`. This local tree is excluded from Git and Godot imports. The pipeline compares that upright neutral anchor with the character's approved idle reference and calculates one multiplier for the entire batch. Every animation and frame in the batch records and uses exactly that multiplier.
+
+The calibrated target thresholds are:
+
+- within ±8%: pass;
+- more than 8% through 15%: warning;
+- more than 15%: error.
+
+Grounded animation baselines pass within 8 pixels of the persistent character baseline, warn through 15 pixels, and error beyond 15 pixels. Individual frames are still compared loosely with their own animation median to catch sudden frame-to-frame growth.
+
+Pose bounding height is not used as proof of body scale. Once its batch anchor is valid, an animation is checked for shared batch metadata, internal frame consistency, transparency, clipping, and baseline. Width is used only for clipping/edge QA, so extended limbs, weapons, and FX never determine body scale.
 
 ## 6. Validator usage
 
@@ -100,13 +110,15 @@ python3 tools/character_art_pipeline.py frank_washington \
 
 This creates `artifacts/character_art/frank_washington_contact_sheet.png`, grouped and labeled by animation. That directory is ignored by Git. Use the sheet to spot identity drift, frame splitting errors, scale changes, baseline wobble, and unexpected fragments.
 
-## 8. Conservative normalization
+## 8. Batch-anchored normalization
 
 ```bash
-python3 tools/character_art_pipeline.py frank_washington --normalize
+python3 tools/character_art_pipeline.py frank_washington --batch batch_c --normalize
 ```
 
-Normalization never overwrites source PNGs. It writes review copies under `artifacts/character_art/frank_washington_normalized/`, centers visible content, applies one explicit manifest character-level `normalization_scale`, and aligns grounded frames to the manifest baseline. It does not derive scale from alpha area and does not widen slim fighters. One coherent character scale is applied across every selected pose rather than independently resizing frames. A wide punch/kick that cannot fit is reported instead of silently shrinking the whole set.
+Original generated PNGs remain under `reference/<character_id>/generated_batches/<batch_name>/`. The tool measures `scale_anchor.png`, calculates `approved idle height / incoming anchor height`, and applies that one multiplier to every animation/frame listed for the batch in the manifest. It stages normalized output under `artifacts/character_art/` and promotes it only after the complete batch succeeds. The manifest records anchor source/height, reference height, multiplier, baseline, normalization version, animation membership, per-animation multiplier audit values, and output digests.
+
+Grounded output is centered on a clean 512x512 RGBA canvas and translated to the persistent baseline after scaling. Translation never changes body size. Width never controls scale merely because a limb, sword, or effect extends. If the uniform batch scale would clip an extended pose, normalization aborts promotion and requests art correction.
 
 It refuses invalid transparency, suspicious backgrounds, or output that would clip, and never removes backgrounds automatically. `--animations` and `--available` also limit normalization to the selected batch. Review copies before manually replacing production files.
 
@@ -126,17 +138,30 @@ python3 tools/spriteframes_importer.py frank_washington
 python3 tools/spriteframes_importer.py --all
 ```
 
-The Python importer validates complete filename sets, snapshots the existing `.tres`, asks headless Godot to load/save the SpriteFrames through `ResourceSaver`, and verifies that old animation names plus new `res://` texture references survived. If saving or verification fails, it atomically restores the original resource.
+The Python importer validates complete filename sets and batch metadata before replacement. It rejects a batch unless its status is ready/reference and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation. The importer also enforces the shared 128-pixel runtime texture limit; this uniform technical setting is not pose scaling.
+
+The importer snapshots the existing `.tres`, asks headless Godot to load/save the approved animation subset through `ResourceSaver`, and verifies that old animation names plus new `res://` texture references survived. If saving or verification fails, it atomically restores the original resource.
 
 Frames load in deterministic manifest order and use manifest FPS/loop settings. Only complete production animations are replaced. Animations with no production PNGs preserve their existing placeholder or shared Fighter fallback. A partially populated animation folder is an error and prevents that import, so a valid placeholder is never replaced by an incomplete or empty animation.
 
-Recommended workflow:
+Recommended workflow for every roster character:
 
-1. validate the current art batch;
-2. run `spriteframes_importer.py --dry-run`;
-3. import the SpriteFrames resource;
-4. run Godot headless validation;
-5. playtest transitions, facing, scale, and gameplay alignment.
+1. Run `--init`.
+2. Create the canonical design.
+3. Generate core art including approved idle.
+4. Calibrate character scale with `--calibrate-scale`.
+5. For every later batch, include `scale_anchor.png` with the original generated animation folders.
+6. Add the batch animation list to the manifest.
+7. Calculate and apply one multiplier: `python3 tools/character_art_pipeline.py CHARACTER --batch BATCH --normalize`.
+8. Translate grounded frames to the stored baseline (performed by the same command without resizing again).
+9. Validate the production animations.
+10. Generate/review a contact sheet.
+11. Run importer dry-run.
+12. Import.
+13. Run Godot headless validation.
+14. Playtest transitions, facing, anatomy, baseline, and mobile-safe-area alignment.
+
+This sequence applies unchanged to `joe_marshall`, `frank_washington`, `yamashita`, `fujiyama`, `jennifer`, `peggy`, `okamura`, and `nurse`.
 
 The lower-level `update_character_spriteframes.gd` helper is invoked by the Python importer and is not used by the running game.
 
@@ -160,7 +185,7 @@ The game loads normal `.tres` resources referenced by CharacterData. It does not
 
 - **Gray/white halos:** regenerate or correctly unmatte the source; the normalizer must not erase it automatically.
 - **Baked checkerboard:** export real RGBA transparency again.
-- **Oversized art:** compare visible alpha bounds to Joe; normalize consistently or use one justified per-character visual scale, never collision changes.
+- **Oversized art:** use the batch's neutral scale anchor and one batch multiplier. Never fit individual pose bounds, add runtime per-animation scale, or change collisions.
 - **Inconsistent baselines:** align grounded feet in the source canvas, not by moving the physics body.
 - **Frame splitting errors:** remove neighboring-frame fragments, labels, borders, and crop edges.
 - **Unexpected missing frame:** compare folder names/counts to the manifest and use three-digit numbering from 001.

@@ -15,6 +15,14 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
+from character_art_pipeline import (
+    animation_digest,
+    assess_animation_baseline,
+    batch_consistency_error,
+    production_batch_for_animation,
+    read_png,
+)
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "character_art_manifest.json"
@@ -29,6 +37,7 @@ class ImportPlan:
     resource_path: Path
     replacements: dict[str, list[Path]]
     preserved: list[str]
+    skipped: dict[str, str]
     errors: list[str]
 
 
@@ -52,15 +61,30 @@ def project_path(resource_path: str) -> Path:
     return resolved
 
 
+def batch_import_failure(manifest: dict, character_id: str, animation: str, paths: list[Path]) -> str | None:
+    entry = production_batch_for_animation(manifest, character_id, animation)
+    if entry is None:
+        return "production animation is not assigned to a calibrated batch"
+    batch_name, batch = entry
+    error = batch_consistency_error(batch)
+    if error:
+        return f"{batch_name}: {error}"
+    expected_digest = batch.get("output_digests", {}).get(animation)
+    if expected_digest and animation_digest(paths) != expected_digest:
+        return f"{batch_name}: production files differ from calibrated batch output"
+    return None
+
+
 def build_plan(manifest: dict, character_id: str) -> ImportPlan:
     character = manifest["characters"][character_id]
     errors: list[str] = []
     replacements: dict[str, list[Path]] = {}
     preserved: list[str] = []
+    skipped: dict[str, str] = {}
     try:
         resource_path = project_path(character["sprite_frames"])
     except ValueError as error:
-        return ImportPlan(character_id, PROJECT_ROOT, replacements, preserved, [str(error)])
+        return ImportPlan(character_id, PROJECT_ROOT, replacements, preserved, skipped, [str(error)])
     if not resource_path.is_file():
         errors.append(f"SpriteFrames resource does not exist: {resource_path.relative_to(PROJECT_ROOT)}")
     else:
@@ -93,8 +117,38 @@ def build_plan(manifest: dict, character_id: str) -> ImportPlan:
         if invalid_pngs:
             errors.append(f"{animation}: invalid PNG signature: {', '.join(invalid_pngs)}")
         if not missing and not extras and not invalid_pngs:
+            try:
+                images = [read_png(path) for path in expected]
+            except (OSError, ValueError) as error:
+                skipped[animation] = f"production art could not be decoded: {error}"
+                continue
+            invalid_visual = next(
+                (
+                    path.name
+                    for path, image in zip(expected, images)
+                    if (image.width, image.height) != (512, 512)
+                    or image.color_type != 6
+                    or image.transparent_pixels == 0
+                    or image.alpha_bounds is None
+                ),
+                None,
+            )
+            if invalid_visual:
+                skipped[animation] = f"production art failed PNG/transparency validation ({invalid_visual})"
+                continue
+            batch_failure = batch_import_failure(manifest, character_id, animation, expected)
+            if batch_failure is not None:
+                skipped[animation] = batch_failure
+                continue
+            baseline = assess_animation_baseline(manifest, character_id, animation, images)
+            if baseline is not None and baseline.status == "ERROR":
+                skipped[animation] = (
+                    f"production art failed baseline calibration: y={baseline.measured:.1f}, "
+                    f"target={baseline.target:.1f} ({baseline.delta:+.1f}px)"
+                )
+                continue
             replacements[animation] = expected
-    return ImportPlan(character_id, resource_path, replacements, preserved, errors)
+    return ImportPlan(character_id, resource_path, replacements, preserved, skipped, errors)
 
 
 def print_plan(manifest: dict, plan: ImportPlan) -> None:
@@ -104,6 +158,8 @@ def print_plan(manifest: dict, plan: ImportPlan) -> None:
     for animation in manifest["animation_order"]:
         if animation in plan.replacements:
             print(f"REPLACE {animation} with {len(plan.replacements[animation])} production frames")
+        elif animation in plan.skipped:
+            print(f"SKIP {animation}: {plan.skipped[animation]}")
         else:
             print(f"PRESERVE {animation} placeholder/fallback (no production PNGs)")
     for error in plan.errors:
@@ -154,6 +210,44 @@ def run_godot(arguments: list[str]) -> subprocess.CompletedProcess[str]:
         log_path.unlink(missing_ok=True)
 
 
+def enforce_runtime_texture_limit(plans: list[ImportPlan], size_limit: int) -> tuple[int, list[str]]:
+    changed = 0
+    errors: list[str] = []
+    for plan in plans:
+        for paths in plan.replacements.values():
+            for path in paths:
+                import_path = path.with_name(path.name + ".import")
+                try:
+                    text = import_path.read_text(encoding="utf-8")
+                except OSError as error:
+                    errors.append(f"{import_path.relative_to(PROJECT_ROOT)}: {error}")
+                    continue
+                replacement, count = re.subn(r"process/size_limit=\d+", f"process/size_limit={size_limit}", text, count=1)
+                if count != 1:
+                    errors.append(f"{import_path.relative_to(PROJECT_ROOT)}: process/size_limit setting is missing")
+                    continue
+                if replacement != text:
+                    import_path.write_text(replacement, encoding="utf-8")
+                    changed += 1
+    return changed, errors
+
+
+def runtime_texture_limit_mismatches(plan: ImportPlan, size_limit: int) -> int:
+    mismatches = 0
+    for paths in plan.replacements.values():
+        for path in paths:
+            import_path = path.with_name(path.name + ".import")
+            try:
+                text = import_path.read_text(encoding="utf-8")
+            except OSError:
+                mismatches += 1
+                continue
+            match = re.search(r"process/size_limit=(\d+)", text)
+            if match is None or int(match.group(1)) != size_limit:
+                mismatches += 1
+    return mismatches
+
+
 def import_plan(plan: ImportPlan, godot_command: str) -> bool:
     if not plan.replacements:
         print(f"NO CHANGES {plan.character_id}: no complete production animations found")
@@ -170,6 +264,7 @@ def import_plan(plan: ImportPlan, godot_command: str) -> bool:
         str(GODOT_IMPORTER),
         "--",
         plan.character_id,
+        "--animations=" + ",".join(plan.replacements),
     ]
     result = run_godot(command)
     if result.stdout.strip():
@@ -218,6 +313,11 @@ def main() -> int:
         print("\nIMPORT ABORTED: fix the reported production/resource errors before importing.", file=sys.stderr)
         return 1
     if arguments.dry_run:
+        size_limit = int(manifest["canvas"]["runtime_texture_size_limit"])
+        for plan in plans:
+            mismatches = runtime_texture_limit_mismatches(plan, size_limit)
+            if mismatches:
+                print(f"IMPORT SETTINGS {plan.character_id}: would normalize {mismatches} texture import(s) to size_limit={size_limit}")
         print("\nDRY RUN COMPLETE: no resources were modified.")
         return 0
 
@@ -237,6 +337,20 @@ def main() -> int:
             print(import_scan.stderr.rstrip(), file=sys.stderr)
         print("Asset import scan failed; no SpriteFrames resources were modified.", file=sys.stderr)
         return 1
+
+    size_limit = int(manifest["canvas"]["runtime_texture_size_limit"])
+    changed_imports, import_setting_errors = enforce_runtime_texture_limit(plans, size_limit)
+    if import_setting_errors:
+        for error in import_setting_errors:
+            print(f"ERROR {error}", file=sys.stderr)
+        print("Texture import calibration failed; no SpriteFrames resources were modified.", file=sys.stderr)
+        return 1
+    if changed_imports:
+        print(f"IMPORT SETTINGS: normalized {changed_imports} texture import(s) to size_limit={size_limit}")
+        import_scan = run_godot([godot_command, "--headless", "--editor", "--quit", "--path", str(PROJECT_ROOT)])
+        if import_scan.returncode != 0:
+            print("Calibrated texture reimport failed; no SpriteFrames resources were modified.", file=sys.stderr)
+            return 1
 
     success = all(import_plan(plan, godot_command) for plan in plans)
     return 0 if success else 1

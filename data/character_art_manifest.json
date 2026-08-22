@@ -1,33 +1,316 @@
 {
-  "schema_version": 1,
+  "schema_version": 3,
   "description": "Visual-only production metadata. Combat timing, damage, collision, and fighter state do not belong here.",
-  "canvas": { "width": 512, "height": 512, "mode": "RGBA", "facing": "right", "target_ground_baseline": 488 },
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "mode": "RGBA",
+    "facing": "right",
+    "target_ground_baseline": 495,
+    "runtime_texture_size_limit": 128
+  },
+  "scale_calibration": {
+    "pass_tolerance": 0.08,
+    "warning_tolerance": 0.15,
+    "baseline_pass_pixels": 8,
+    "baseline_warning_pixels": 15
+  },
+  "batch_contract": {
+    "normalization_version": 3,
+    "source_root": "reference/{character_id}/generated_batches",
+    "anchor_filename": "scale_anchor.png"
+  },
   "reference_character": "joe_marshall",
-  "animation_order": ["idle", "walk", "punch", "kick", "crouch", "crouch_punch", "crouch_kick", "block", "crouch_block", "jump", "hurt", "special_1", "special_2", "ko"],
+  "animation_order": [
+    "idle",
+    "walk",
+    "punch",
+    "kick",
+    "crouch",
+    "crouch_punch",
+    "crouch_kick",
+    "block",
+    "crouch_block",
+    "jump",
+    "hurt",
+    "special_1",
+    "special_2",
+    "ko"
+  ],
   "animations": {
-    "idle": { "frame_count": 4, "fps": 6.0, "loop": true, "hold_final": false, "grounded": true },
-    "walk": { "frame_count": 6, "fps": 9.0, "loop": true, "hold_final": false, "grounded": true },
-    "punch": { "frame_count": 5, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "kick": { "frame_count": 6, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "crouch": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
-    "crouch_punch": { "frame_count": 5, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "crouch_kick": { "frame_count": 6, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "block": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
-    "crouch_block": { "frame_count": 3, "fps": 8.0, "loop": false, "hold_final": true, "grounded": true },
-    "jump": { "frame_count": 5, "fps": 10.0, "loop": false, "hold_final": false, "grounded": false },
-    "hurt": { "frame_count": 3, "fps": 10.0, "loop": false, "hold_final": true, "grounded": true },
-    "special_1": { "frame_count": 8, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "special_2": { "frame_count": 8, "fps": 12.0, "loop": false, "hold_final": false, "grounded": true },
-    "ko": { "frame_count": 8, "fps": 10.0, "loop": false, "hold_final": true, "grounded": true }
+    "idle": {
+      "frame_count": 4,
+      "fps": 6.0,
+      "loop": true,
+      "hold_final": false,
+      "grounded": true
+    },
+    "walk": {
+      "frame_count": 6,
+      "fps": 9.0,
+      "loop": true,
+      "hold_final": false,
+      "grounded": true
+    },
+    "punch": {
+      "frame_count": 5,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "kick": {
+      "frame_count": 6,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "crouch": {
+      "frame_count": 3,
+      "fps": 8.0,
+      "loop": false,
+      "hold_final": true,
+      "grounded": true
+    },
+    "crouch_punch": {
+      "frame_count": 5,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "crouch_kick": {
+      "frame_count": 6,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "block": {
+      "frame_count": 3,
+      "fps": 8.0,
+      "loop": false,
+      "hold_final": true,
+      "grounded": true
+    },
+    "crouch_block": {
+      "frame_count": 3,
+      "fps": 8.0,
+      "loop": false,
+      "hold_final": true,
+      "grounded": true
+    },
+    "jump": {
+      "frame_count": 5,
+      "fps": 10.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": false
+    },
+    "hurt": {
+      "frame_count": 3,
+      "fps": 10.0,
+      "loop": false,
+      "hold_final": true,
+      "grounded": true
+    },
+    "special_1": {
+      "frame_count": 8,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "special_2": {
+      "frame_count": 8,
+      "fps": 12.0,
+      "loop": false,
+      "hold_final": false,
+      "grounded": true
+    },
+    "ko": {
+      "frame_count": 8,
+      "fps": 10.0,
+      "loop": false,
+      "hold_final": true,
+      "grounded": true
+    }
   },
   "characters": {
-    "joe_marshall": { "sprite_frames": "res://assets/characters/joe_marshall/joe_marshall_frames.tres", "visual_scale_override": 1.5, "normalization_scale": 1.0, "animations": { "block": { "frame_count": 4, "fps": 10.0 }, "hurt": { "fps": 12.0 } } },
-    "frank_washington": { "sprite_frames": "res://assets/characters/frank_washington/frank_washington_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "yamashita": { "sprite_frames": "res://assets/characters/yamashita/yamashita_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "fujiyama": { "sprite_frames": "res://assets/characters/fujiyama/fujiyama_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "jennifer": { "sprite_frames": "res://assets/characters/jennifer/jennifer_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "peggy": { "sprite_frames": "res://assets/characters/peggy/peggy_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "okamura": { "sprite_frames": "res://assets/characters/okamura/okamura_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} },
-    "nurse": { "sprite_frames": "res://assets/characters/nurse/nurse_frames.tres", "visual_scale_override": null, "normalization_scale": 1.0, "animations": {} }
+    "joe_marshall": {
+      "sprite_frames": "res://assets/characters/joe_marshall/joe_marshall_frames.tres",
+      "visual_scale_override": 1.5,
+      "scale_profile": {
+        "reference_animation": "idle",
+        "height_ratio_to_reference": 1.0,
+        "target_baseline_y": 495
+      },
+      "production_batches": {
+        "complete_reference": {
+          "status": "reference",
+          "anchor_source": "approved idle",
+          "anchor_measured_height": 467.5,
+          "reference_measured_height": 467.5,
+          "batch_multiplier": 1.0,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animations": [
+            "idle",
+            "walk",
+            "punch",
+            "kick",
+            "crouch",
+            "crouch_punch",
+            "crouch_kick",
+            "block",
+            "crouch_block",
+            "jump",
+            "hurt",
+            "special_1",
+            "special_2",
+            "ko"
+          ],
+          "animation_multipliers": {
+            "idle": 1.0,
+            "walk": 1.0,
+            "punch": 1.0,
+            "kick": 1.0,
+            "crouch": 1.0,
+            "crouch_punch": 1.0,
+            "crouch_kick": 1.0,
+            "block": 1.0,
+            "crouch_block": 1.0,
+            "jump": 1.0,
+            "hurt": 1.0,
+            "special_1": 1.0,
+            "special_2": 1.0,
+            "ko": 1.0
+          }
+        }
+      },
+      "animations": {
+        "block": {
+          "frame_count": 4,
+          "fps": 10.0
+        },
+        "hurt": {
+          "fps": 12.0
+        },
+        "special_2": {
+          "grounded": false
+        }
+      }
+    },
+    "frank_washington": {
+      "sprite_frames": "res://assets/characters/frank_washington/frank_washington_frames.tres",
+      "visual_scale_override": 1.7,
+      "scale_profile": {
+        "reference_animation": "idle",
+        "height_ratio_to_reference": 0.879144,
+        "target_baseline_y": 495
+      },
+      "production_batches": {
+        "core": {
+          "status": "ready",
+          "anchor_source": "approved idle",
+          "anchor_measured_height": 411.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 1.0,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animations": [
+            "idle",
+            "walk",
+            "punch",
+            "kick"
+          ],
+          "animation_multipliers": {
+            "idle": 1.0,
+            "walk": 1.0,
+            "punch": 1.0,
+            "kick": 1.0
+          },
+          "output_digests": {
+            "idle": "4bf5c78b7dd6b2c99e7141c70cff268ebe1d839e548c66c8abe29e6dbde29eb1",
+            "walk": "455be52e888faae72e229752a97bc7c977df18b4ac347ccbcb5bb16cc8a779f3",
+            "punch": "5a6c17aa2020037dd24605cb0cef49d86e91bae4466f6608e7fc20cf6ec3051d",
+            "kick": "914c9b7dd3d52d427172f18377fb728a1c8fd581bffac770a321c68e86237baf"
+          }
+        },
+        "batch_b": {
+          "status": "ready",
+          "anchor": {
+            "type": "pose_ratio",
+            "animation": "block"
+          },
+          "anchor_source": "block migration anchor",
+          "anchor_measured_height": 417.0,
+          "reference_measured_height": 358.690909,
+          "batch_multiplier": 0.86017,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animations": [
+            "crouch",
+            "crouch_punch",
+            "crouch_kick",
+            "block",
+            "crouch_block"
+          ],
+          "animation_multipliers": {
+            "crouch": 0.86017,
+            "crouch_punch": 0.86017,
+            "crouch_kick": 0.86017,
+            "block": 0.86017,
+            "crouch_block": 0.86017
+          },
+          "source_required": "reference/frank_washington/generated_batches/batch_b",
+          "output_digests": {
+            "crouch": "3f6b89c69ec8abaf60d1a9d09a5193d0330033c1d0df0bcdd548056abc9fb723",
+            "crouch_punch": "e5b7c557f93ecbf018ceab2d7464c8d661960e0f541a1c7b254955f166517bc0",
+            "crouch_kick": "cb4c8b9dcdf68f04ad497316a5182c7b55a75d786f4f4c24b8134f0a04e92c84",
+            "block": "71c0e9bae51290ef48a1a4e4e628225b4d70617cfe65e5ff1797517b93f1d8f1",
+            "crouch_block": "55410ffc0b78dc38bbf6fdccb2a05a20a10b5024d6d214c594a56cb9f52edac2"
+          }
+        }
+      },
+      "animations": {}
+    },
+    "yamashita": {
+      "sprite_frames": "res://assets/characters/yamashita/yamashita_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    },
+    "fujiyama": {
+      "sprite_frames": "res://assets/characters/fujiyama/fujiyama_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    },
+    "jennifer": {
+      "sprite_frames": "res://assets/characters/jennifer/jennifer_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    },
+    "peggy": {
+      "sprite_frames": "res://assets/characters/peggy/peggy_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    },
+    "okamura": {
+      "sprite_frames": "res://assets/characters/okamura/okamura_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    },
+    "nurse": {
+      "sprite_frames": "res://assets/characters/nurse/nurse_frames.tres",
+      "visual_scale_override": null,
+      "scale_profile": null,
+      "animations": {}
+    }
   }
 }

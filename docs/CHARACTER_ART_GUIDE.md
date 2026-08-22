@@ -23,11 +23,17 @@ All source artwork faces right. Left-facing gameplay uses `AnimatedSprite2D.flip
 
 Characters use a consistent apparent scale and must remain readable on small Android screens. Joe Marshall's completed production art is the current technical reference. A 512x512 canvas does not imply that visible artwork should fill the canvas: visible alpha bounds determine apparent scale.
 
-A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. The art manifest's optional visual-scale override is production metadata; applying it to CharacterData remains an explicit integration decision.
+A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. Each character also has one persistent production-art scale profile calibrated from approved idle art. Every later generated batch receives one anchor-derived multiplier shared by every pose in that batch; crouch and other short poses are never enlarged merely to match a reference bounding-box height.
+
+### Batch scale anchor
+
+Every newly generated batch must include one development-only `scale_anchor.png` made in the same generation batch as its animations. The anchor shows the same canonical character standing upright in a neutral pose, facing right, without FX, on a transparent background. Its apparent head, torso, hands, clothes, and overall anatomy establish that batch's intrinsic scale.
+
+Store incoming originals under `reference/<character_id>/generated_batches/<batch_name>/`, with `scale_anchor.png` beside animation subdirectories. This ignored, `.gdignore`-protected tree is local development material. The anchor is never copied into `sprites/` or imported into `SpriteFrames`.
 
 ## 5. Ground Baseline
 
-Grounded animations share a consistent feet baseline: idle, walk, punch, kick, crouch, block, hurt, grounded portions of specials, and the KO final pose. Changing animation must not make the fighter float or sink. Normalize the artwork, not the `CharacterBody2D` position.
+Grounded animations share the character baseline stored in the art manifest: idle, walk, punch, kick, crouch, block, hurt, grounded portions of specials, and the KO final pose. Batch normalization applies one uniform scale first, then translates each grounded frame vertically to the baseline without changing its dimensions. Changing animation must not make the fighter float or sink.
 
 ## 6. Animation Names
 

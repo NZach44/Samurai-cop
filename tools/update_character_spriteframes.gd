@@ -69,8 +69,11 @@ func _update_character(character_id: String, manifest: Dictionary) -> void:
 	var defaults: Dictionary = manifest["animations"]
 	var overrides: Dictionary = character_config.get("animations", {})
 	var animation_order: Array = manifest["animation_order"]
+	var allowed_animations := _requested_animations(OS.get_cmdline_user_args())
 	for animation_value: Variant in animation_order:
 		var animation_name := String(animation_value)
+		if not allowed_animations.is_empty() and not allowed_animations.has(animation_name):
+			continue
 		var config: Dictionary = defaults[animation_name].duplicate(true)
 		if overrides.has(animation_name):
 			var animation_override: Dictionary = overrides[animation_name]
@@ -98,6 +101,16 @@ func _update_character(character_id: String, manifest: Dictionary) -> void:
 		if save_error != OK:
 			push_error("[%s] Could not save %s (error %d)" % [character_id, frames_path, save_error])
 			_failures += 1
+
+
+func _requested_animations(arguments: PackedStringArray) -> Array[String]:
+	var requested: Array[String] = []
+	for argument: String in arguments:
+		if not argument.begins_with("--animations="):
+			continue
+		for animation: String in argument.trim_prefix("--animations=").split(",", false):
+			requested.append(animation)
+	return requested
 
 
 func _load_complete_animation(character_id: String, animation_name: String, frame_count: int, dry_run: bool) -> Array[Texture2D]:
