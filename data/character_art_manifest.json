@@ -372,7 +372,7 @@
           }
         },
         "batch_c_ko": {
-          "status": "requires_source",
+          "status": "approved",
           "generation_group": true,
           "anchor": {
             "type": "neutral_standing",
@@ -380,7 +380,25 @@
           },
           "animations": [
             "ko"
-          ]
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_c_ko/scale_anchor.png",
+          "anchor_measured_height": 429.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 0.958042,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "ko": 0.958042
+          },
+          "output_digests": {
+            "ko": "eb6593bdc9788138ce83bc24172ee907aca66ae30300973b06860cd883e81691"
+          },
+          "anchor_metrics": {
+            "height_ratio": 1.043796,
+            "height_normalized_width_ratio": 1.142037,
+            "height_normalized_alpha_area_ratio": 1.275526,
+            "assessment": "warning"
+          }
         }
       },
       "animations": {}
