@@ -1,6 +1,5 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/block/block_001.png" id="1_ueip4"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/idle/idle_001.png" id="2_lsagf"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/block/block_002.png" id="2_m0vja"]
@@ -58,14 +57,22 @@
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_006.png" id="44_7jciy"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_007.png" id="45_iacad"]
 [ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/ko/ko_008.png" id="46_we0jx"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
-atlas = ExtResource("1_sheet")
-region = Rect2(240, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_001.png" id="52_we0jx"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_002.png" id="53_p07mq"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_003.png" id="54_afnpc"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_004.png" id="55_km7av"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_005.png" id="56_ppjhm"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_006.png" id="57_7xlj4"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_007.png" id="58_gmx56"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_1/special_1_008.png" id="59_1hk0j"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_001.png" id="60_iosja"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_002.png" id="61_e7txb"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_003.png" id="62_qoxpm"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_004.png" id="63_28okj"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_005.png" id="64_1w4lh"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_006.png" id="65_igv2o"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_007.png" id="66_gaawo"]
+[ext_resource type="Texture2D" path="res://assets/characters/frank_washington/sprites/special_2/special_2_008.png" id="67_7w1si"]
 
 [resource]
 animations = [{
@@ -279,19 +286,61 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_special_1")
+"texture": ExtResource("52_we0jx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_p07mq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_afnpc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_km7av")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_ppjhm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57_7xlj4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_gmx56")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_1hk0j")
 }],
 "loop": 0,
 "name": &"special_1",
-"speed": 5.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_special_2")
+"texture": ExtResource("60_iosja")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_e7txb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_qoxpm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_28okj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_1w4lh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_igv2o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_gaawo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_7w1si")
 }],
 "loop": 0,
 "name": &"special_2",
-"speed": 5.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,

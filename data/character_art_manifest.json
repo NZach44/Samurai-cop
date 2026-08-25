@@ -399,6 +399,64 @@
             "height_normalized_alpha_area_ratio": 1.275526,
             "assessment": "warning"
           }
+        },
+        "batch_d_special_1": {
+          "status": "approved",
+          "generation_group": true,
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "special_1"
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_d_special_1/scale_anchor.png",
+          "anchor_measured_height": 383.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 1.073107,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "special_1": 1.073107
+          },
+          "output_digests": {
+            "special_1": "eeeef2a726662cdc0b3d52ded0d1a8f7786bf8a0a3f7ebfdb94cf365620bb4c4"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.931873,
+            "height_normalized_width_ratio": 0.98072,
+            "height_normalized_alpha_area_ratio": 1.020737,
+            "assessment": "pass"
+          }
+        },
+        "batch_d_special_2": {
+          "status": "approved",
+          "generation_group": true,
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "special_2"
+          ],
+          "anchor_source": "reference/frank_washington/generated_batches/batch_d_special_2/scale_anchor.png",
+          "anchor_measured_height": 383.0,
+          "reference_measured_height": 411.0,
+          "batch_multiplier": 1.073107,
+          "baseline": 495,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "special_2": 1.073107
+          },
+          "output_digests": {
+            "special_2": "c3cbadc1acf52d6146c49d316641387adf4b0418c62b015a4d059e85e0a40014"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.931873,
+            "height_normalized_width_ratio": 0.98072,
+            "height_normalized_alpha_area_ratio": 1.020737,
+            "assessment": "pass"
+          }
         }
       },
       "animations": {}
