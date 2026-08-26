@@ -9,7 +9,7 @@ This document defines the visual production standard for all fighter sprite artw
 Every production sprite frame must be:
 
 - PNG;
-- 512x512;
+- 512x512 by default, or the character's manifest-approved larger production canvas;
 - RGBA;
 - transparent background;
 - free of baked checkerboards, UI, labels, frame numbers, and borders;
@@ -23,17 +23,21 @@ All source artwork faces right. Left-facing gameplay uses `AnimatedSprite2D.flip
 
 Characters use a consistent apparent scale and must remain readable on small Android screens. Joe Marshall's completed production art is the current technical reference. A 512x512 canvas does not imply that visible artwork should fill the canvas: visible alpha bounds determine apparent scale.
 
-A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. Each character also has one persistent production-art scale profile calibrated from approved idle art. Every later generated batch receives one anchor-derived multiplier shared by every pose in that batch; crouch and other short poses are never enlarged merely to match a reference bounding-box height.
+A per-character `visual_scale` may normalize genuine body-proportion differences, but sprite scale remains independent from gameplay collision, hurtboxes, pushboxes, and attack hitboxes. Each character has a physical `target_height_ratio_to_reference`, defaulting to Joe Marshall's `1.0` unless an intentional design override is recorded. Incoming generated height is only source scale: core art is uniformly normalized to the target before its persistent production-art scale profile is recorded. Every later generated batch receives one anchor-derived source-to-character multiplier shared by every pose in that batch; crouch and other short poses are never enlarged merely to match a reference bounding-box height.
 
 ### Generation-group neutral scale anchor
 
-Every independently generated animation source is a **generation group** and must include one development-only `scale_anchor.png` generated with those frames. Generate separate groups when an image service can vary intrinsic character scale between rows or requests.
+Every independently generated animation source is a **generation group** and must include one development-only `scale_anchor.png` generated in the same image-generation operation as those frames. Each group declares a stable `source_generation` identifier. Generate separate groups when an image service can vary intrinsic character scale between rows or requests.
 
-The anchor must show the full body upright in a neutral standing or normal fighting-neutral posture: feet naturally grounded, arms relaxed, facing right, transparent background, and no weapon, effect, or motion trail. A crouch, jump, recoil/hurt, block, attack, or fallen/KO pose is never a valid scale anchor. It should closely resemble the approved character idle in height, width, occupied alpha area, head size, torso scale, and limb thickness.
+Copying the core anchor into another generation group is forbidden. Anchors with identical SHA256 content may only be shared by groups that explicitly declare the same `source_generation`. Identical anchor bytes across different source generations fail package validation before normalization or import.
+
+The anchor must show the full body upright in a neutral standing or normal fighting-neutral posture: feet naturally grounded, arms relaxed, facing right, transparent background, and no weapon, effect, or motion trail. A crouch, jump, recoil/hurt, block, attack, or fallen/KO pose is never a valid scale anchor. Its raw pixel height may differ substantially because generation size is source scale, not physical character height. After height normalization, it should closely resemble the approved character idle in width, occupied alpha area, head size, torso scale, and limb thickness.
 
 Store incoming originals under `reference/<character_id>/generated_batches/<batch_name>/`, with `scale_anchor.png` beside animation subdirectories. This ignored, `.gdignore`-protected tree is local development material. The anchor is never copied into `sprites/` or imported into `SpriteFrames`.
 
 The neutral anchor determines one multiplier for its generation group. Every animation frame in that group uses that same multiplier. Animation pose bounds never determine scale: a naturally short crouch stays short, a tucked jump is not enlarged, and a wide KO pose is not shrunk. Grounded baseline correction happens afterward by translation only.
+
+The pipeline also performs deterministic anatomical-scale QA between the same-generation anchor and its action frames. Pose-normalized alpha mass, local alpha-run thickness, and upper-body mass width can reject obvious global shrinkage. This QA never resizes individual frames and never treats full-frame width, weapon reach, or total pose height as scale authority.
 
 ## 5. Ground Baseline
 
@@ -148,7 +152,7 @@ Always test landscape mobile sizes. Faces, limbs, attack poses, and weapon silho
 
 Before integration verify:
 
-- 512x512 RGBA with real transparent pixels;
+- manifest-approved canvas dimensions, RGBA, with real transparent pixels;
 - no baked background or unexpected alpha halo;
 - expected frame count and deterministic filenames;
 - consistent apparent scale and grounded baseline;

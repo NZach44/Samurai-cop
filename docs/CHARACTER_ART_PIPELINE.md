@@ -2,6 +2,70 @@
 
 This is a development-time pipeline for converting approved character designs into ordinary Godot `SpriteFrames` resources. It never runs during gameplay and contains no combat metadata.
 
+## Preferred complete-package workflow
+
+Future character deliveries should be complete packages. After extracting the ZIP in the project root, preflight the package and then process it:
+
+```bash
+python3 tools/process_character_art.py CHARACTER --dry-run
+python3 tools/process_character_art.py CHARACTER
+```
+
+The dry run discovers and validates every declared generation group, reports missing manifest registrations, calculates group multipliers, stages normalization, validates the staged frames, and reports the SpriteFrames import plan. It does not change the manifest, production PNGs, SpriteFrames, or Godot resources.
+
+The normal command performs the same preflight, registers missing groups, promotes all package animations, runs strict validation, creates `artifacts/character_art/CHARACTER_full_contact_sheet.png`, imports SpriteFrames, and runs Godot headless validation. Promotion and import happen only after every group passes. If a later validation or import step fails, the previous character assets, manifest, and SpriteFrames resource are restored.
+
+Each package must include `reference/<character_id>/generated_batches/character_package.json`. Its group names match directories beside the descriptor:
+
+```json
+{
+  "character_id": "yamashita",
+  "groups": {
+    "core": {
+      "source_generation": "yamashita_core_v1",
+      "animations": ["idle", "walk", "punch", "kick"],
+      "anchor": "scale_anchor.png"
+    },
+    "defense_low": {
+      "source_generation": "yamashita_defense_low_v2",
+      "animations": ["crouch", "crouch_punch", "crouch_kick", "block", "crouch_block"],
+      "anchor": "scale_anchor.png"
+    },
+    "jump": {
+      "source_generation": "yamashita_jump_v2",
+      "animations": ["jump"],
+      "anchor": "scale_anchor.png"
+    },
+    "hurt": {
+      "source_generation": "yamashita_hurt_v1",
+      "animations": ["hurt"],
+      "anchor": "scale_anchor.png"
+    },
+    "ko": {
+      "source_generation": "yamashita_ko_v1",
+      "animations": ["ko"],
+      "anchor": "scale_anchor.png"
+    },
+    "special_1": {
+      "source_generation": "yamashita_special_1_v1",
+      "animations": ["special_1"],
+      "anchor": "scale_anchor.png"
+    },
+    "special_2": {
+      "source_generation": "yamashita_special_2_v1",
+      "animations": ["special_2"],
+      "anchor": "scale_anchor.png"
+    }
+  }
+}
+```
+
+An animation may appear in only one group. Every group requires `source_generation`, `anchor`, and `animations`. The anchor must come from the same generation operation as the declared frames. Identical anchor SHA256 content across different `source_generation` values is a hard error; groups may share anchor bytes only when they explicitly share one source generation. Missing groups are registered using this provenance-aware neutral-standing schema. Matching approved metadata is preserved; conflicting approved metadata stops processing instead of being overwritten. If the character has no master scale profile, the package must contain one group with complete `idle` art. The processor reads the character-level `target_height_ratio_to_reference` (default `1.0`), calculates `(Joe idle height * target ratio) / source idle height`, uniformly normalizes the complete core group, and only then records the master profile. Raw source dimensions never become physical character height.
+
+Implicit/default physical ratios must remain within `0.80`–`1.20`; an intentional unusual height outside that range must be explicitly recorded in the character manifest. This sanity gate applies to physical target height, not source scale. A 140px or 500px source fighter is valid and is scaled toward the configured target. Weapon, limb, effect, and fallen-pose width never changes the multiplier. When correct body scale cannot fit the default canvas, a character may declare a larger transparent `production_canvas`; the runtime texture limit must preserve the same canvas-to-import ratio as the roster reference.
+
+After a successful command, inspect the full contact sheet and playtest the character. The manual per-batch commands below remain available for troubleshooting and deliberate recalibration, but manual batch registration is no longer part of the preferred workflow.
+
 ## 1. Canonical-design workflow
 
 1. Keep private screenshots and source media in `reference/<character_id>/`.
@@ -43,7 +107,7 @@ Initialization creates only `design/`, `sprites/`, and the animation directories
 
 ## 4. Filenames and PNG standard
 
-Files use `<animation>_<three-digit frame>.png`, starting at 001. Every production frame must be a non-interlaced 512x512, 8-bit RGBA PNG with actual transparent pixels. Artwork faces right; Godot supplies left-facing visuals with `flip_h`.
+Files use `<animation>_<three-digit frame>.png`, starting at 001. Every production frame must be a non-interlaced, 8-bit RGBA PNG with actual transparent pixels. The default canvas is 512x512. A manifest-approved per-character `production_canvas` may be larger when correct body scale and wide poses need it; every frame for that character uses the same canvas. Artwork faces right; Godot supplies left-facing visuals with `flip_h`.
 
 ## 5. Persistent scale calibration
 
@@ -53,17 +117,17 @@ Joe's completed production set is the global technical reference. Every producti
 python3 tools/character_art_pipeline.py frank_washington --calibrate-scale
 ```
 
-Calibration does not modify PNGs. It stores the approved idle animation, its measured median-height ratio to Joe idle, the character's approved grounded baseline, and approved neutral median height, width, and occupied-alpha area. Repeating the command with unchanged art is idempotent.
+Calibration does not modify PNGs. It stores the normalized approved idle animation, its target/measured median-height ratio to Joe idle, the character's approved grounded baseline, and approved neutral median height, width, and occupied-alpha area. Repeating the command with unchanged art is idempotent. Package processing performs source-to-target normalization before this calibration; manual calibration is for already normalized production art.
 
 Character calibration establishes the approved master body scale. It does not assign target heights to later poses. A crouching person's alpha bounds are naturally shorter and must remain shorter without enlarging the head, torso, hands, or clothing.
 
-Every subsequent generation group includes `scale_anchor.png` under `reference/<character_id>/generated_batches/<group_name>/`. This local tree is excluded from Git and Godot imports. The anchor must be a full-body, upright, grounded neutral pose—not hurt, block, crouch, jump, attack, or KO. The pipeline compares it with that character's approved idle reference and calculates one multiplier for the group. Every animation and frame in the group records and uses exactly that multiplier.
+Every subsequent generation group includes `scale_anchor.png` under `reference/<character_id>/generated_batches/<group_name>/`. This local tree is excluded from Git and Godot imports. The anchor must be generated with that group's frames and show a full-body, upright, grounded neutral pose—not hurt, block, crouch, jump, attack, or KO. The pipeline records its SHA256 and source-generation provenance, compares it with the character's approved idle reference, and calculates one multiplier for the group. Every animation and frame in the group records and uses exactly that multiplier.
 
 Use separate groups when animations were independently generated, even if they originated from one visual sheet. For example, `batch_c_jump`, `batch_c_hurt`, and `batch_c_ko` each require their own neutral anchor. This guards against image-generation scale drift between rows.
 
-Neutral anchors are checked against approved character idle using:
+Neutral anchors are checked against approved character idle using height-normalized anatomy:
 
-- visible height: ±8% pass, 8–12% warning, over 12% error;
+- raw visible height: informational source scale that determines the multiplier;
 - height-normalized visible width: ±12% pass, 12–20% warning, over 20% error;
 - height-normalized occupied alpha area: ±25% pass, 25–40% warning, over 40% error.
 
@@ -72,6 +136,8 @@ Width and alpha area are secondary anatomy checks. They reject a purported neutr
 Grounded animation baselines pass within 8 pixels of the persistent character baseline, warn through 15 pixels, and error beyond 15 pixels. Individual frames are still compared loosely with their own animation median to catch sudden frame-to-frame growth.
 
 Pose bounding height is not used as proof of body scale. Once its batch anchor is valid, an animation is checked for shared batch metadata, internal frame consistency, transparency, clipping, and baseline. Width is used only for clipping/edge QA, so extended limbs, weapons, and FX never determine body scale.
+
+Action frames receive a secondary morphology check against their same-generation neutral anchor. The check combines pose-normalized alpha mass, local horizontal/vertical alpha-run thickness, and upper-body mass width. It detects obvious global anatomy shrinkage without requiring crouch, jump, KO, or attack bounds to match idle. Failure rejects the whole source group; it never creates per-animation or per-frame scale values.
 
 ## 6. Validator usage
 
@@ -126,7 +192,7 @@ Original generated PNGs remain under `reference/<character_id>/generated_batches
 
 The old broken method compared an action pose with a corresponding pose target and gave each animation its own multiplier. That enlarged crouches and distorted anatomy. The current method uses only a neutral anchor generated with the source frames; action-pose height and KO width never drive scaling.
 
-Grounded output is centered on a clean 512x512 RGBA canvas and translated to the persistent baseline after scaling. Translation never changes body size. Width never controls scale merely because a limb, sword, or effect extends. If the uniform batch scale would clip an extended pose, normalization aborts promotion and requests art correction.
+Grounded output is centered on the character's clean RGBA production canvas and translated to its persistent baseline after scaling. Translation never changes body size. Width never controls scale merely because a limb, sword, or effect extends. If the uniform batch scale would clip an extended pose even on the approved canvas, normalization aborts promotion and requests art correction.
 
 It refuses invalid transparency, suspicious backgrounds, or output that would clip, and never removes backgrounds automatically. `--animations` and `--available` also limit normalization to the selected batch. Review copies before manually replacing production files.
 
@@ -146,13 +212,13 @@ python3 tools/spriteframes_importer.py frank_washington
 python3 tools/spriteframes_importer.py --all
 ```
 
-The Python importer validates complete filename sets and generation-group metadata before replacement. It rejects a group unless its status is `approved` (or `reference` for Joe) and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation. The importer also enforces the shared 128-pixel runtime texture limit; this uniform technical setting is not pose scaling.
+The Python importer validates complete filename sets and generation-group metadata before replacement. It rejects a generation group unless its status is `approved`, its source generation and same-generation anchor SHA256 are valid, anatomical QA passed, and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation and last-known-good SpriteFrames. The default 512px canvas imports at a 128px texture limit. A larger per-character canvas uses a proportionally larger limit (for example, 576px at 144px), preserving the same 0.25 import factor and therefore comparable display scale.
 
 The importer snapshots the existing `.tres`, asks headless Godot to load/save the approved animation subset through `ResourceSaver`, and verifies that old animation names plus new `res://` texture references survived. If saving or verification fails, it atomically restores the original resource.
 
 Frames load in deterministic manifest order and use manifest FPS/loop settings. Only complete production animations are replaced. Animations with no production PNGs preserve their existing placeholder or shared Fighter fallback. A partially populated animation folder is an error and prevents that import, so a valid placeholder is never replaced by an incomplete or empty animation.
 
-Recommended workflow for every roster character:
+Manual troubleshooting workflow:
 
 1. Run `--init`.
 2. Create the canonical design.

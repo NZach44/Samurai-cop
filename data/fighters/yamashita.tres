@@ -13,6 +13,7 @@ alignment = 1
 campaign_tier = 2
 intro_text = "... and then we will see who the real samurai is"
 sprite_frames = ExtResource("4_frames")
+visual_scale = 1.5
 move_speed = 225.0
 jump_velocity = 580.0
 power_multiplier = 1.15

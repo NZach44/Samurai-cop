@@ -1,105 +1,367 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/placeholder_sheet.svg" id="1_sheet"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
-atlas = ExtResource("1_sheet")
-region = Rect2(0, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
-atlas = ExtResource("1_sheet")
-region = Rect2(48, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
-atlas = ExtResource("1_sheet")
-region = Rect2(96, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(144, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
-atlas = ExtResource("1_sheet")
-region = Rect2(192, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
-atlas = ExtResource("1_sheet")
-region = Rect2(240, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
-atlas = ExtResource("1_sheet")
-region = Rect2(384, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(432, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/block/block_001.png" id="1_lrww7"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/block/block_002.png" id="2_v1up3"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/block/block_003.png" id="3_xm2qv"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch/crouch_001.png" id="4_ffylx"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch/crouch_002.png" id="5_8mmfn"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch/crouch_003.png" id="6_bbqvv"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_block/crouch_block_001.png" id="7_2g4t7"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_block/crouch_block_002.png" id="8_3snv8"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_block/crouch_block_003.png" id="9_xjm27"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_001.png" id="10_ls2n3"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_002.png" id="11_lbga2"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_003.png" id="12_buwkp"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_004.png" id="13_1gcht"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_005.png" id="14_lnk3f"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_006.png" id="15_knbsk"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_001.png" id="16_mdn3t"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_002.png" id="17_q4ee4"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_003.png" id="18_qmwr5"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_004.png" id="19_qpo5e"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_005.png" id="20_e285d"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/hurt/hurt_001.png" id="21_urx27"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/hurt/hurt_002.png" id="22_gkvgi"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/hurt/hurt_003.png" id="23_6p2ff"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/idle/idle_001.png" id="24_d7j30"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/idle/idle_002.png" id="25_0c1nh"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/idle/idle_003.png" id="26_8xhw5"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/idle/idle_004.png" id="27_ndojt"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/jump/jump_001.png" id="28_0xwdd"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/jump/jump_002.png" id="29_bwd2k"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/jump/jump_003.png" id="30_bogl2"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/jump/jump_004.png" id="31_btk0y"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/jump/jump_005.png" id="32_ijlkg"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_001.png" id="33_x8dc1"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_002.png" id="34_4714q"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_003.png" id="35_s8ofb"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_004.png" id="36_3e3ed"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_005.png" id="37_ip7gd"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/kick/kick_006.png" id="38_c0nxg"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_001.png" id="39_rj0en"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_002.png" id="40_p3b36"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_003.png" id="41_oc4eh"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_004.png" id="42_omhqh"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_005.png" id="43_xgkq3"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_006.png" id="44_vn32o"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_007.png" id="45_0vwut"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/ko/ko_008.png" id="46_01jbw"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/punch/punch_001.png" id="47_a640p"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/punch/punch_002.png" id="48_uxiom"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/punch/punch_003.png" id="49_btigj"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/punch/punch_004.png" id="50_xna2k"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/punch/punch_005.png" id="51_bffvk"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_001.png" id="52_rrjrf"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_002.png" id="53_mlnth"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_003.png" id="54_rcl51"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_004.png" id="55_byfag"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_005.png" id="56_u3cob"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_006.png" id="57_pspb4"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_007.png" id="58_ovwvh"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_1/special_1_008.png" id="59_ngn1s"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_001.png" id="60_0rrov"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_002.png" id="61_ri8xa"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_003.png" id="62_q61cu"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_004.png" id="63_yv4pj"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_005.png" id="64_ra20b"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_006.png" id="65_7cx8b"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_007.png" id="66_7le6x"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/special_2/special_2_008.png" id="67_ccfyg"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_001.png" id="68_qwuob"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_002.png" id="69_ww6hl"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_003.png" id="70_qvi51"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_004.png" id="71_aw55f"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_005.png" id="72_84p2k"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/sprites/walk/walk_006.png" id="73_toeou"]
 
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lrww7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_v1up3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xm2qv")
+}],
+"loop": 0,
 "name": &"block",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ffylx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8mmfn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_bbqvv")
+}],
+"loop": 0,
 "name": &"crouch",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_2g4t7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_3snv8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_xjm27")
+}],
+"loop": 0,
+"name": &"crouch_block",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_ls2n3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_lbga2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_buwkp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_1gcht")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_lnk3f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_knbsk")
+}],
+"loop": 0,
+"name": &"crouch_kick",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_mdn3t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_q4ee4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_qmwr5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_qpo5e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_e285d")
+}],
+"loop": 0,
+"name": &"crouch_punch",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_urx27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_gkvgi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_6p2ff")
+}],
+"loop": 0,
 "name": &"hurt",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("24_d7j30")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_0c1nh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_8xhw5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_ndojt")
+}],
+"loop": 1,
 "name": &"idle",
-"speed": 5.0
+"speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_0xwdd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_bwd2k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_bogl2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_btk0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_ijlkg")
+}],
+"loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_x8dc1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_4714q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_s8ofb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_3e3ed")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_ip7gd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_c0nxg")
+}],
+"loop": 0,
 "name": &"kick",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_rj0en")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_p3b36")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_oc4eh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_omhqh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_xgkq3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_vn32o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_0vwut")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_01jbw")
+}],
+"loop": 0,
 "name": &"ko",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("47_a640p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_uxiom")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_btigj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_xna2k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_bffvk")
+}],
+"loop": 0,
 "name": &"punch",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("52_rrjrf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_mlnth")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_rcl51")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_byfag")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_u3cob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57_pspb4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_ovwvh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_ngn1s")
+}],
+"loop": 0,
 "name": &"special_1",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("60_0rrov")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_ri8xa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_q61cu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_yv4pj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_ra20b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_7cx8b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_7le6x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_ccfyg")
+}],
+"loop": 0,
 "name": &"special_2",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("68_qwuob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69_ww6hl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_qvi51")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_aw55f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_84p2k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73_toeou")
+}],
+"loop": 1,
 "name": &"walk",
-"speed": 5.0
+"speed": 9.0
 }]

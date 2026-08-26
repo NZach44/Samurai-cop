@@ -19,6 +19,8 @@ from character_art_pipeline import (
     animation_digest,
     assess_animation_baseline,
     batch_consistency_error,
+    canvas_config,
+    generation_batch_provenance_error,
     production_batch_for_animation,
     read_png,
 )
@@ -69,6 +71,9 @@ def batch_import_failure(manifest: dict, character_id: str, animation: str, path
     error = batch_consistency_error(batch)
     if error:
         return f"{batch_name}: {error}"
+    provenance_error = generation_batch_provenance_error(manifest, character_id, batch_name, batch)
+    if provenance_error:
+        return f"{batch_name}: {provenance_error}"
     expected_digest = batch.get("output_digests", {}).get(animation)
     if expected_digest and animation_digest(paths) != expected_digest:
         return f"{batch_name}: production files differ from calibrated batch output"
@@ -126,7 +131,11 @@ def build_plan(manifest: dict, character_id: str) -> ImportPlan:
                 (
                     path.name
                     for path, image in zip(expected, images)
-                    if (image.width, image.height) != (512, 512)
+                    if (image.width, image.height)
+                    != (
+                        int(canvas_config(manifest, character_id)["width"]),
+                        int(canvas_config(manifest, character_id)["height"]),
+                    )
                     or image.color_type != 6
                     or image.transparent_pixels == 0
                     or image.alpha_bounds is None
@@ -313,8 +322,8 @@ def main() -> int:
         print("\nIMPORT ABORTED: fix the reported production/resource errors before importing.", file=sys.stderr)
         return 1
     if arguments.dry_run:
-        size_limit = int(manifest["canvas"]["runtime_texture_size_limit"])
         for plan in plans:
+            size_limit = int(canvas_config(manifest, plan.character_id)["runtime_texture_size_limit"])
             mismatches = runtime_texture_limit_mismatches(plan, size_limit)
             if mismatches:
                 print(f"IMPORT SETTINGS {plan.character_id}: would normalize {mismatches} texture import(s) to size_limit={size_limit}")
@@ -338,15 +347,20 @@ def main() -> int:
         print("Asset import scan failed; no SpriteFrames resources were modified.", file=sys.stderr)
         return 1
 
-    size_limit = int(manifest["canvas"]["runtime_texture_size_limit"])
-    changed_imports, import_setting_errors = enforce_runtime_texture_limit(plans, size_limit)
+    changed_imports = 0
+    import_setting_errors: list[str] = []
+    for plan in plans:
+        size_limit = int(canvas_config(manifest, plan.character_id)["runtime_texture_size_limit"])
+        plan_changed, plan_errors = enforce_runtime_texture_limit([plan], size_limit)
+        changed_imports += plan_changed
+        import_setting_errors.extend(plan_errors)
     if import_setting_errors:
         for error in import_setting_errors:
             print(f"ERROR {error}", file=sys.stderr)
         print("Texture import calibration failed; no SpriteFrames resources were modified.", file=sys.stderr)
         return 1
     if changed_imports:
-        print(f"IMPORT SETTINGS: normalized {changed_imports} texture import(s) to size_limit={size_limit}")
+        print(f"IMPORT SETTINGS: normalized {changed_imports} texture import setting(s) from character canvas profiles")
         import_scan = run_godot([godot_command, "--headless", "--editor", "--quit", "--path", str(PROJECT_ROOT)])
         if import_scan.returncode != 0:
             print("Calibrated texture reimport failed; no SpriteFrames resources were modified.", file=sys.stderr)

@@ -11,6 +11,7 @@ sys.path.insert(0, str(TOOLS_ROOT))
 from character_art_pipeline import (
     PngImage,
     _resample_frame,
+    assess_action_anatomy,
     assess_neutral_anchor,
     batch_consistency_error,
     production_batch_for_animation,
@@ -114,15 +115,52 @@ class BatchAnchoredScaleTests(unittest.TestCase):
         self.assertEqual(assessment.status, "ERROR")
         self.assertGreater(assessment.width_ratio, 2.0)
 
-    def test_twenty_percent_generation_scale_drift_is_rejected(self) -> None:
+    def test_generation_height_is_source_scale_not_physical_height(self) -> None:
         assessment = assess_neutral_anchor(anchor_manifest(), image(120, 480), [image(100, 400)])
+        self.assertEqual(assessment.status, "PASS")
+        self.assertAlmostEqual(assessment.multiplier, 400.0 / 480.0)
+
+    def test_copied_anchor_cannot_hide_seventy_percent_action_anatomy(self) -> None:
+        copied_core_anchor = image(60, 150)
+        undersized_jump_frames = [image(42, 105) for _index in range(5)]
+        assessment = assess_action_anatomy(
+            anchor_manifest(),
+            copied_core_anchor,
+            undersized_jump_frames,
+        )
         self.assertEqual(assessment.status, "ERROR")
+        self.assertAlmostEqual(assessment.alpha_mass_ratio, 0.70, delta=0.02)
+
+    def test_same_generation_crouch_keeps_anchor_multiplier_and_passes_anatomy(self) -> None:
+        same_generation_anchor = image(40, 100)
+        crouch_frames = [image(100, 40) for _index in range(3)]
+        assessment = assess_action_anatomy(anchor_manifest(), same_generation_anchor, crouch_frames)
+        self.assertEqual(assessment.status, "PASS")
+        multiplier = 470.0 / same_generation_anchor.visible_height
+        output = _resample_frame(crouch_frames[0], multiplier, True, 527, 576, 576)
+        self.assertIsNotNone(output)
+        visible = [
+            (x, y)
+            for y in range(576)
+            for x in range(576)
+            if output[(y * 576 + x) * 4 + 3]
+        ]
+        self.assertAlmostEqual(max(x for x, _y in visible) - min(x for x, _y in visible) + 1, 470, delta=4)
+        self.assertAlmostEqual(max(y for _x, y in visible) - min(y for _x, y in visible) + 1, 188, delta=4)
 
     def test_unapproved_generation_group_cannot_be_imported(self) -> None:
         pending = manifest()
         pending["characters"]["fighter"]["production_batches"]["batch"]["status"] = "requires_source"
         failure = batch_import_failure(pending, "fighter", "crouch", [])
         self.assertIn("no approved neutral-anchor calibration", failure)
+
+    def test_importer_rejects_generation_group_without_provenance(self) -> None:
+        missing = manifest()
+        batch = missing["characters"]["fighter"]["production_batches"]["batch"]
+        batch["generation_group"] = True
+        batch["source_generation"] = "fighter_jump_v1"
+        failure = batch_import_failure(missing, "fighter", "crouch", [])
+        self.assertIn("anchor provenance is not valid", failure)
 
 
 def anchor_manifest() -> dict:

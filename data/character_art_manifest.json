@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "description": "Visual-only production metadata. Combat timing, damage, collision, and fighter state do not belong here.",
   "canvas": {
     "width": 512,
@@ -19,10 +19,12 @@
     "neutral_anchor_width_pass_tolerance": 0.12,
     "neutral_anchor_width_warning_tolerance": 0.2,
     "neutral_anchor_area_pass_tolerance": 0.25,
-    "neutral_anchor_area_warning_tolerance": 0.4
+    "neutral_anchor_area_warning_tolerance": 0.4,
+    "action_anatomy_error_ratio": 0.78,
+    "action_anatomy_warning_ratio": 0.86
   },
   "batch_contract": {
-    "normalization_version": 3,
+    "normalization_version": 4,
     "source_root": "reference/{character_id}/generated_batches",
     "anchor_filename": "scale_anchor.png"
   },
@@ -147,6 +149,7 @@
     "joe_marshall": {
       "sprite_frames": "res://assets/characters/joe_marshall/joe_marshall_frames.tres",
       "visual_scale_override": 1.5,
+      "target_height_ratio_to_reference": 1.0,
       "scale_profile": {
         "reference_animation": "idle",
         "height_ratio_to_reference": 1.0,
@@ -211,6 +214,7 @@
     "frank_washington": {
       "sprite_frames": "res://assets/characters/frank_washington/frank_washington_frames.tres",
       "visual_scale_override": 1.7,
+      "target_height_ratio_to_reference": 0.879144,
       "scale_profile": {
         "reference_animation": "idle",
         "height_ratio_to_reference": 0.879144,
@@ -463,15 +467,697 @@
     },
     "yamashita": {
       "sprite_frames": "res://assets/characters/yamashita/yamashita_frames.tres",
-      "visual_scale_override": null,
-      "scale_profile": null,
-      "animations": {}
+      "visual_scale_override": 1.5,
+      "target_height_ratio_to_reference": 1.0,
+      "production_canvas": {
+        "width": 576,
+        "height": 576,
+        "target_ground_baseline": 527,
+        "runtime_texture_size_limit": 144
+      },
+      "scale_profile": {
+        "reference_animation": "idle",
+        "height_ratio_to_reference": 0.996791,
+        "target_height_ratio_to_reference": 1.0,
+        "target_baseline_y": 527,
+        "approved_neutral_metrics": {
+          "median_visible_height": 466.0,
+          "median_visible_width": 323.0,
+          "median_alpha_area": 66413.0
+        },
+        "source_idle_median_height": 146.0,
+        "reference_idle_median_height": 467.5,
+        "target_idle_height": 467.5,
+        "core_source_to_target_multiplier": 3.202055
+      },
+      "scale_profile_invalid_reason": "Invalidated source-derived 0.312299 height ratio; production art must be normalized to the explicit 1.0 physical target.",
+      "animations": {},
+      "production_batches": {
+        "core": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "yamashita_core_v1",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "idle",
+            "walk",
+            "punch",
+            "kick"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/core/scale_anchor.png",
+          "anchor_sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "yamashita_core_v1",
+            "sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580"
+          },
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 467.5,
+          "batch_multiplier": 3.202055,
+          "baseline": 527,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "idle": 3.202055,
+            "walk": 3.202055,
+            "punch": 3.202055,
+            "kick": 3.202055
+          },
+          "output_digests": {
+            "idle": "75df6452a3fc82199f48274501ae70e23179c11dace0758ed3c5b57c86976cac",
+            "walk": "578570e6a830c513403a1a1e2e74fa2639a581aca9f07d5904a0d750c897b2fe",
+            "punch": "d067d6c8c03698716f264387813aef5507c4185fcf1e85de6ffc65ecc35601c3",
+            "kick": "2ac9d453f1b4c2a984852aa39a48227f8a74ceed41a4f859ce0bacab066f9eef"
+          },
+          "anchor_metrics": {
+            "height_ratio": 1.0,
+            "height_normalized_width_ratio": 0.970297,
+            "height_normalized_alpha_area_ratio": 1.001619,
+            "assessment": "pass"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.980313,
+            "median_local_thickness_ratio": 0.894427,
+            "median_upper_body_width_ratio": 1.0
+          }
+        },
+        "defense_low": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "yamashita_defense_low_corrective_scale_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "187d2f7db0ff32c5b872134244ba0f26deee6f67d9b16e49eeeaa7c50cbfe5dd",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "yamashita_defense_low_corrective_scale_v2",
+            "sha256": "187d2f7db0ff32c5b872134244ba0f26deee6f67d9b16e49eeeaa7c50cbfe5dd"
+          },
+          "animations": [
+            "crouch",
+            "crouch_punch",
+            "crouch_kick",
+            "block",
+            "crouch_block"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/defense_low/scale_anchor.png",
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "crouch": 3.191781,
+            "crouch_punch": 3.191781,
+            "crouch_kick": 3.191781,
+            "block": 3.191781,
+            "crouch_block": 3.191781
+          },
+          "output_digests": {
+            "crouch": "882ec3ed401608a02c203da1839bc4b4f25584af5fcc6cfbf54c743714c33c07",
+            "crouch_punch": "8655b1a3dbee8e596d28c6b8cafb6fced0a1f12af1729f5daaf967b440510b76",
+            "crouch_kick": "3cbb8cf1393eb019f584eab46fdad5c9850fbae840fed4c9b60f57e836abab37",
+            "block": "9a2fceb172634e1507e6f9757c807fe4ff9031eff23da0767b5d704a476f2fca",
+            "crouch_block": "cafb6ef1625f3039e4105cbac9c000af166406cb63bccd0fac35612dc73b9c6d"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 1.034959,
+            "median_local_thickness_ratio": 1.47772,
+            "median_upper_body_width_ratio": 1.144068
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        },
+        "jump": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "yamashita_jump_corrective_scale_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "92cb487ba30c4772667c5ef1e65325845245ad864a2aab228c7969abe8faaacb",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "yamashita_jump_corrective_scale_v2",
+            "sha256": "92cb487ba30c4772667c5ef1e65325845245ad864a2aab228c7969abe8faaacb"
+          },
+          "animations": [
+            "jump"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/jump/scale_anchor.png",
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "jump": 3.191781
+          },
+          "output_digests": {
+            "jump": "f144124e479cc8cbc952b94c3153b96995b0a9f67438de5fd9cb41bacdc04165"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.991951,
+            "median_local_thickness_ratio": 0.987421,
+            "median_upper_body_width_ratio": 1.050847
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        },
+        "hurt": {
+          "status": "requires_source_calibration",
+          "generation_group": true,
+          "source_generation": "yamashita_hurt_v1",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "hurt"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/hurt/scale_anchor.png",
+          "anchor_sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+          "anchor_provenance": {
+            "status": "invalid",
+            "source_generation": "yamashita_hurt_v1",
+            "sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+            "reason": "Anchor bytes are copied from the unrelated core source generation."
+          },
+          "invalid_reason": "A genuine neutral anchor from the hurt image generation is required before normalization/import.",
+          "anatomical_qa": {
+            "assessment": "warning",
+            "median_alpha_mass_ratio": 0.808395,
+            "median_local_thickness_ratio": 0.871355,
+            "median_upper_body_width_ratio": 0.830508,
+            "note": "Informational audit against the copied core anchor; replacement same-generation anchor is still required."
+          },
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "hurt": 3.191781
+          },
+          "output_digests": {
+            "hurt": "4e68e42b37615f99a12e9fe8c99df498ccc34232e375a82bc6c6a4e716d8bf76"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        },
+        "ko": {
+          "status": "requires_source_calibration",
+          "generation_group": true,
+          "source_generation": "yamashita_ko_v1",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "ko"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/ko/scale_anchor.png",
+          "anchor_sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+          "anchor_provenance": {
+            "status": "invalid",
+            "source_generation": "yamashita_ko_v1",
+            "sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+            "reason": "Anchor bytes are copied from the unrelated core source generation."
+          },
+          "invalid_reason": "A genuine neutral anchor from the ko image generation is required before normalization/import.",
+          "anatomical_qa": {
+            "assessment": "warning",
+            "median_alpha_mass_ratio": 0.817029,
+            "median_local_thickness_ratio": 0.873644,
+            "median_upper_body_width_ratio": 0.762712,
+            "note": "Informational audit against the copied core anchor; replacement same-generation anchor is still required."
+          },
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "ko": 3.191781
+          },
+          "output_digests": {
+            "ko": "235b885351fcdcf0e3711709331ce8dbd4f3cc768beb7d767ac7f55e2ed9dff2"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        },
+        "special_1": {
+          "status": "requires_source_calibration",
+          "generation_group": true,
+          "source_generation": "yamashita_special_1_v1",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "special_1"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/special_1/scale_anchor.png",
+          "anchor_sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+          "anchor_provenance": {
+            "status": "invalid",
+            "source_generation": "yamashita_special_1_v1",
+            "sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+            "reason": "Anchor bytes are copied from the unrelated core source generation."
+          },
+          "invalid_reason": "A genuine neutral anchor from the special_1 image generation is required before normalization/import.",
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.887797,
+            "median_local_thickness_ratio": 0.918917,
+            "median_upper_body_width_ratio": 0.830508,
+            "note": "Informational audit against the copied core anchor; replacement same-generation anchor is still required."
+          },
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "special_1": 3.191781
+          },
+          "output_digests": {
+            "special_1": "c05d4f8897b5b55d1173acf57942a92756ee4f34e417062fbb5bfbc7f2425241"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        },
+        "special_2": {
+          "status": "requires_source_calibration",
+          "generation_group": true,
+          "source_generation": "yamashita_special_2_v1",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "animations": [
+            "special_2"
+          ],
+          "anchor_source": "reference/yamashita/generated_batches/special_2/scale_anchor.png",
+          "anchor_sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+          "anchor_provenance": {
+            "status": "invalid",
+            "source_generation": "yamashita_special_2_v1",
+            "sha256": "5492e62c06aec2d41b8e0a6abafa3a7d6f1370566ee491b9f38a474ca5ebe580",
+            "reason": "Anchor bytes are copied from the unrelated core source generation."
+          },
+          "invalid_reason": "A genuine neutral anchor from the special_2 image generation is required before normalization/import.",
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.878658,
+            "median_local_thickness_ratio": 0.874168,
+            "median_upper_body_width_ratio": 0.864407,
+            "note": "Informational audit against the copied core anchor; replacement same-generation anchor is still required."
+          },
+          "anchor_measured_height": 146.0,
+          "reference_measured_height": 466.0,
+          "batch_multiplier": 3.191781,
+          "baseline": 527,
+          "normalization_version": 3,
+          "animation_multipliers": {
+            "special_2": 3.191781
+          },
+          "output_digests": {
+            "special_2": "43e8c94854672698e65951021dcfb11fb5003f15d5117a1b993f27d41f7f6335"
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.313305,
+            "height_normalized_width_ratio": 0.968404,
+            "height_normalized_alpha_area_ratio": 0.996151,
+            "assessment": "pass"
+          }
+        }
+      }
     },
     "fujiyama": {
       "sprite_frames": "res://assets/characters/fujiyama/fujiyama_frames.tres",
       "visual_scale_override": null,
-      "scale_profile": null,
-      "animations": {}
+      "scale_profile": {
+        "reference_animation": "idle",
+        "height_ratio_to_reference": 0.994652,
+        "target_height_ratio_to_reference": 1.0,
+        "target_baseline_y": 495,
+        "approved_neutral_metrics": {
+          "median_visible_height": 465.0,
+          "median_visible_width": 283.0,
+          "median_alpha_area": 69925.5
+        },
+        "source_idle_median_height": 111.5,
+        "reference_idle_median_height": 467.5,
+        "target_idle_height": 467.5,
+        "core_source_to_target_multiplier": 4.192825
+      },
+      "animations": {},
+      "production_batches": {
+        "core": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "idle",
+            "walk",
+            "punch",
+            "kick"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/core/scale_anchor.png",
+          "anchor_measured_height": 111.5,
+          "reference_measured_height": 467.5,
+          "batch_multiplier": 4.192825,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "idle": 4.192825,
+            "walk": 4.192825,
+            "punch": 4.192825,
+            "kick": 4.192825
+          },
+          "output_digests": {
+            "idle": "95ef45093df1ee819f6bbf9e54a44127a552393d7185ba9f13f6e0088e1d1f55",
+            "walk": "381bbd3a91125d27e57b85b5778657628306821fb76afdbc4bbcbe58a7a46847",
+            "punch": "be7c6d0f32ce102e598b881ce0824b6201821bb087449ac0bdadcba0b6323288",
+            "kick": "42248fa2ded405ceb09016f22890f78c241b7114d2788703ad38997da34ea611"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.961944,
+            "median_local_thickness_ratio": 0.95302,
+            "median_upper_body_width_ratio": 1.0
+          },
+          "anchor_metrics": {
+            "height_ratio": 1.004484,
+            "height_normalized_width_ratio": 0.995536,
+            "height_normalized_alpha_area_ratio": 0.996688,
+            "assessment": "pass"
+          }
+        },
+        "defense_low": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "crouch",
+            "crouch_punch",
+            "crouch_kick",
+            "block",
+            "crouch_block"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/defense_low/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "crouch": 4.151786,
+            "crouch_punch": 4.151786,
+            "crouch_kick": 4.151786,
+            "block": 4.151786,
+            "crouch_block": 4.151786
+          },
+          "output_digests": {
+            "crouch": "c82788a1b97b3f04d92fb5169abc6f6091c356dd14f9b977c917ceb13ac7b0df",
+            "crouch_punch": "66bde75338299b96843d1c49ee85e8093b669ed81cf99690aa134276d5a38405",
+            "crouch_kick": "5cf312ebea0abca3ce04233e053814267e07f912381454e68b5c88212bf9be81",
+            "block": "f0b32fdd2e91c8e774ba0726e49782453a42a388efc8ae110f4d7ad41e02a3b5",
+            "crouch_block": "698eea75897038f8bc1d1a3dca12c86375b10b6858a41b73c77fcb82160351ea"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.920514,
+            "median_local_thickness_ratio": 1.45623,
+            "median_upper_body_width_ratio": 0.934783
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        },
+        "jump": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "jump"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/jump/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "jump": 4.151786
+          },
+          "output_digests": {
+            "jump": "28a7bd7bd14455b812ed457e5fc374bb00f7b23c9035af035a9f8df7ff9edcb2"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.977934,
+            "median_local_thickness_ratio": 0.91763,
+            "median_upper_body_width_ratio": 1.065217
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        },
+        "hurt": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "hurt"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/hurt/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "hurt": 4.151786
+          },
+          "output_digests": {
+            "hurt": "7045917be167e7ec68b8c4d8b0bf12c95ddf90eb1b364ea030dfdd8657ef0e87"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.964793,
+            "median_local_thickness_ratio": 1.174645,
+            "median_upper_body_width_ratio": 1.0
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        },
+        "ko": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "ko"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/ko/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "ko": 4.151786
+          },
+          "output_digests": {
+            "ko": "d8434f026ce0c013c7e72673ccbae57dd16f86d62884a4d23172b12f6c16510a"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.849666,
+            "median_local_thickness_ratio": 1.092059,
+            "median_upper_body_width_ratio": 1.913043
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        },
+        "special_1": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "special_1"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/special_1/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "special_1": 4.151786
+          },
+          "output_digests": {
+            "special_1": "e62968334860dc1dd520f1e4ac02d5ae80faa648f14d4f098b0502977a330d2f"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.98894,
+            "median_local_thickness_ratio": 0.919627,
+            "median_upper_body_width_ratio": 0.98913
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        },
+        "special_2": {
+          "status": "approved",
+          "generation_group": true,
+          "source_generation": "fujiyama_from_scratch_v2",
+          "anchor": {
+            "type": "neutral_standing",
+            "filename": "scale_anchor.png"
+          },
+          "anchor_sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7",
+          "anchor_provenance": {
+            "status": "valid",
+            "source_generation": "fujiyama_from_scratch_v2",
+            "sha256": "51f33b55ce0aaf85d088c162673fd0daf47323f3e65aca505a823eaacea7daf7"
+          },
+          "animations": [
+            "special_2"
+          ],
+          "anchor_source": "reference/fujiyama/generated_batches/special_2/scale_anchor.png",
+          "anchor_measured_height": 112.0,
+          "reference_measured_height": 465.0,
+          "batch_multiplier": 4.151786,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animation_multipliers": {
+            "special_2": 4.151786
+          },
+          "output_digests": {
+            "special_2": "25f967f3f3b4d15b4a08622b18b6e4b0b00dd2927568b2233c24218a760e8161"
+          },
+          "anatomical_qa": {
+            "assessment": "pass",
+            "median_alpha_mass_ratio": 0.999761,
+            "median_local_thickness_ratio": 1.020123,
+            "median_upper_body_width_ratio": 1.347826
+          },
+          "anchor_metrics": {
+            "height_ratio": 0.24086,
+            "height_normalized_width_ratio": 0.997602,
+            "height_normalized_alpha_area_ratio": 0.987765,
+            "assessment": "pass"
+          }
+        }
+      }
     },
     "jennifer": {
       "sprite_frames": "res://assets/characters/jennifer/jennifer_frames.tres",

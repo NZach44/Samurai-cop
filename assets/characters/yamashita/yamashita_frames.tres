@@ -1,105 +1,367 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/yamashita/placeholder_sheet.svg" id="1_sheet"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
-atlas = ExtResource("1_sheet")
-region = Rect2(0, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
-atlas = ExtResource("1_sheet")
-region = Rect2(48, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
-atlas = ExtResource("1_sheet")
-region = Rect2(96, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(144, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
-atlas = ExtResource("1_sheet")
-region = Rect2(192, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
-atlas = ExtResource("1_sheet")
-region = Rect2(240, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
-atlas = ExtResource("1_sheet")
-region = Rect2(384, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(432, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/block/block_001.png" id="1_gr8pa"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/block/block_002.png" id="2_xldoo"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/block/block_003.png" id="3_4m4n4"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch/crouch_001.png" id="4_5ofqh"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch/crouch_002.png" id="5_fcxrf"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch/crouch_003.png" id="6_onevf"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_block/crouch_block_001.png" id="7_1sdj2"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_block/crouch_block_002.png" id="8_fm27w"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_block/crouch_block_003.png" id="9_oubjj"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_001.png" id="10_o5dp5"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_002.png" id="11_xsegh"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_003.png" id="12_fg1nk"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_004.png" id="13_4q8fh"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_005.png" id="14_o8ylq"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_kick/crouch_kick_006.png" id="15_dn1u8"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_punch/crouch_punch_001.png" id="16_m7aic"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_punch/crouch_punch_002.png" id="17_1f1bh"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_punch/crouch_punch_003.png" id="18_ctmt7"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_punch/crouch_punch_004.png" id="19_o5my6"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/crouch_punch/crouch_punch_005.png" id="20_2uxgs"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/hurt/hurt_001.png" id="21_c2en4"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/hurt/hurt_002.png" id="22_631ph"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/hurt/hurt_003.png" id="23_n10co"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/idle/idle_001.png" id="24_7qn4h"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/idle/idle_002.png" id="25_dx17j"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/idle/idle_003.png" id="26_13y3a"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/idle/idle_004.png" id="27_pv4ou"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/jump/jump_001.png" id="28_7s3dg"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/jump/jump_002.png" id="29_i43ui"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/jump/jump_003.png" id="30_fuka7"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/jump/jump_004.png" id="31_olnaq"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/jump/jump_005.png" id="32_ivn2a"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_001.png" id="33_wkss8"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_002.png" id="34_tp8ou"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_003.png" id="35_ckqty"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_004.png" id="36_mptcx"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_005.png" id="37_tpxvk"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/kick/kick_006.png" id="38_h65os"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_001.png" id="39_8xyrx"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_002.png" id="40_okwxr"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_003.png" id="41_7d1s8"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_004.png" id="42_66q5b"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_005.png" id="43_hdys4"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_006.png" id="44_56lsq"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_007.png" id="45_stw5l"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/ko/ko_008.png" id="46_oafv0"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/punch/punch_001.png" id="47_rcvwy"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/punch/punch_002.png" id="48_ph4or"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/punch/punch_003.png" id="49_trj2g"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/punch/punch_004.png" id="50_gbely"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/punch/punch_005.png" id="51_md3b8"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_001.png" id="52_la4rn"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_002.png" id="53_0kgj7"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_003.png" id="54_0ftcd"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_004.png" id="55_gt0cf"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_005.png" id="56_rnh7t"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_006.png" id="57_lglks"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_007.png" id="58_u506x"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_1/special_1_008.png" id="59_banxf"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_001.png" id="60_ac7sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_002.png" id="61_ein3i"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_003.png" id="62_tt4f8"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_004.png" id="63_ykp3m"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_005.png" id="64_egspk"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_006.png" id="65_f3id6"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_007.png" id="66_83jd4"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/special_2/special_2_008.png" id="67_bjyog"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_001.png" id="68_egij6"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_002.png" id="69_vbg17"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_003.png" id="70_txc2n"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_004.png" id="71_k3kt3"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_005.png" id="72_htndw"]
+[ext_resource type="Texture2D" path="res://assets/characters/yamashita/sprites/walk/walk_006.png" id="73_xn730"]
 
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_gr8pa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_xldoo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_4m4n4")
+}],
+"loop": 0,
 "name": &"block",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_5ofqh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_fcxrf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_onevf")
+}],
+"loop": 0,
 "name": &"crouch",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_1sdj2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_fm27w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_oubjj")
+}],
+"loop": 0,
+"name": &"crouch_block",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_o5dp5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_xsegh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_fg1nk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_4q8fh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_o8ylq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_dn1u8")
+}],
+"loop": 0,
+"name": &"crouch_kick",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_m7aic")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_1f1bh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_ctmt7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_o5my6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_2uxgs")
+}],
+"loop": 0,
+"name": &"crouch_punch",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_c2en4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_631ph")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_n10co")
+}],
+"loop": 0,
 "name": &"hurt",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("24_7qn4h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_dx17j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_13y3a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_pv4ou")
+}],
+"loop": 1,
 "name": &"idle",
-"speed": 5.0
+"speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_7s3dg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_i43ui")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_fuka7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_olnaq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_ivn2a")
+}],
+"loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_wkss8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_tp8ou")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_ckqty")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_mptcx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_tpxvk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_h65os")
+}],
+"loop": 0,
 "name": &"kick",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_8xyrx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_okwxr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_7d1s8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_66q5b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_hdys4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_56lsq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_stw5l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_oafv0")
+}],
+"loop": 0,
 "name": &"ko",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("47_rcvwy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_ph4or")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_trj2g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_gbely")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_md3b8")
+}],
+"loop": 0,
 "name": &"punch",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("52_la4rn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_0kgj7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_0ftcd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_gt0cf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_rnh7t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57_lglks")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_u506x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_banxf")
+}],
+"loop": 0,
 "name": &"special_1",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("60_ac7sh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_ein3i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_tt4f8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_ykp3m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_egspk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_f3id6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_83jd4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_bjyog")
+}],
+"loop": 0,
 "name": &"special_2",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("68_egij6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69_vbg17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_txc2n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_k3kt3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_htndw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73_xn730")
+}],
+"loop": 1,
 "name": &"walk",
-"speed": 5.0
+"speed": 9.0
 }]
