@@ -45,16 +45,36 @@ func configure(attacker: Fighter, special_move: SpecialMoveData, travel_directio
 	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
 	if rectangle != null:
 		rectangle.size = special_move.projectile_size
-	var half_size: Vector2 = special_move.projectile_size * 0.5
+	_configure_visual(special_move)
+	monitoring = true
+
+
+func _configure_visual(special_move: SpecialMoveData) -> void:
+	var visual_size: Vector2 = (
+		special_move.projectile_visual_size
+		if special_move.projectile_visual_size.x > 0.0 and special_move.projectile_visual_size.y > 0.0
+		else special_move.projectile_size
+	)
+	var half_size: Vector2 = visual_size * 0.5
 	visual.polygon = PackedVector2Array([
 		Vector2(-half_size.x, -half_size.y),
 		Vector2(half_size.x, -half_size.y),
 		Vector2(half_size.x, half_size.y),
 		Vector2(-half_size.x, half_size.y),
 	])
-	visual.color = special_move.projectile_color
+	visual.uv = PackedVector2Array([
+		Vector2(0.0, 0.0),
+		Vector2(1.0, 0.0),
+		Vector2(1.0, 1.0),
+		Vector2(0.0, 1.0),
+	])
+	if special_move.projectile_texture != null:
+		visual.texture = special_move.projectile_texture
+		visual.color = Color.WHITE
+	else:
+		visual.texture = null
+		visual.color = special_move.projectile_color
 	visual.scale.x = direction
-	monitoring = true
 
 
 func _physics_process(delta: float) -> void:
