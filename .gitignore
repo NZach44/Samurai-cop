@@ -12,3 +12,4 @@ Thumbs.db
 !/reference/.gdignore
 /source_media/
 /artifacts/character_art/
+/artifacts/character_rig/

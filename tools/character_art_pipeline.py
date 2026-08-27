@@ -157,6 +157,13 @@ def canvas_config(manifest: dict, character_id: str) -> dict:
     return result
 
 
+def animation_canvas_config(manifest: dict, character_id: str, animation: str) -> dict:
+    """Resolve an optional deterministic-render canvas without changing body scale."""
+    result = canvas_config(manifest, character_id)
+    result.update(animation_config(manifest, character_id, animation).get("production_canvas", {}))
+    return result
+
+
 def expected_frame_paths(
     manifest: dict,
     character_id: str,
@@ -381,7 +388,9 @@ def assess_animation_baseline(
     if not profile or not images or not bool(animation_config(manifest, character_id, animation)["grounded"]):
         return None
     measured = float(median(image.alpha_bounds[3] for image in images if image.alpha_bounds))
-    target = float(profile["target_baseline_y"])
+    target = float(animation_canvas_config(manifest, character_id, animation).get(
+        "target_ground_baseline", profile["target_baseline_y"]
+    ))
     delta = measured - target
     calibration = manifest["scale_calibration"]
     if abs(delta) <= float(calibration["baseline_pass_pixels"]):
@@ -866,7 +875,7 @@ def validate_character(
             except (OSError, ValueError, zlib.error) as error:
                 report.error(path.name, str(error))
                 continue
-            expected_canvas = canvas_config(manifest, character_id)
+            expected_canvas = animation_canvas_config(manifest, character_id, animation)
             expected_dimensions = (int(expected_canvas["width"]), int(expected_canvas["height"]))
             if (image.width, image.height) != expected_dimensions:
                 report.error(

@@ -2,6 +2,25 @@
 
 This is a development-time pipeline for converting approved character designs into ordinary Godot `SpriteFrames` resources. It never runs during gameplay and contains no combat metadata.
 
+## Preferred deterministic-rig workflow
+
+For a character supplied as one coherent body-parts package under `reference/<character_id>/rig_parts/`, render and inspect the deterministic preview first:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER
+python3 tools/render_character_sprites.py CHARACTER --dry-run --production
+```
+
+The renderer uses one character body scale and the shared translation/rotation-only animation library to produce the complete 14-animation, 73-frame contract. It writes preview PNGs, a full contact sheet, anatomy measurements, prop exports, and `render_manifest.json` under `artifacts/character_rig/CHARACTER/`. Different pose canvases receive proportional texture size limits (`canvas maximum * 0.25`), so extra transparent room never changes apparent body scale.
+
+After visual approval, promote transactionally and reuse the existing validator and SpriteFrames importer:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER --production
+```
+
+Default preview and dry-run modes never modify `assets/`. The generated-art package workflow below remains supported for existing source-frame packages and troubleshooting.
+
 ## Preferred complete-package workflow
 
 Future character deliveries should be complete packages. After extracting the ZIP in the project root, preflight the package and then process it:
@@ -107,7 +126,7 @@ Initialization creates only `design/`, `sprites/`, and the animation directories
 
 ## 4. Filenames and PNG standard
 
-Files use `<animation>_<three-digit frame>.png`, starting at 001. Every production frame must be a non-interlaced, 8-bit RGBA PNG with actual transparent pixels. The default canvas is 512x512. A manifest-approved per-character `production_canvas` may be larger when correct body scale and wide poses need it; every frame for that character uses the same canvas. Artwork faces right; Godot supplies left-facing visuals with `flip_h`.
+Files use `<animation>_<three-digit frame>.png`, starting at 001. Every production frame must be a non-interlaced, 8-bit RGBA PNG with actual transparent pixels. The default canvas is 512x512. A manifest-approved per-character canvas may be larger; deterministic rig output may instead declare one canvas per animation. All frames within an animation share its canvas, and every canvas uses a proportional import limit so pixel scale remains identical. Artwork faces right; Godot supplies left-facing visuals with `flip_h`.
 
 ## 5. Persistent scale calibration
 
@@ -212,7 +231,7 @@ python3 tools/spriteframes_importer.py frank_washington
 python3 tools/spriteframes_importer.py --all
 ```
 
-The Python importer validates complete filename sets and generation-group metadata before replacement. It rejects a generation group unless its status is `approved`, its source generation and same-generation anchor SHA256 are valid, anatomical QA passed, and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation and last-known-good SpriteFrames. The default 512px canvas imports at a 128px texture limit. A larger per-character canvas uses a proportionally larger limit (for example, 576px at 144px), preserving the same 0.25 import factor and therefore comparable display scale.
+The Python importer validates complete filename sets and generation-group metadata before replacement. It rejects a generation group unless its status is `approved`, its source generation and same-generation anchor SHA256 are valid, anatomical QA passed, and every member records exactly the same multiplier; when output digests exist, production PNGs must match them. An error is reported as `SKIP`, preserving the existing animation and last-known-good SpriteFrames. The default 512px canvas imports at a 128px texture limit. Larger per-character or deterministic per-animation canvases use proportional limits (for example, 576px at 144px), preserving the same 0.25 import factor and therefore comparable display scale.
 
 The importer snapshots the existing `.tres`, asks headless Godot to load/save the approved animation subset through `ResourceSaver`, and verifies that old animation names plus new `res://` texture references survived. If saving or verification fails, it atomically restores the original resource.
 
@@ -254,6 +273,18 @@ Bulk update remains safe during incremental production: incomplete sets are expl
 ## 11. Runtime behavior
 
 The game loads normal `.tres` resources referenced by CharacterData. It does not scan art directories, parse JSON, validate PNGs, or rebuild animations at startup. Contact sheets and normalized copies remain outside runtime assets.
+
+## Experimental deterministic cutout renderer
+
+`tools/render_character_sprites.py` renders a reusable body-part rig into the same filename/frame-count contract used by production SpriteFrames. Character inputs live under `reference/<character_id>/rig_parts/`: RGBA part textures plus `character_rig.json`, which records the generic bone hierarchy, part parent, pivot, local position, one static part scale, z order, one character `body_scale`, and prop attachment slots.
+
+Shared keyframed poses are defined in `data/character_rig_animations.json`. They may animate bone position and rotation only. Animated scale keys are rejected. The current proof set covers `idle`, `walk`, `punch`, `kick`, `crouch`, and `jump` using manifest frame counts.
+
+```bash
+python3 tools/render_character_sprites.py fujiyama
+```
+
+The command writes transparent comparison frames, `render_manifest.json`, and a contact sheet beneath `artifacts/character_rig/fujiyama/`. It chooses one canvas large enough for every rendered pose without changing rig scale. The recorded runtime texture limit preserves the standard 0.25 canvas-to-import factor even when the canvas exceeds 512 pixels. Experimental output is not promoted or imported automatically.
 
 ## 12. Troubleshooting
 

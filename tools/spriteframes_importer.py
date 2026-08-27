@@ -17,9 +17,9 @@ from pathlib import Path
 
 from character_art_pipeline import (
     animation_digest,
+    animation_canvas_config,
     assess_animation_baseline,
     batch_consistency_error,
-    canvas_config,
     generation_batch_provenance_error,
     production_batch_for_animation,
     read_png,
@@ -133,8 +133,8 @@ def build_plan(manifest: dict, character_id: str) -> ImportPlan:
                     for path, image in zip(expected, images)
                     if (image.width, image.height)
                     != (
-                        int(canvas_config(manifest, character_id)["width"]),
-                        int(canvas_config(manifest, character_id)["height"]),
+                        int(animation_canvas_config(manifest, character_id, animation)["width"]),
+                        int(animation_canvas_config(manifest, character_id, animation)["height"]),
                     )
                     or image.color_type != 6
                     or image.transparent_pixels == 0
@@ -219,11 +219,14 @@ def run_godot(arguments: list[str]) -> subprocess.CompletedProcess[str]:
         log_path.unlink(missing_ok=True)
 
 
-def enforce_runtime_texture_limit(plans: list[ImportPlan], size_limit: int) -> tuple[int, list[str]]:
+def enforce_runtime_texture_limits(manifest: dict, plans: list[ImportPlan]) -> tuple[int, list[str]]:
     changed = 0
     errors: list[str] = []
     for plan in plans:
-        for paths in plan.replacements.values():
+        for animation, paths in plan.replacements.items():
+            size_limit = int(animation_canvas_config(
+                manifest, plan.character_id, animation
+            )["runtime_texture_size_limit"])
             for path in paths:
                 import_path = path.with_name(path.name + ".import")
                 try:
@@ -241,19 +244,25 @@ def enforce_runtime_texture_limit(plans: list[ImportPlan], size_limit: int) -> t
     return changed, errors
 
 
-def runtime_texture_limit_mismatches(plan: ImportPlan, size_limit: int) -> int:
-    mismatches = 0
-    for paths in plan.replacements.values():
+def runtime_texture_limit_mismatches(manifest: dict, plan: ImportPlan) -> dict[str, int]:
+    mismatches: dict[str, int] = {}
+    for animation, paths in plan.replacements.items():
+        size_limit = int(animation_canvas_config(
+            manifest, plan.character_id, animation
+        )["runtime_texture_size_limit"])
+        animation_mismatches = 0
         for path in paths:
             import_path = path.with_name(path.name + ".import")
             try:
                 text = import_path.read_text(encoding="utf-8")
             except OSError:
-                mismatches += 1
+                animation_mismatches += 1
                 continue
             match = re.search(r"process/size_limit=(\d+)", text)
             if match is None or int(match.group(1)) != size_limit:
-                mismatches += 1
+                animation_mismatches += 1
+        if animation_mismatches:
+            mismatches[animation] = animation_mismatches
     return mismatches
 
 
@@ -323,10 +332,12 @@ def main() -> int:
         return 1
     if arguments.dry_run:
         for plan in plans:
-            size_limit = int(canvas_config(manifest, plan.character_id)["runtime_texture_size_limit"])
-            mismatches = runtime_texture_limit_mismatches(plan, size_limit)
-            if mismatches:
-                print(f"IMPORT SETTINGS {plan.character_id}: would normalize {mismatches} texture import(s) to size_limit={size_limit}")
+            mismatches = runtime_texture_limit_mismatches(manifest, plan)
+            for animation, count in mismatches.items():
+                size_limit = int(animation_canvas_config(
+                    manifest, plan.character_id, animation
+                )["runtime_texture_size_limit"])
+                print(f"IMPORT SETTINGS {plan.character_id}/{animation}: would normalize {count} texture import(s) to size_limit={size_limit}")
         print("\nDRY RUN COMPLETE: no resources were modified.")
         return 0
 
@@ -350,8 +361,7 @@ def main() -> int:
     changed_imports = 0
     import_setting_errors: list[str] = []
     for plan in plans:
-        size_limit = int(canvas_config(manifest, plan.character_id)["runtime_texture_size_limit"])
-        plan_changed, plan_errors = enforce_runtime_texture_limit([plan], size_limit)
+        plan_changed, plan_errors = enforce_runtime_texture_limits(manifest, [plan])
         changed_imports += plan_changed
         import_setting_errors.extend(plan_errors)
     if import_setting_errors:

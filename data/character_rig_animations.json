@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "description": "Shared cutout-rig poses. Bone scale keys are forbidden; only translation and rotation are animated.",
+  "animations": {
+    "idle": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"root": {"position": [0, 0]}, "front_upper_arm": {"rotation": -8}, "back_upper_arm": {"rotation": 8}}},
+        {"time": 0.333333, "bones": {"root": {"position": [0, -3]}, "front_upper_arm": {"rotation": -11}, "back_upper_arm": {"rotation": 11}}},
+        {"time": 0.666667, "bones": {"root": {"position": [0, -1]}, "front_upper_arm": {"rotation": -6}, "back_upper_arm": {"rotation": 6}}},
+        {"time": 1.0, "bones": {"root": {"position": [0, 0]}, "front_upper_arm": {"rotation": -8}, "back_upper_arm": {"rotation": 8}}}
+      ]
+    },
+    "walk": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"root": {"position": [0, 0]}, "front_thigh": {"rotation": -22}, "front_shin": {"rotation": 20}, "back_thigh": {"rotation": 22}, "back_shin": {"rotation": 5}, "front_upper_arm": {"rotation": 20}, "back_upper_arm": {"rotation": -20}}},
+        {"time": 0.25, "bones": {"root": {"position": [0, -7]}, "front_thigh": {"rotation": 0}, "front_shin": {"rotation": 8}, "back_thigh": {"rotation": 0}, "back_shin": {"rotation": 8}, "front_upper_arm": {"rotation": 0}, "back_upper_arm": {"rotation": 0}}},
+        {"time": 0.5, "bones": {"root": {"position": [0, 0]}, "front_thigh": {"rotation": 22}, "front_shin": {"rotation": 5}, "back_thigh": {"rotation": -22}, "back_shin": {"rotation": 20}, "front_upper_arm": {"rotation": -20}, "back_upper_arm": {"rotation": 20}}},
+        {"time": 0.75, "bones": {"root": {"position": [0, -7]}, "front_thigh": {"rotation": 0}, "front_shin": {"rotation": 8}, "back_thigh": {"rotation": 0}, "back_shin": {"rotation": 8}, "front_upper_arm": {"rotation": 0}, "back_upper_arm": {"rotation": 0}}},
+        {"time": 1.0, "bones": {"root": {"position": [0, 0]}, "front_thigh": {"rotation": -22}, "front_shin": {"rotation": 20}, "back_thigh": {"rotation": 22}, "back_shin": {"rotation": 5}, "front_upper_arm": {"rotation": 20}, "back_upper_arm": {"rotation": -20}}}
+      ]
+    },
+    "punch": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"front_upper_arm": {"rotation": -8}, "front_forearm": {"rotation": 0}, "torso": {"rotation": 0}}},
+        {"time": 0.25, "bones": {"front_upper_arm": {"rotation": -40}, "front_forearm": {"rotation": -25}, "torso": {"rotation": -3}}},
+        {"time": 0.5, "bones": {"front_upper_arm": {"rotation": -88}, "front_forearm": {"rotation": -2}, "torso": {"rotation": -8}}},
+        {"time": 0.75, "bones": {"front_upper_arm": {"rotation": -55}, "front_forearm": {"rotation": -15}, "torso": {"rotation": -3}}},
+        {"time": 1.0, "bones": {"front_upper_arm": {"rotation": -8}, "front_forearm": {"rotation": 0}, "torso": {"rotation": 0}}}
+      ]
+    },
+    "kick": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"front_thigh": {"rotation": 0}, "front_shin": {"rotation": 0}, "torso": {"rotation": 0}}},
+        {"time": 0.2, "bones": {"root": {"position": [0, -5]}, "front_thigh": {"rotation": -35}, "front_shin": {"rotation": 65}, "torso": {"rotation": 5}}},
+        {"time": 0.5, "bones": {"root": {"position": [0, -12]}, "front_thigh": {"rotation": -88}, "front_shin": {"rotation": 3}, "torso": {"rotation": 9}, "front_upper_arm": {"rotation": 18}, "back_upper_arm": {"rotation": -18}}},
+        {"time": 0.75, "bones": {"root": {"position": [0, -6]}, "front_thigh": {"rotation": -45}, "front_shin": {"rotation": 50}, "torso": {"rotation": 4}}},
+        {"time": 1.0, "bones": {"front_thigh": {"rotation": 0}, "front_shin": {"rotation": 0}, "torso": {"rotation": 0}}}
+      ]
+    },
+    "crouch": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"pelvis": {"position": [0, 0]}, "front_thigh": {"rotation": 0}, "back_thigh": {"rotation": 0}}},
+        {"time": 0.5, "bones": {"pelvis": {"position": [0, 45]}, "torso": {"rotation": 4}, "front_thigh": {"rotation": -35}, "front_shin": {"rotation": 62}, "back_thigh": {"rotation": 35}, "back_shin": {"rotation": -62}}},
+        {"time": 1.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -18}, "back_upper_arm": {"rotation": 18}}}
+      ]
+    },
+    "jump": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"root": {"position": [0, 0]}, "front_thigh": {"rotation": 0}, "back_thigh": {"rotation": 0}}},
+        {"time": 0.25, "bones": {"root": {"position": [0, -55]}, "front_thigh": {"rotation": -35}, "front_shin": {"rotation": 55}, "back_thigh": {"rotation": 35}, "back_shin": {"rotation": -55}}},
+        {"time": 0.5, "bones": {"root": {"position": [0, -105]}, "front_thigh": {"rotation": -62}, "front_shin": {"rotation": 92}, "back_thigh": {"rotation": 62}, "back_shin": {"rotation": -92}, "front_upper_arm": {"rotation": -28}, "back_upper_arm": {"rotation": 28}}},
+        {"time": 0.75, "bones": {"root": {"position": [0, -55]}, "front_thigh": {"rotation": -35}, "front_shin": {"rotation": 55}, "back_thigh": {"rotation": 35}, "back_shin": {"rotation": -55}}},
+        {"time": 1.0, "bones": {"root": {"position": [0, 0]}, "front_thigh": {"rotation": 0}, "back_thigh": {"rotation": 0}}}
+      ]
+    },
+    "crouch_punch": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -18}}},
+        {"time": 0.25, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 4}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -48}, "front_forearm": {"rotation": -24}}},
+        {"time": 0.5, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": -2}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -90}, "front_forearm": {"rotation": 0}}},
+        {"time": 0.75, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 4}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -48}, "front_forearm": {"rotation": -24}}},
+        {"time": 1.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -18}}}
+      ]
+    },
+    "crouch_kick": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}}},
+        {"time": 0.2, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 12}, "front_thigh": {"rotation": -78}, "front_shin": {"rotation": 76}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}}},
+        {"time": 0.4, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 16}, "front_thigh": {"rotation": -96}, "front_shin": {"rotation": 4}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": 18}, "back_upper_arm": {"rotation": -18}}},
+        {"time": 0.6, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 16}, "front_thigh": {"rotation": -96}, "front_shin": {"rotation": 4}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": 18}, "back_upper_arm": {"rotation": -18}}},
+        {"time": 0.8, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 12}, "front_thigh": {"rotation": -78}, "front_shin": {"rotation": 76}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}}},
+        {"time": 1.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}}}
+      ]
+    },
+    "block": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"front_upper_arm": {"rotation": -132}, "front_forearm": {"rotation": -70}, "back_upper_arm": {"rotation": -108}, "back_forearm": {"rotation": -55}}},
+        {"time": 0.5, "bones": {"root": {"position": [0, -2]}, "front_upper_arm": {"rotation": -138}, "front_forearm": {"rotation": -64}, "back_upper_arm": {"rotation": -114}, "back_forearm": {"rotation": -49}}},
+        {"time": 1.0, "bones": {"front_upper_arm": {"rotation": -132}, "front_forearm": {"rotation": -70}, "back_upper_arm": {"rotation": -108}, "back_forearm": {"rotation": -55}}}
+      ]
+    },
+    "crouch_block": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -120}, "front_forearm": {"rotation": -58}, "back_upper_arm": {"rotation": -92}, "back_forearm": {"rotation": -42}}},
+        {"time": 0.5, "bones": {"pelvis": {"position": [0, 76]}, "torso": {"rotation": 10}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -126}, "front_forearm": {"rotation": -52}, "back_upper_arm": {"rotation": -98}, "back_forearm": {"rotation": -38}}},
+        {"time": 1.0, "bones": {"pelvis": {"position": [0, 78]}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -58}, "front_shin": {"rotation": 88}, "back_thigh": {"rotation": 58}, "back_shin": {"rotation": -88}, "front_upper_arm": {"rotation": -120}, "front_forearm": {"rotation": -58}, "back_upper_arm": {"rotation": -92}, "back_forearm": {"rotation": -42}}}
+      ]
+    },
+    "hurt": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"root": {"position": [-8, 0], "rotation": 4}, "torso": {"rotation": 7}, "front_upper_arm": {"rotation": 25}, "back_upper_arm": {"rotation": -18}}},
+        {"time": 0.5, "bones": {"root": {"position": [-24, 4], "rotation": 10}, "torso": {"rotation": 13}, "front_upper_arm": {"rotation": 42}, "back_upper_arm": {"rotation": -36}, "front_thigh": {"rotation": 12}, "back_thigh": {"rotation": -10}}},
+        {"time": 1.0, "bones": {"root": {"position": [-16, 2], "rotation": 7}, "torso": {"rotation": 9}, "front_upper_arm": {"rotation": 32}, "back_upper_arm": {"rotation": -24}}}
+      ]
+    },
+    "ko": {
+      "keyframes": [
+        {"time": 0.0, "bones": {"root": {"position": [-18, 0], "rotation": 8}, "torso": {"rotation": 10}}},
+        {"time": 0.142857, "bones": {"root": {"position": [-28, -28], "rotation": 16}, "front_thigh": {"rotation": 18}, "back_thigh": {"rotation": -12}}},
+        {"time": 0.285714, "bones": {"root": {"position": [-38, -43], "rotation": 27}, "pelvis": {"position": [0, 38]}, "front_thigh": {"rotation": 35}, "back_thigh": {"rotation": -28}}},
+        {"time": 0.428571, "bones": {"root": {"position": [-58, -92], "rotation": 43}, "pelvis": {"position": [0, 55]}, "front_upper_arm": {"rotation": 30}, "back_upper_arm": {"rotation": -30}}},
+        {"time": 0.571429, "bones": {"root": {"position": [-90, -101], "rotation": 68}, "pelvis": {"position": [0, 65]}, "front_thigh": {"rotation": 42}, "back_thigh": {"rotation": -35}}},
+        {"time": 0.714286, "bones": {"root": {"position": [-120, -116], "rotation": 90}, "pelvis": {"position": [0, 72]}, "front_thigh": {"rotation": 48}, "back_thigh": {"rotation": -40}}},
+        {"time": 0.857143, "bones": {"root": {"position": [-122, -116], "rotation": 90}, "pelvis": {"position": [0, 72]}, "front_thigh": {"rotation": 48}, "back_thigh": {"rotation": -40}}},
+        {"time": 1.0, "bones": {"root": {"position": [-122, -116], "rotation": 90}, "pelvis": {"position": [0, 72]}, "front_thigh": {"rotation": 48}, "back_thigh": {"rotation": -40}}}
+      ]
+    },
+    "special_1": {
+      "title": "I Want His Head On This Piano",
+      "projectile_prop": "piano",
+      "projectile_spawn_frame": 5,
+      "projectile_origin": "projectile_origin",
+      "attachment_visibility": {"piano": [2, 3, 4]},
+      "events": [{"frame": 5, "type": "spawn_prop", "prop": "piano", "slot": "projectile_origin"}],
+      "keyframes": [
+        {"time": 0.0, "bones": {"front_upper_arm": {"rotation": -8}}},
+        {"time": 0.142857, "bones": {"root": {"position": [-8, 2]}, "torso": {"rotation": 8}, "front_upper_arm": {"rotation": 35}, "front_forearm": {"rotation": -25}}},
+        {"time": 0.285714, "bones": {"root": {"position": [-14, 5]}, "torso": {"rotation": 12}, "front_upper_arm": {"rotation": 58}, "front_forearm": {"rotation": -38}}},
+        {"time": 0.428571, "bones": {"root": {"position": [5, -5]}, "torso": {"rotation": -8}, "front_upper_arm": {"rotation": -72}, "front_forearm": {"rotation": -18}, "back_upper_arm": {"rotation": 24}}},
+        {"time": 0.571429, "bones": {"root": {"position": [18, -8]}, "torso": {"rotation": -13}, "front_upper_arm": {"rotation": -98}, "front_forearm": {"rotation": 2}, "back_upper_arm": {"rotation": 30}}},
+        {"time": 0.714286, "bones": {"root": {"position": [10, -3]}, "torso": {"rotation": -7}, "front_upper_arm": {"rotation": -68}, "front_forearm": {"rotation": -10}}},
+        {"time": 0.857143, "bones": {"root": {"position": [2, 0]}, "torso": {"rotation": -2}, "front_upper_arm": {"rotation": -25}}},
+        {"time": 1.0, "bones": {"front_upper_arm": {"rotation": -8}}}
+      ]
+    },
+    "special_2": {
+      "title": "To Fight Us? To Fight ME!",
+      "floor_lock": false,
+      "keyframes": [
+        {"time": 0.0, "bones": {"front_thigh": {"rotation": 0}}},
+        {"time": 0.142857, "bones": {"root": {"position": [-12, -8]}, "torso": {"rotation": 14}, "front_thigh": {"rotation": -24}, "front_shin": {"rotation": 48}}},
+        {"time": 0.285714, "bones": {"root": {"position": [18, -70], "rotation": -8}, "torso": {"rotation": 8}, "front_thigh": {"rotation": -55}, "front_shin": {"rotation": 72}, "back_thigh": {"rotation": 35}}},
+        {"time": 0.428571, "bones": {"root": {"position": [55, -118], "rotation": -14}, "torso": {"rotation": 5}, "front_thigh": {"rotation": -82}, "front_shin": {"rotation": 28}, "back_thigh": {"rotation": 52}, "back_shin": {"rotation": -55}}},
+        {"time": 0.571429, "bones": {"root": {"position": [92, -105], "rotation": -17}, "torso": {"rotation": 3}, "front_thigh": {"rotation": -98}, "front_shin": {"rotation": 2}, "back_thigh": {"rotation": 60}, "back_shin": {"rotation": -70}, "front_upper_arm": {"rotation": 24}, "back_upper_arm": {"rotation": -24}}},
+        {"time": 0.714286, "bones": {"root": {"position": [72, -45], "rotation": -7}, "front_thigh": {"rotation": -48}, "front_shin": {"rotation": 55}, "back_thigh": {"rotation": 28}}},
+        {"time": 0.857143, "bones": {"root": {"position": [25, -8]}, "torso": {"rotation": 4}, "front_thigh": {"rotation": -18}, "front_shin": {"rotation": 22}}},
+        {"time": 1.0, "bones": {"front_thigh": {"rotation": 0}}}
+      ]
+    }
+  }
+}

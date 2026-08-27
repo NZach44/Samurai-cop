@@ -165,3 +165,31 @@ Run the automated validator and inspect its contact sheet; neither replaces huma
 ## 19. Joe Marshall Reference
 
 Joe Marshall's completed production sprite set is the current reference for technical scale, baseline, naming, animation organization, and transparency quality. Future characters follow the same technical standards while retaining their own body proportions and visual identity. The validator reads Joe without modifying his PNGs.
+
+## 20. Deterministic cutout-rig workflow
+
+The deterministic cutout renderer is the offline path for replacing independently generated action frames. A character rig stores reusable transparent part PNGs and one `character_rig.json` under `reference/<character_id>/rig_parts/`. The shared animation library lives in `data/character_rig_animations.json` and animates bone translation/rotation only. It renders all 14 standard animations and 73 frames.
+
+The rig has exactly one character-level `body_scale`. Body-part scale and bone scale never vary by animation. Props attach through named slots such as `weapon_hand`, `projectile_origin`, and `waist`; they do not participate in body calibration.
+
+Render preview frames and the complete QA contact sheet with:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER
+```
+
+Output remains ordinary RGBA PNGs under `artifacts/character_rig/CHARACTER/`. Preview mode never writes production assets. Canvas dimensions may vary by pose, but the renderer recommends a proportional Godot texture limit so every canvas retains the same 0.25 source-pixel-to-runtime-pixel scale. Props are exported separately and never affect anatomy calibration.
+
+Preflight a production render without changing resources:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER --dry-run --production
+```
+
+After visual approval, deliberately stage, validate, promote, and import the complete contract:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER --production
+```
+
+Production promotion is all-or-nothing for the rig animations. If validation or import fails, the previous character assets, manifest, and SpriteFrames remain in place.
