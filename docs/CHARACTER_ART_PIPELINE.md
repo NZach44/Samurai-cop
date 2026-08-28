@@ -21,6 +21,15 @@ python3 tools/render_character_sprites.py CHARACTER --production
 
 Default preview and dry-run modes never modify `assets/`. The generated-art package workflow below remains supported for existing source-frame packages and troubleshooting.
 
+For production-rig acceptance, preserve the proof rig and pass the candidate descriptor explicitly:
+
+```bash
+python3 tools/render_character_sprites.py fujiyama --rig \
+  reference/fujiyama/rig_parts_production/character_rig.json
+```
+
+This path validates the descriptor, required body components, RGBA source files, one-component alpha, anatomical pivots, separate props, and the character appearance contract. It renders and validates the neutral assembly before attempting the full preview. A passing run writes `production_neutral.png`, `production_parts_contact_sheet.png`, `production_full_contact_sheet.png`, `production_anatomy_report.json`, and `production_render_manifest.json` under `artifacts/character_rig/fujiyama/`; rendered frames remain in the ignored `production_preview/` QA subtree. The anatomy report records per-animation top/bottom/left/right clearance and proportional canvas size limits. Alternate-rig acceptance never promotes or imports assets.
+
 ## Preferred complete-package workflow
 
 Future character deliveries should be complete packages. After extracting the ZIP in the project root, preflight the package and then process it:

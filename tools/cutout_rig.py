@@ -19,6 +19,7 @@ REQUIRED_BONES = (
     "front_thigh", "front_shin", "front_foot",
     "back_thigh", "back_shin", "back_foot",
 )
+REQUIRED_BODY_PARTS = tuple(name for name in REQUIRED_BONES if name != "root")
 
 
 @dataclass(frozen=True)
@@ -94,12 +95,21 @@ def validate_rig(rig: dict) -> None:
     parts = rig.get("parts")
     if not isinstance(parts, list) or not parts:
         raise ValueError("parts must be a non-empty array")
+    part_names = [part.get("name") for part in parts]
+    missing_parts = [name for name in REQUIRED_BODY_PARTS if name not in part_names]
+    if missing_parts:
+        raise ValueError("missing required body parts: " + ", ".join(missing_parts))
+    if len(part_names) != len(set(part_names)):
+        raise ValueError("body part names must be unique")
     for part in parts:
         if part.get("parent_bone") not in bones:
             raise ValueError(f"part {part.get('name')}: unknown parent bone")
         scale = part.get("scale", [1.0, 1.0])
         if len(scale) != 2 or float(scale[0]) <= 0.0 or float(scale[1]) <= 0.0:
             raise ValueError(f"part {part.get('name')}: invalid static scale")
+        pivot = part.get("pivot")
+        if not isinstance(pivot, list) or len(pivot) != 2:
+            raise ValueError(f"part {part.get('name')}: pivot must contain x and y")
     slots = rig.get("attachment_slots", {})
     for name, slot in slots.items():
         if slot.get("parent_bone") not in bones:
@@ -107,6 +117,98 @@ def validate_rig(rig: dict) -> None:
     for prop in rig.get("props", []):
         if prop.get("attachment_slot") not in slots:
             raise ValueError(f"prop {prop.get('name')}: unknown attachment slot")
+
+
+def _significant_alpha_components(image: PngImage, alpha_threshold: int = 32) -> int:
+    occupied = {
+        (x, y)
+        for y in range(image.height)
+        for x in range(image.width)
+        if image.rgba[(y * image.width + x) * 4 + 3] >= alpha_threshold
+    }
+    if not occupied:
+        return 0
+    minimum_size = max(4, round(len(occupied) * 0.002))
+    significant = 0
+    while occupied:
+        start = occupied.pop()
+        stack = [start]
+        size = 1
+        while stack:
+            x, y = stack.pop()
+            for neighbor in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                if neighbor in occupied:
+                    occupied.remove(neighbor)
+                    stack.append(neighbor)
+                    size += 1
+        if size >= minimum_size:
+            significant += 1
+    return significant
+
+
+def validate_rig_textures(
+    rig: dict,
+    rig_root: Path,
+    production: bool = False,
+) -> dict[str, PngImage]:
+    """Validate source PNGs and anatomical pivots before any rig rendering."""
+    validate_rig(rig)
+    root = rig_root.resolve()
+    texture_paths = {
+        str(item["texture"])
+        for item in [*rig["parts"], *rig.get("props", [])]
+    }
+    textures: dict[str, PngImage] = {}
+    missing: list[str] = []
+    for relative_path in sorted(texture_paths):
+        path = (rig_root / relative_path).resolve()
+        if root != path.parent and root not in path.parents:
+            raise ValueError(f"texture path escapes rig directory: {relative_path}")
+        if not path.is_file():
+            missing.append(relative_path)
+            continue
+        if path.suffix.lower() != ".png":
+            raise ValueError(f"{relative_path}: rig textures must be PNG files")
+        image = read_png(path)
+        if image.color_type != 6:
+            raise ValueError(f"{relative_path}: expected RGBA PNG")
+        if image.alpha_bounds is None:
+            raise ValueError(f"{relative_path}: texture contains no visible component")
+        if production and image.transparent_pixels == 0:
+            raise ValueError(f"{relative_path}: production texture requires transparent padding")
+        components = _significant_alpha_components(image)
+        if components != 1:
+            raise ValueError(
+                f"{relative_path}: expected one intended component, found {components} significant alpha components"
+            )
+        textures[relative_path] = image
+    if missing:
+        raise ValueError("missing rig texture files:\n  " + "\n  ".join(missing))
+
+    for item in [*rig["parts"], *rig.get("props", [])]:
+        image = textures[str(item["texture"])]
+        pivot = item.get("pivot")
+        if not isinstance(pivot, list) or len(pivot) != 2:
+            raise ValueError(f"{item.get('name', item.get('id'))}: pivot must contain x and y")
+        pivot_x, pivot_y = float(pivot[0]), float(pivot[1])
+        if not (0.0 <= pivot_x < image.width and 0.0 <= pivot_y < image.height):
+            raise ValueError(
+                f"{item.get('name', item.get('id'))}: pivot {pivot} is outside "
+                f"{image.width}x{image.height} texture bounds"
+            )
+        nearest_alpha_distance = min(
+            math.hypot(x - pivot_x, y - pivot_y)
+            for y in range(image.height)
+            for x in range(image.width)
+            if image.rgba[(y * image.width + x) * 4 + 3] >= 32
+        )
+        pivot_tolerance = max(12.0, min(image.width, image.height) * 0.20)
+        if nearest_alpha_distance > pivot_tolerance:
+            raise ValueError(
+                f"{item.get('name', item.get('id'))}: pivot is {nearest_alpha_distance:.1f}px "
+                f"from visible artwork (maximum {pivot_tolerance:.1f}px)"
+            )
+    return textures
 
 
 def resolved_parts(rig: dict, visible_attachments: set[str] | None = None) -> list[dict]:

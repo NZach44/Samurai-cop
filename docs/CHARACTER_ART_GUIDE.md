@@ -193,3 +193,18 @@ python3 tools/render_character_sprites.py CHARACTER --production
 ```
 
 Production promotion is all-or-nothing for the rig animations. If validation or import fails, the previous character assets, manifest, and SpriteFrames remain in place.
+
+### Production rig acceptance
+
+Keep proof textures under `reference/<character_id>/rig_parts/`. A candidate production package belongs in a separate `rig_parts_production/` directory and is selected explicitly:
+
+```bash
+python3 tools/render_character_sprites.py CHARACTER --rig \
+  reference/CHARACTER/rig_parts_production/character_rig.json
+```
+
+An alternate rig is preview-only and cannot be combined with `--production`. Its descriptor must contain the complete generic body-part contract, one character-level `body_scale`, valid in-texture anatomical pivots, an `appearance_contract`, and separate props. Each articulated part labels its `pivot_joint` (`neck`, `shoulder`, `elbow`, `wrist`, `hip`, `knee`, or `ankle` as applicable). Procedural placeholder declarations are forbidden. Every referenced texture must be a transparent RGBA PNG containing one significant component. Front/back limbs may reference the same PNG when the art is genuinely reusable.
+
+Fujiyama's production `appearance_contract` records an adult Japanese-American man with dark mullet-style hair, a thick dark moustache, a calm/deadly expression, gray/navy business suit, white shirt, dark tie and belt, dark dress shoes, sturdy realistic proportions, and the game's fighting-cartoon rendering. It explicitly excludes glasses and exaggerated superhero musculature. The piano remains a separate `piano` prop.
+
+Acceptance first renders `production_neutral.png` and checks height, baseline, proportions, limb reach, leg length, joint pivots, and crop clearance. Only a passing neutral proceeds to the 73-frame preview. QA output stays under `artifacts/character_rig/CHARACTER/`, including production-prefixed parts/full contact sheets and anatomy/crop reports. Visible edge contact is a hard failure; canvas dimensions grow in 64px steps while the runtime pixel ratio remains `0.25`.

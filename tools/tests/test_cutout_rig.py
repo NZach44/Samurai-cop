@@ -137,7 +137,10 @@ class CutoutRigRendererTests(unittest.TestCase):
                 self.assertLess(max_y, height - 1)
 
     def test_anatomy_report_covers_high_risk_animations(self) -> None:
-        expected = {"idle", "crouch", "crouch_punch", "crouch_kick", "jump", "hurt", "ko", "special_1", "special_2"}
+        expected = {
+            "idle", "crouch", "crouch_punch", "crouch_kick", "block",
+            "crouch_block", "jump", "hurt", "ko", "special_1", "special_2",
+        }
         self.assertEqual(set(self.report["anatomy_measurements"]), expected)
 
     def test_default_preview_does_not_write_assets(self) -> None:
