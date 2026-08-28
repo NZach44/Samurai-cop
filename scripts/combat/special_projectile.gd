@@ -62,18 +62,20 @@ func _configure_visual(special_move: SpecialMoveData) -> void:
 		Vector2(half_size.x, half_size.y),
 		Vector2(-half_size.x, half_size.y),
 	])
-	visual.uv = PackedVector2Array([
-		Vector2(0.0, 0.0),
-		Vector2(1.0, 0.0),
-		Vector2(1.0, 1.0),
-		Vector2(0.0, 1.0),
-	])
 	if special_move.projectile_texture != null:
 		visual.texture = special_move.projectile_texture
 		visual.color = Color.WHITE
+		var texture_size: Vector2 = special_move.projectile_texture.get_size()
+		visual.uv = PackedVector2Array([
+			Vector2.ZERO,
+			Vector2(texture_size.x, 0.0),
+			texture_size,
+			Vector2(0.0, texture_size.y),
+		])
 	else:
 		visual.texture = null
 		visual.color = special_move.projectile_color
+		visual.uv = PackedVector2Array()
 	visual.scale.x = direction
 
 
