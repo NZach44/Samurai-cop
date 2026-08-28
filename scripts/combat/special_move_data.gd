@@ -47,3 +47,5 @@ enum AttackLevel {
 @export var projectile_damage: int = 0
 @export var projectile_size: Vector2 = Vector2(28.0, 18.0)
 @export var projectile_color: Color = Color(1.0, 0.75, 0.2, 1.0)
+@export var projectile_texture: Texture2D
+@export var projectile_visual_size: Vector2 = Vector2.ZERO

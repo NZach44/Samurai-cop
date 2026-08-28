@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="Texture2D" path="res://assets/characters/fujiyama/props/piano.svg" id="2_piano"]
 
 [resource]
 script = ExtResource("1_special")
@@ -24,3 +25,5 @@ projectile_max_distance = 360.0
 projectile_damage = 20
 projectile_size = Vector2(78, 56)
 projectile_color = Color(0.52, 0.31, 0.16, 1)
+projectile_texture = ExtResource("2_piano")
+projectile_visual_size = Vector2(132, 78)
