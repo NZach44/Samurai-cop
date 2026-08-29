@@ -3,7 +3,7 @@ name: Install Fujiyama Joe-style batches
 on:
   push:
     branches: [art/fujiyama-joe-style-batches]
-    paths: [dev_art/fujiyama/upload/READY]
+    paths: [dev_art/fujiyama/upload_v6/READY]
   workflow_dispatch:
 
 permissions:
@@ -21,10 +21,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f dev_art/fujiyama/upload/READY
-          cat dev_art/fujiyama/upload/chunk_*.txt > /tmp/fujiyama.b64
+          READY="dev_art/fujiyama/upload_v6/READY"
+          test -f "$READY"
+          mapfile -t chunks < <(find dev_art/fujiyama/upload_v6 -maxdepth 1 -type f -name 'v6_*.txt' | sort)
+          if [[ ${#chunks[@]} -ne 62 ]]; then
+            echo "Expected 62 source-package chunks, found ${#chunks[@]}" >&2
+            exit 1
+          fi
+          cat "${chunks[@]}" > /tmp/fujiyama.b64
           base64 --decode /tmp/fujiyama.b64 > /tmp/fujiyama.zip
-          echo "713c61495e828bdfb2fe943361980cc049faddec64cbdd3c6f650370e9e131a7  /tmp/fujiyama.zip" | sha256sum -c -
+          echo "f718c336a5059a840e3e43b7b19006264534641c477b5fabbde6343c16307822  /tmp/fujiyama.zip" | sha256sum -c -
           unzip -o /tmp/fujiyama.zip -d .
 
       - name: Install image tooling
@@ -142,7 +148,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf dev_art/fujiyama/upload
+          rm -rf dev_art/fujiyama/upload_v6
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
