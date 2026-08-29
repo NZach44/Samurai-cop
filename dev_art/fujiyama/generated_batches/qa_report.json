@@ -1,0 +1,1393 @@
+{
+  "frame_count": 73,
+  "minimum_clearance_px": 17,
+  "frames": [
+    {
+      "file": "assets/characters/fujiyama/sprites/idle/idle_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        158,
+        151,
+        354,
+        494
+      ],
+      "clearance": [
+        158,
+        151,
+        157,
+        17
+      ],
+      "sha256": "83173dff2bfb4550f5ad112972cbb5bf77f617e3430e2e982be8e1b11d7c5f87"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/idle/idle_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        151,
+        154,
+        360,
+        494
+      ],
+      "clearance": [
+        151,
+        154,
+        151,
+        17
+      ],
+      "sha256": "03127ac0d275b8d876f000263b756b6680ae72dc0fec97a44e5270bb00001591"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/idle/idle_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        150,
+        161,
+        362,
+        494
+      ],
+      "clearance": [
+        150,
+        161,
+        149,
+        17
+      ],
+      "sha256": "5431cc40bf0483e07cb792d013e2cdc2a3b99498844ed209548a6f06cc28c995"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/idle/idle_004.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        151,
+        161,
+        360,
+        494
+      ],
+      "clearance": [
+        151,
+        161,
+        151,
+        17
+      ],
+      "sha256": "0642136154594ad2a28183d24e5248989ae2ea6fc9b7b4b0067761b72184dbc1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        160,
+        189,
+        350,
+        494
+      ],
+      "clearance": [
+        160,
+        189,
+        161,
+        17
+      ],
+      "sha256": "72f5828b7816e0be70852a792c42dddb5030d53a45a61df8e2c62c202abbdeca"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        143,
+        183,
+        368,
+        494
+      ],
+      "clearance": [
+        143,
+        183,
+        143,
+        17
+      ],
+      "sha256": "ed6dce2b25d996c3de6904473e13dddf4c904ebf1e4c4288f473ddce11171b26"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        162,
+        196,
+        349,
+        494
+      ],
+      "clearance": [
+        162,
+        196,
+        162,
+        17
+      ],
+      "sha256": "975af8033fa7283cccb0d94fa63dcea86579902d2aaffb0b8aeab8657db7a4f1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_004.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        156,
+        183,
+        356,
+        494
+      ],
+      "clearance": [
+        156,
+        183,
+        155,
+        17
+      ],
+      "sha256": "2afede0e05fb622d089f0dc620a0a25e9e7f4ae3453318e147cdc6040acc436b"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_005.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        152,
+        183,
+        358,
+        494
+      ],
+      "clearance": [
+        152,
+        183,
+        153,
+        17
+      ],
+      "sha256": "65593f83db1628a7782385e2aab5a41c7d008a9cee822e3955af1162788d025c"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/walk/walk_006.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        172,
+        186,
+        340,
+        494
+      ],
+      "clearance": [
+        172,
+        186,
+        171,
+        17
+      ],
+      "sha256": "df1f75d06ce1843ac57a8734fdcf4c7d3737b0829cb1d3f8982e13e5a0015c42"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/punch/punch_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        150,
+        186,
+        362,
+        494
+      ],
+      "clearance": [
+        150,
+        186,
+        149,
+        17
+      ],
+      "sha256": "db31d4c718d86ba23b57ca10bf51e67fa7391b93bf97453e6f06579e5f470a92"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/punch/punch_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        148,
+        183,
+        364,
+        494
+      ],
+      "clearance": [
+        148,
+        183,
+        147,
+        17
+      ],
+      "sha256": "a0f9d955fdb019d2499d31118141e8dfd31c14084009c33a77a50348f16f674d"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/punch/punch_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        102,
+        196,
+        410,
+        494
+      ],
+      "clearance": [
+        102,
+        196,
+        101,
+        17
+      ],
+      "sha256": "bb90fb0dc67d509f03b5155c5cb37e71e347d2ba909df768e46f7248a25eb49e"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/punch/punch_004.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        87,
+        202,
+        424,
+        494
+      ],
+      "clearance": [
+        87,
+        202,
+        87,
+        17
+      ],
+      "sha256": "9d724073ffc7968d429e213a44d2156417f412659716359a28bfab5c6fe0c352"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/punch/punch_005.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        134,
+        218,
+        378,
+        494
+      ],
+      "clearance": [
+        134,
+        218,
+        133,
+        17
+      ],
+      "sha256": "60d5d56c896c730cd79becde81b21b1a607f781c1853864b6353318d334efeca"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        160,
+        180,
+        350,
+        494
+      ],
+      "clearance": [
+        160,
+        180,
+        161,
+        17
+      ],
+      "sha256": "7fd52cde90c83bb1ffc6b8571a1e4cc7d57d471ffcbb3ad244cdee43ead96784"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        143,
+        192,
+        368,
+        494
+      ],
+      "clearance": [
+        143,
+        192,
+        143,
+        17
+      ],
+      "sha256": "d4cbaf47093834d636fabb9180c8a5a3180e5f22eb5dd58f94d2d86a8de2b25f"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        102,
+        176,
+        410,
+        494
+      ],
+      "clearance": [
+        102,
+        176,
+        101,
+        17
+      ],
+      "sha256": "8a8e324f1b0c2d7939328e6c835a6a3030cef8d48d47ed41e46d5efc0c0e47de"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_004.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        176,
+        173,
+        334,
+        494
+      ],
+      "clearance": [
+        176,
+        173,
+        177,
+        17
+      ],
+      "sha256": "555f0df6cd99aac21cc06e29ce18849f5d9f216698005cb8337109b1ee26c9fa"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_005.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        150,
+        183,
+        362,
+        494
+      ],
+      "clearance": [
+        150,
+        183,
+        149,
+        17
+      ],
+      "sha256": "a16f9597316d3f9c62be41146785d5dc960cce9d9b6f73df84b1ac8f01209291"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/kick/kick_006.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        136,
+        170,
+        374,
+        494
+      ],
+      "clearance": [
+        136,
+        170,
+        137,
+        17
+      ],
+      "sha256": "693666390644064e9908523954b9a35e53f17fbdb356d16e752448cab47ee6e1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch/crouch_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        159,
+        280,
+        352,
+        494
+      ],
+      "clearance": [
+        159,
+        280,
+        159,
+        17
+      ],
+      "sha256": "51a037a29cea396a16928bfea7a8cc977cd1051cd983ebbfdd7a4cf4f6c19fa6"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch/crouch_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        154,
+        280,
+        357,
+        494
+      ],
+      "clearance": [
+        154,
+        280,
+        154,
+        17
+      ],
+      "sha256": "08812ad78303f3c51f13d027631523d33d92f78361bcd9deef7a5b7255ba9d34"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch/crouch_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        176,
+        305,
+        334,
+        494
+      ],
+      "clearance": [
+        176,
+        305,
+        177,
+        17
+      ],
+      "sha256": "4342df62adf6cb0de84316df2883fe6db0820005df87faad98500de4dd5d95db"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        152,
+        266,
+        358,
+        494
+      ],
+      "clearance": [
+        152,
+        266,
+        153,
+        17
+      ],
+      "sha256": "4d619879eb15a945202368a5e3e7e6862b73cb3673bf867c85a3f731d4d34f70"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        144,
+        269,
+        366,
+        494
+      ],
+      "clearance": [
+        144,
+        269,
+        145,
+        17
+      ],
+      "sha256": "9e2295ec254a54b229ab8398ffdafc7cf957348ef7782d9ccab8d085de868fc8"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        135,
+        275,
+        376,
+        494
+      ],
+      "clearance": [
+        135,
+        275,
+        135,
+        17
+      ],
+      "sha256": "ca331de056e6c33fad678546154d759c8772128df6f31e96b8d540c232f612fb"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_004.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        143,
+        266,
+        368,
+        494
+      ],
+      "clearance": [
+        143,
+        266,
+        143,
+        17
+      ],
+      "sha256": "899db7e7b7a4a34ee5ab857cfef06f24cd691d580c8cc6305fffb0c5ff1e06bf"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_punch/crouch_punch_005.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        162,
+        282,
+        349,
+        494
+      ],
+      "clearance": [
+        162,
+        282,
+        162,
+        17
+      ],
+      "sha256": "718784fbfd25739c915615dace06bcad564ebb6b0d3b264af6d1890642967691"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        176,
+        305,
+        334,
+        494
+      ],
+      "clearance": [
+        176,
+        305,
+        177,
+        17
+      ],
+      "sha256": "4342df62adf6cb0de84316df2883fe6db0820005df87faad98500de4dd5d95db"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        112,
+        319,
+        398,
+        494
+      ],
+      "clearance": [
+        112,
+        319,
+        113,
+        17
+      ],
+      "sha256": "37619b113da1cb03b1c31ed8b380708b381e6045fb008d091fccced7bbe17d39"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        126,
+        246,
+        385,
+        494
+      ],
+      "clearance": [
+        126,
+        246,
+        126,
+        17
+      ],
+      "sha256": "66aed971dd6e439d261f02ced7266799a4d853ed61959a604bf2c85ad6b2761d"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_004.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        136,
+        308,
+        374,
+        494
+      ],
+      "clearance": [
+        136,
+        308,
+        137,
+        17
+      ],
+      "sha256": "d51937854ed3c96e79566868ba6141ac1f048cd23a87ad6efff6647df6e7fd4a"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_005.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        154,
+        280,
+        357,
+        494
+      ],
+      "clearance": [
+        154,
+        280,
+        154,
+        17
+      ],
+      "sha256": "08812ad78303f3c51f13d027631523d33d92f78361bcd9deef7a5b7255ba9d34"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_kick/crouch_kick_006.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        176,
+        305,
+        334,
+        494
+      ],
+      "clearance": [
+        176,
+        305,
+        177,
+        17
+      ],
+      "sha256": "4342df62adf6cb0de84316df2883fe6db0820005df87faad98500de4dd5d95db"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/block/block_001.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        152,
+        196,
+        358,
+        494
+      ],
+      "clearance": [
+        152,
+        196,
+        153,
+        17
+      ],
+      "sha256": "bc337ef47f0a39772247ad6b1c3276e553888dd2508d79d9019456e3a5f6c4c7"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/block/block_002.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        150,
+        186,
+        362,
+        494
+      ],
+      "clearance": [
+        150,
+        186,
+        149,
+        17
+      ],
+      "sha256": "db31d4c718d86ba23b57ca10bf51e67fa7391b93bf97453e6f06579e5f470a92"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/block/block_003.png",
+      "atlas": 1,
+      "component": 1,
+      "uniform_scale": 3.1850117096018735,
+      "bbox": [
+        152,
+        196,
+        358,
+        494
+      ],
+      "clearance": [
+        152,
+        196,
+        153,
+        17
+      ],
+      "sha256": "bc337ef47f0a39772247ad6b1c3276e553888dd2508d79d9019456e3a5f6c4c7"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_block/crouch_block_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        159,
+        319,
+        352,
+        494
+      ],
+      "clearance": [
+        159,
+        319,
+        159,
+        17
+      ],
+      "sha256": "512fde9dbbb0e81a98f6b1298aad71f4e3199d2ad5dfa04b526cc97d1ac7f8fa"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_block/crouch_block_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        173,
+        322,
+        338,
+        494
+      ],
+      "clearance": [
+        173,
+        322,
+        173,
+        17
+      ],
+      "sha256": "a4980a6764db46e64cd62224327ac282ff3cd59f6f9e0baa1d4274fda85fba38"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/crouch_block/crouch_block_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        159,
+        319,
+        352,
+        494
+      ],
+      "clearance": [
+        159,
+        319,
+        159,
+        17
+      ],
+      "sha256": "512fde9dbbb0e81a98f6b1298aad71f4e3199d2ad5dfa04b526cc97d1ac7f8fa"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/jump/jump_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        156,
+        211,
+        356,
+        494
+      ],
+      "clearance": [
+        156,
+        211,
+        155,
+        17
+      ],
+      "sha256": "22c88b1618cfbf8d65e8f11edd5cb5ce38844ddd338494b023efca0a4832c91f"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/jump/jump_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        152,
+        263,
+        359,
+        494
+      ],
+      "clearance": [
+        152,
+        263,
+        152,
+        17
+      ],
+      "sha256": "d7da70df290e70c85872a6ee9d09e87837c73b246f080f0c0d71cc479c949754"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/jump/jump_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        166,
+        249,
+        345,
+        494
+      ],
+      "clearance": [
+        166,
+        249,
+        166,
+        17
+      ],
+      "sha256": "e8837be5d8ca68f1a3a57b9b6e5d35889e4e10bf5f65a2af8e42719a126b7067"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/jump/jump_004.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        83,
+        270,
+        428,
+        494
+      ],
+      "clearance": [
+        83,
+        270,
+        83,
+        17
+      ],
+      "sha256": "e4dab3031ca64ff0ae179a1ac3222d013e100aed8956495941bbaa26acdbae80"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/jump/jump_005.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        154,
+        280,
+        357,
+        494
+      ],
+      "clearance": [
+        154,
+        280,
+        154,
+        17
+      ],
+      "sha256": "b6ba5bf1e84c52ca6ecf1da6e0a0c45682bfcc86a6c47161775798e80f4425e2"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/hurt/hurt_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        147,
+        208,
+        364,
+        494
+      ],
+      "clearance": [
+        147,
+        208,
+        147,
+        17
+      ],
+      "sha256": "8507b5806c8d5cda952e26856add6fa96348b55eabb13863256660193b6ae4a9"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/hurt/hurt_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        168,
+        301,
+        343,
+        494
+      ],
+      "clearance": [
+        168,
+        301,
+        168,
+        17
+      ],
+      "sha256": "3849556fd9412f3a3bc9519aeabe729816798c66383f70fb661412d239e6fab4"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/hurt/hurt_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        135,
+        301,
+        376,
+        494
+      ],
+      "clearance": [
+        135,
+        301,
+        135,
+        17
+      ],
+      "sha256": "71644d10bf83669e67dfc4c0ac8b4c87720b9f70ae6532411c794681fe4959c1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        48,
+        194,
+        462,
+        494
+      ],
+      "clearance": [
+        48,
+        194,
+        49,
+        17
+      ],
+      "sha256": "07c9cd0722b563370802b13baac0ad2fe8f50734910d68ba47c56ac6c89ce5e1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        54,
+        204,
+        458,
+        494
+      ],
+      "clearance": [
+        54,
+        204,
+        53,
+        17
+      ],
+      "sha256": "616aee045c0cf3459214c4b204b0a2905ac39bebd8a3d90b87e9a0d77a283825"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        48,
+        194,
+        462,
+        494
+      ],
+      "clearance": [
+        48,
+        194,
+        49,
+        17
+      ],
+      "sha256": "07c9cd0722b563370802b13baac0ad2fe8f50734910d68ba47c56ac6c89ce5e1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_004.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        140,
+        118,
+        371,
+        494
+      ],
+      "clearance": [
+        140,
+        118,
+        140,
+        17
+      ],
+      "sha256": "964c060a1843fd67d6ab986c5976482970cca29d1133d7403735ad169c236aef"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_005.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        95,
+        97,
+        416,
+        494
+      ],
+      "clearance": [
+        95,
+        97,
+        95,
+        17
+      ],
+      "sha256": "c5a97339489c871efeb53c3972dd487ec1bc0384530290444bf537673864c23f"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_006.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        17,
+        145,
+        494,
+        494
+      ],
+      "clearance": [
+        17,
+        145,
+        17,
+        17
+      ],
+      "sha256": "4cbae13415868c7e1605c1e04c057e06931e07bcf55d41873bca0316bfca1d21"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_007.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        57,
+        225,
+        454,
+        494
+      ],
+      "clearance": [
+        57,
+        225,
+        57,
+        17
+      ],
+      "sha256": "cb6a614f9ccd7d66e73f7a6cae138aeea99d004f7eb03f2587c663989a4a2d4d"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_1/special_1_008.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        173,
+        194,
+        338,
+        494
+      ],
+      "clearance": [
+        173,
+        194,
+        173,
+        17
+      ],
+      "sha256": "6693cd69c466f41a9a444cc805ac8578780338e151b7c964482623e7712237bb"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        158,
+        201,
+        354,
+        494
+      ],
+      "clearance": [
+        158,
+        201,
+        157,
+        17
+      ],
+      "sha256": "86362b6f106580ff67ba62cdbbb5742c362573dab1fde56a97ba23ec91bd7136"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        98,
+        194,
+        412,
+        494
+      ],
+      "clearance": [
+        98,
+        194,
+        99,
+        17
+      ],
+      "sha256": "df087c41dbb36c53e881ade56028606706be76d8e48c1371ec9ad9db4c79223f"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        121,
+        197,
+        390,
+        494
+      ],
+      "clearance": [
+        121,
+        197,
+        121,
+        17
+      ],
+      "sha256": "07edc40da69333826134fe17bff2c8ee54c7844673950912acd270d2533725bb"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_004.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        98,
+        197,
+        412,
+        494
+      ],
+      "clearance": [
+        98,
+        197,
+        99,
+        17
+      ],
+      "sha256": "d6f11d8bdebfd92a5b08116fff0770e3c29f1a36dd3c27ad7262a5b42b1cf95e"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_005.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        107,
+        294,
+        404,
+        494
+      ],
+      "clearance": [
+        107,
+        294,
+        107,
+        17
+      ],
+      "sha256": "98a765fb2893203d3f60f8fa9bf040f86d2dada47bfc3f1e092fc663efdc0445"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_006.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        112,
+        287,
+        398,
+        494
+      ],
+      "clearance": [
+        112,
+        287,
+        113,
+        17
+      ],
+      "sha256": "b494c1bcaadbf8d75d3759a6c1e8d1a8542eb2a4b7613eb4faf4add685e572a2"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_007.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        130,
+        232,
+        382,
+        494
+      ],
+      "clearance": [
+        130,
+        232,
+        129,
+        17
+      ],
+      "sha256": "608230d42f23b979e40ebed4cf98a28e7b955a2be3b9861171c2dcf175a91110"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/special_2/special_2_008.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        158,
+        201,
+        354,
+        494
+      ],
+      "clearance": [
+        158,
+        201,
+        157,
+        17
+      ],
+      "sha256": "86362b6f106580ff67ba62cdbbb5742c362573dab1fde56a97ba23ec91bd7136"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_001.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        154,
+        280,
+        357,
+        494
+      ],
+      "clearance": [
+        154,
+        280,
+        154,
+        17
+      ],
+      "sha256": "b6ba5bf1e84c52ca6ecf1da6e0a0c45682bfcc86a6c47161775798e80f4425e2"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_002.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        135,
+        301,
+        376,
+        494
+      ],
+      "clearance": [
+        135,
+        301,
+        135,
+        17
+      ],
+      "sha256": "71644d10bf83669e67dfc4c0ac8b4c87720b9f70ae6532411c794681fe4959c1"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_003.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        107,
+        353,
+        404,
+        494
+      ],
+      "clearance": [
+        107,
+        353,
+        107,
+        17
+      ],
+      "sha256": "283cfa3209ec152d91fa4a7d2452f4df23272128824436688e0eac3decf722ba"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_004.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        110,
+        360,
+        400,
+        494
+      ],
+      "clearance": [
+        110,
+        360,
+        111,
+        17
+      ],
+      "sha256": "a61e9520d96c19fd6b465d6f010763f6e9a7e731b546a06802062fdc8eeb1b22"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_005.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        110,
+        350,
+        400,
+        494
+      ],
+      "clearance": [
+        110,
+        350,
+        111,
+        17
+      ],
+      "sha256": "0540d9ab7f18e3335c402e1bfda29522b9018047d49a1e2ec873acd99dba4dac"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_006.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        46,
+        384,
+        464,
+        494
+      ],
+      "clearance": [
+        46,
+        384,
+        47,
+        17
+      ],
+      "sha256": "ec0f5b39da44a0edb4054f0dc100c085fe64b2c5e7cfd3a541cfe0cca77bb229"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_007.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        46,
+        384,
+        464,
+        494
+      ],
+      "clearance": [
+        46,
+        384,
+        47,
+        17
+      ],
+      "sha256": "ec0f5b39da44a0edb4054f0dc100c085fe64b2c5e7cfd3a541cfe0cca77bb229"
+    },
+    {
+      "file": "assets/characters/fujiyama/sprites/ko/ko_008.png",
+      "atlas": 2,
+      "component": 1,
+      "uniform_scale": 3.460559796437659,
+      "bbox": [
+        46,
+        384,
+        464,
+        494
+      ],
+      "clearance": [
+        46,
+        384,
+        47,
+        17
+      ],
+      "sha256": "ec0f5b39da44a0edb4054f0dc100c085fe64b2c5e7cfd3a541cfe0cca77bb229"
+    }
+  ]
+}

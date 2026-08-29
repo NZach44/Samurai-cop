@@ -1,0 +1,783 @@
+{
+  "schema_version": 2,
+  "character_id": "fujiyama",
+  "workflow": "Joe-style full-pose sprite extraction",
+  "canvas": [
+    512,
+    512
+  ],
+  "baseline_y": 495,
+  "visual_scale": 2.05,
+  "alpha_threshold": 16,
+  "groups": {
+    "1": {
+      "file": "source_atlas_01.png",
+      "uniform_scale": 3.1850117096018735
+    },
+    "2": {
+      "file": "source_atlas_02.png",
+      "uniform_scale": 3.460559796437659
+    }
+  },
+  "animations": {
+    "idle": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          3,
+          62,
+          108
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          68,
+          3,
+          66,
+          107
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          137,
+          3,
+          67,
+          105
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          207,
+          3,
+          66,
+          105
+        ]
+      }
+    ],
+    "walk": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          73,
+          216,
+          60,
+          96
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          66,
+          114,
+          71,
+          98
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          210,
+          216,
+          59,
+          94
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          140,
+          114,
+          63,
+          98
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          206,
+          114,
+          65,
+          98
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          415,
+          114,
+          53,
+          97
+        ]
+      }
+    ],
+    "punch": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          216,
+          67,
+          97
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          274,
+          114,
+          68,
+          98
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          272,
+          216,
+          97,
+          94
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          316,
+          106,
+          92
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          112,
+          316,
+          77,
+          87
+        ]
+      }
+    ],
+    "kick": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          114,
+          60,
+          99
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          136,
+          216,
+          71,
+          95
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          407,
+          3,
+          97,
+          100
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          354,
+          3,
+          50,
+          101
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          345,
+          114,
+          67,
+          98
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          276,
+          3,
+          75,
+          102
+        ]
+      }
+    ],
+    "crouch": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          169,
+          297,
+          56,
+          62
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          228,
+          297,
+          59,
+          62
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          219,
+          367,
+          46,
+          55
+        ]
+      }
+    ],
+    "crouch_punch": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          192,
+          316,
+          65,
+          72
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          334,
+          316,
+          70,
+          71
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          407,
+          316,
+          76,
+          69
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          260,
+          316,
+          71,
+          72
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          411,
+          59,
+          67
+        ]
+      }
+    ],
+    "crouch_kick": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          219,
+          367,
+          46,
+          55
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          340,
+          367,
+          83,
+          51
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          324,
+          211,
+          75,
+          72
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          268,
+          367,
+          69,
+          54
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          228,
+          297,
+          59,
+          62
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          219,
+          367,
+          46,
+          55
+        ]
+      }
+    ],
+    "block": [
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          372,
+          216,
+          65,
+          94
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          3,
+          216,
+          67,
+          97
+        ]
+      },
+      {
+        "atlas": 1,
+        "component": 1,
+        "bbox": [
+          372,
+          216,
+          65,
+          94
+        ]
+      }
+    ],
+    "crouch_block": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          426,
+          367,
+          56,
+          51
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          428,
+          48,
+          50
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          426,
+          367,
+          56,
+          51
+        ]
+      }
+    ],
+    "jump": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          69,
+          211,
+          58,
+          82
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          297,
+          60,
+          67
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          402,
+          211,
+          52,
+          71
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          66,
+          297,
+          100,
+          65
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          290,
+          297,
+          59,
+          62
+        ]
+      }
+    ],
+    "hurt": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          211,
+          63,
+          83
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          92,
+          367,
+          51,
+          56
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          146,
+          367,
+          70,
+          56
+        ]
+      }
+    ],
+    "special_1": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          310,
+          3,
+          120,
+          87
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          332,
+          121,
+          117,
+          84
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          310,
+          3,
+          120,
+          87
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          99,
+          3,
+          67,
+          109
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          3,
+          93,
+          115
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          169,
+          3,
+          138,
+          101
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          130,
+          211,
+          115,
+          78
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          433,
+          3,
+          48,
+          87
+        ]
+      }
+    ],
+    "special_2": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          272,
+          121,
+          57,
+          85
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          121,
+          91,
+          87
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          97,
+          121,
+          78,
+          86
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          178,
+          121,
+          91,
+          86
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          3,
+          367,
+          86,
+          58
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          352,
+          297,
+          83,
+          60
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          248,
+          211,
+          73,
+          76
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          272,
+          121,
+          57,
+          85
+        ]
+      }
+    ],
+    "ko": [
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          290,
+          297,
+          59,
+          62
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          146,
+          367,
+          70,
+          56
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          141,
+          428,
+          86,
+          41
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          230,
+          428,
+          84,
+          39
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          54,
+          428,
+          84,
+          42
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          317,
+          428,
+          121,
+          32
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          317,
+          428,
+          121,
+          32
+        ]
+      },
+      {
+        "atlas": 2,
+        "component": 1,
+        "bbox": [
+          317,
+          428,
+          121,
+          32
+        ]
+      }
+    ]
+  },
+  "source_compaction": "mechanically isolated and packed from fresh full-pose AI atlases; no per-frame scaling or redraw"
+}
