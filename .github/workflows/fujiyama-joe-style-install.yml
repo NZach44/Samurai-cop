@@ -1,0 +1,205 @@
+name: Install Fujiyama Joe-style batches
+
+on:
+  push:
+    branches:
+      - art/fujiyama-joe-style-batches
+    paths:
+      - dev_art/fujiyama/upload/READY
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Stop if payload is not ready
+        id: ready
+        shell: bash
+        run: |
+          if [ -f dev_art/fujiyama/upload/READY ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No READY marker; nothing to install."
+          fi
+
+      - name: Reconstruct source payload
+        if: steps.ready.outputs.run == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat dev_art/fujiyama/upload/chunk_*.txt > /tmp/fujiyama_source_payload.b64
+          base64 --decode /tmp/fujiyama_source_payload.b64 > /tmp/fujiyama_source_payload.zip
+          echo "57467b406e1228dbc0f67778ff0bc29c8f59863ab4b1f3492a9425da29bcfad8  /tmp/fujiyama_source_payload.zip" | sha256sum -c -
+          unzip -o /tmp/fujiyama_source_payload.zip -d .
+
+      - name: Install image tooling
+        if: steps.ready.outputs.run == 'true'
+        run: python3 -m pip install --quiet pillow scipy
+
+      - name: Generate and validate all 73 Fujiyama frames
+        if: steps.ready.outputs.run == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          import numpy as np
+          import scipy.ndimage as ndi
+          import json, hashlib, math, re, shutil
+
+          root = Path('.')
+          source_root = root / 'dev_art/fujiyama/generated_batches'
+          manifest = json.loads((source_root / 'install_manifest.json').read_text())
+          sprite_root = root / 'assets/characters/fujiyama/sprites'
+          alpha_threshold = int(manifest['alpha_threshold'])
+          canvas_w, canvas_h = map(int, manifest['canvas'])
+          baseline = int(manifest['baseline_y'])
+
+          atlases = {
+              int(key): Image.open(source_root / value['file']).convert('RGBA')
+              for key, value in manifest['groups'].items()
+          }
+          group_scales = {
+              int(key): float(value['uniform_scale'])
+              for key, value in manifest['groups'].items()
+          }
+
+          expected_counts = {
+              'idle': 4, 'walk': 6, 'punch': 5, 'kick': 6,
+              'crouch': 3, 'crouch_punch': 5, 'crouch_kick': 6,
+              'block': 3, 'crouch_block': 3, 'jump': 5, 'hurt': 3,
+              'special_1': 8, 'special_2': 8, 'ko': 8,
+          }
+          if sum(expected_counts.values()) != 73:
+              raise SystemExit('internal expected frame count is not 73')
+
+          def isolate_largest(crop: Image.Image) -> Image.Image:
+              arr = np.array(crop.convert('RGBA'))
+              mask = arr[:, :, 3] > alpha_threshold
+              labels, n = ndi.label(mask)
+              if n == 0:
+                  raise ValueError('source crop has no visible component')
+              sizes = ndi.sum(mask, labels, range(1, n + 1))
+              keep_label = int(np.argmax(sizes)) + 1
+              keep = labels == keep_label
+              arr[~keep, 3] = 0
+              out = Image.fromarray(arr, 'RGBA')
+              bbox = out.getchannel('A').getbbox()
+              if bbox is None:
+                  raise ValueError('source crop became empty')
+              return out.crop(bbox)
+
+          qa = {'frames': [], 'frame_count': 0, 'minimum_clearance_px': 9999}
+          rendered = {}
+
+          for animation, count in expected_counts.items():
+              frames = manifest['animations'].get(animation, [])
+              if len(frames) != count:
+                  raise ValueError(f'{animation}: expected {count} mapped frames, found {len(frames)}')
+              out_dir = sprite_root / animation
+              out_dir.mkdir(parents=True, exist_ok=True)
+              rendered[animation] = []
+              for number, spec in enumerate(frames, start=1):
+                  atlas_id = int(spec['atlas'])
+                  x, y, w, h = map(int, spec['bbox'])
+                  crop = atlases[atlas_id].crop((x, y, x + w, y + h))
+                  subject = isolate_largest(crop)
+                  scale = group_scales[atlas_id]
+                  target_w = max(1, round(subject.width * scale))
+                  target_h = max(1, round(subject.height * scale))
+                  subject = subject.resize((target_w, target_h), Image.Resampling.LANCZOS)
+
+                  x0 = round((canvas_w - target_w) / 2)
+                  y0 = baseline - target_h
+                  if x0 < 0 or y0 < 0 or x0 + target_w > canvas_w or y0 + target_h > canvas_h:
+                      raise ValueError(f'{animation}_{number:03d}: scaled artwork clips {canvas_w}x{canvas_h}')
+
+                  canvas = Image.new('RGBA', (canvas_w, canvas_h), (0, 0, 0, 0))
+                  canvas.alpha_composite(subject, (x0, y0))
+                  out_path = out_dir / f'{animation}_{number:03d}.png'
+                  canvas.save(out_path, optimize=True)
+
+                  alpha = np.array(canvas.getchannel('A'))
+                  ys, xs = np.where(alpha > 0)
+                  if len(xs) == 0:
+                      raise ValueError(f'{out_path}: rendered empty')
+                  bbox = [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
+                  clearance = [bbox[0], bbox[1], canvas_w - 1 - bbox[2], canvas_h - 1 - bbox[3]]
+                  if min(clearance) <= 0:
+                      raise ValueError(f'{out_path}: touches canvas edge: {clearance}')
+                  qa['minimum_clearance_px'] = min(qa['minimum_clearance_px'], min(clearance))
+                  qa['frames'].append({
+                      'file': out_path.as_posix(), 'animation': animation, 'frame': number,
+                      'atlas': atlas_id, 'source_component': int(spec['component']),
+                      'uniform_group_scale': scale, 'visible_bbox': bbox,
+                      'clearance': clearance,
+                      'sha256': hashlib.sha256(out_path.read_bytes()).hexdigest(),
+                  })
+                  qa['frame_count'] += 1
+                  rendered[animation].append(out_path)
+
+          if qa['frame_count'] != 73:
+              raise ValueError(f'expected 73 output frames, got {qa["frame_count"]}')
+
+          # Contact sheet for one-shot visual review.
+          order = list(expected_counts)
+          cols, cell, label_h = 8, 150, 24
+          sheet_rows = sum(math.ceil(expected_counts[a] / cols) for a in order)
+          sheet = Image.new('RGB', (cols * cell, sheet_rows * (cell + label_h)), (38, 40, 46))
+          draw = ImageDraw.Draw(sheet)
+          row_offset = 0
+          for animation in order:
+              paths = rendered[animation]
+              for index, path in enumerate(paths):
+                  image = Image.open(path).convert('RGBA')
+                  thumb = Image.new('RGBA', (cell, cell), (220, 220, 220, 255))
+                  preview = image.copy()
+                  preview.thumbnail((140, 140), Image.Resampling.LANCZOS)
+                  thumb.alpha_composite(preview, ((cell - preview.width)//2, (cell - preview.height)//2))
+                  x = (index % cols) * cell
+                  y = (row_offset + index // cols) * (cell + label_h) + label_h
+                  sheet.paste(thumb.convert('RGB'), (x, y))
+                  draw.text((x + 5, y - label_h + 4), f'{animation} {index + 1}', fill='white')
+              row_offset += math.ceil(len(paths) / cols)
+          sheet.save(source_root / 'fujiyama_73_contact.jpg', quality=92)
+          (source_root / 'qa_report.json').write_text(json.dumps(qa, indent=2) + '\n')
+
+          # This art has a deliberately smaller 512px source silhouette than the old Fujiyama package.
+          # Compensate once at CharacterData level; never per animation/frame.
+          fighter_path = root / 'data/fighters/fujiyama.tres'
+          text = fighter_path.read_text()
+          text, replacements = re.subn(r'(?m)^visual_scale\s*=\s*[-+0-9.]+\s*$', 'visual_scale = 2.05', text, count=1)
+          if replacements != 1:
+              raise ValueError('could not update Fujiyama visual_scale')
+          fighter_path.write_text(text)
+
+          print(f'PASS Fujiyama: {qa["frame_count"]}/73 frames; minimum crop clearance {qa["minimum_clearance_px"]}px')
+          PY
+
+      - name: Remove transfer chunks
+        if: steps.ready.outputs.run == 'true'
+        run: rm -rf dev_art/fujiyama/upload
+
+      - name: Commit completed Fujiyama character
+        if: steps.ready.outputs.run == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/characters/fujiyama/sprites dev_art/fujiyama/generated_batches data/fighters/fujiyama.tres dev_art/fujiyama/upload || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Complete Fujiyama Joe-style sprite batches"
+          git push origin HEAD:art/fujiyama-joe-style-batches
