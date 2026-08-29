@@ -36,7 +36,7 @@ func _run() -> void:
 
 	attacker.queue_free()
 	if failures.is_empty():
-		print("PASS Fujiyama runtime visuals and generic projectile regression")
+		print("PASS Fujiyama production sprites, runtime visuals, and generic projectile regression")
 		quit(0)
 		return
 	for failure: String in failures:
@@ -51,24 +51,31 @@ func _test_character_visuals(fighter: Fighter) -> void:
 		&"punch": 5,
 		&"kick": 6,
 		&"crouch": 3,
+		&"crouch_punch": 5,
+		&"crouch_kick": 6,
 		&"block": 3,
+		&"crouch_block": 3,
 		&"jump": 5,
 		&"hurt": 3,
-		&"ko": 8,
 		&"special_1": 8,
 		&"special_2": 8,
+		&"ko": 8,
 	}
+	var total_frames: int = 0
 	for animation: StringName in expected_frames:
 		_check(FUJIYAMA.sprite_frames.has_animation(animation), "missing Fujiyama animation %s" % animation)
+		var frame_count: int = FUJIYAMA.sprite_frames.get_frame_count(animation)
 		_check(
-			FUJIYAMA.sprite_frames.get_frame_count(animation) == expected_frames[animation],
+			frame_count == expected_frames[animation],
 			"unexpected Fujiyama frame count for %s" % animation
 		)
+		total_frames += frame_count
 		fighter.animated_sprite.play(animation)
 		_check(fighter.animated_sprite.animation == animation, "Fujiyama could not play %s" % animation)
+	_check(total_frames == 73, "Fujiyama production sprite contract must contain 73 frames")
 
-	_check(is_equal_approx(FUJIYAMA.visual_scale, 1.5), "Fujiyama visual_scale must be 1.5")
-	_check(fighter.sprite_root.scale.is_equal_approx(Vector2(1.5, 1.5)), "Fujiyama must use one SpriteRoot scale")
+	_check(is_equal_approx(FUJIYAMA.visual_scale, 2.05), "Fujiyama visual_scale must be 2.05")
+	_check(fighter.sprite_root.scale.is_equal_approx(Vector2(2.05, 2.05)), "Fujiyama must use one SpriteRoot scale")
 	var fujiyama_height: float = _idle_rendered_height(FUJIYAMA)
 	var joe_height: float = _idle_rendered_height(JOE)
 	var frank_height: float = _idle_rendered_height(FRANK)
