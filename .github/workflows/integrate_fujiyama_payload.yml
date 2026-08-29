@@ -1,0 +1,114 @@
+name: Integrate Fujiyama sprite payload
+
+on:
+  push:
+    branches:
+      - art/fujiyama-joe-style-batches
+    paths:
+      - dev_art/fujiyama/payload_chunks/READY
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct and validate Fujiyama payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          READY="dev_art/fujiyama/payload_chunks/READY"
+          if [[ ! -f "$READY" ]]; then
+            echo "READY marker is absent; nothing to integrate."
+            exit 0
+          fi
+
+          mapfile -t chunks < <(find dev_art/fujiyama/payload_chunks -maxdepth 1 -type f -name 'chunk_*' | sort)
+          if [[ ${#chunks[@]} -ne 23 ]]; then
+            echo "Expected 23 payload chunks, found ${#chunks[@]}" >&2
+            exit 1
+          fi
+
+          cat "${chunks[@]}" > /tmp/fujiyama_payload.b64
+          base64 --decode /tmp/fujiyama_payload.b64 > /tmp/fujiyama_payload.tar.gz
+          tar -xzf /tmp/fujiyama_payload.tar.gz -C "$GITHUB_WORKSPACE"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+
+          root = Path('assets/characters/fujiyama/sprites')
+          expected = {
+              'idle': 4, 'walk': 6, 'punch': 5, 'kick': 6,
+              'crouch': 3, 'crouch_punch': 5, 'crouch_kick': 6,
+              'block': 3, 'crouch_block': 3, 'jump': 5, 'hurt': 3,
+              'special_1': 8, 'special_2': 8, 'ko': 8,
+          }
+          total = 0
+          for animation, count in expected.items():
+              files = sorted((root / animation).glob('*.png'))
+              if len(files) != count:
+                  raise SystemExit(f'{animation}: expected {count} PNGs, found {len(files)}')
+              for path in files:
+                  data = path.read_bytes()
+                  if data[:8] != b'\x89PNG\r\n\x1a\n':
+                      raise SystemExit(f'{path}: invalid PNG signature')
+                  width, height, bit_depth, color_type = struct.unpack('>IIBB', data[16:26])
+                  if (width, height) != (128, 128):
+                      raise SystemExit(f'{path}: expected 128x128, got {width}x{height}')
+                  if bit_depth != 8 or color_type != 6:
+                      raise SystemExit(f'{path}: expected 8-bit RGBA PNG, got depth={bit_depth} color_type={color_type}')
+                  total += 1
+          if total != 73:
+              raise SystemExit(f'expected 73 total frames, got {total}')
+          print(f'PASS Fujiyama payload: {total}/73 RGBA PNGs')
+
+          fighter = Path('data/fighters/fujiyama.tres')
+          text = fighter.read_text()
+          old = 'visual_scale = 1.5'
+          if old not in text and 'visual_scale = 1.7' not in text:
+              raise SystemExit('unexpected Fujiyama visual_scale declaration')
+          fighter.write_text(text.replace(old, 'visual_scale = 1.7'))
+          PY
+
+          batch_root="dev_art/fujiyama/generated_batches"
+          mkdir -p "$batch_root/batch_a_core" "$batch_root/batch_b_defense" \
+                   "$batch_root/batch_c_air_damage_ko" "$batch_root/batch_d_special_1" \
+                   "$batch_root/batch_e_special_2"
+
+          for a in idle walk punch kick; do
+            mkdir -p "$batch_root/batch_a_core/$a"
+            cp assets/characters/fujiyama/sprites/$a/*.png "$batch_root/batch_a_core/$a/"
+          done
+          for a in crouch crouch_punch crouch_kick block crouch_block; do
+            mkdir -p "$batch_root/batch_b_defense/$a"
+            cp assets/characters/fujiyama/sprites/$a/*.png "$batch_root/batch_b_defense/$a/"
+          done
+          for a in jump hurt ko; do
+            mkdir -p "$batch_root/batch_c_air_damage_ko/$a"
+            cp assets/characters/fujiyama/sprites/$a/*.png "$batch_root/batch_c_air_damage_ko/$a/"
+          done
+          mkdir -p "$batch_root/batch_d_special_1/special_1" "$batch_root/batch_e_special_2/special_2"
+          cp assets/characters/fujiyama/sprites/special_1/*.png "$batch_root/batch_d_special_1/special_1/"
+          cp assets/characters/fujiyama/sprites/special_2/*.png "$batch_root/batch_e_special_2/special_2/"
+
+          rm -rf dev_art/fujiyama/payload_chunks
+
+      - name: Commit complete Fujiyama character
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/characters/fujiyama/sprites data/fighters/fujiyama.tres dev_art/fujiyama
+          if git diff --cached --quiet; then
+            echo "No Fujiyama integration changes to commit."
+            exit 0
+          fi
+          git commit -m "Integrate complete Fujiyama Joe-style sprite set"
+          git push origin HEAD:art/fujiyama-joe-style-batches
