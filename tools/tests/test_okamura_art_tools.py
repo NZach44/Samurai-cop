@@ -13,7 +13,6 @@ if str(TOOLS) not in sys.path:
 
 import init_okamura_art_package as package_tool
 import process_okamura_art as process_tool
-from character_art_pipeline import animation_config, load_manifest if False else PROJECT_ROOT
 
 
 EXPECTED_ANIMATIONS = {
