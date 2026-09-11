@@ -14,9 +14,11 @@ var block_stun_duration: float = 0.16
 var attack_level: Fighter.AttackLevel = Fighter.AttackLevel.MID
 var attack_title: String = "Special Move"
 var has_hit: bool = false
+var spin_speed: float = 0.0
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var visual: Polygon2D = $Visual
+@onready var projectile_visual: Sprite2D = $ProjectileVisual
 
 
 func configure(attacker: Fighter, special_move: SpecialMoveData, travel_direction: float) -> void:
@@ -41,6 +43,7 @@ func configure(attacker: Fighter, special_move: SpecialMoveData, travel_directio
 		else Fighter.AttackLevel.MID
 	)
 	attack_title = special_move.display_title
+	spin_speed = special_move.projectile_spin_speed
 	collision_shape.shape = collision_shape.shape.duplicate()
 	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
 	if rectangle != null:
@@ -63,20 +66,21 @@ func _configure_visual(special_move: SpecialMoveData) -> void:
 		Vector2(-half_size.x, half_size.y),
 	])
 	if special_move.projectile_texture != null:
-		visual.texture = special_move.projectile_texture
-		visual.color = Color.WHITE
+		visual.visible = false
+		projectile_visual.visible = true
+		projectile_visual.texture = special_move.projectile_texture
 		var texture_size: Vector2 = special_move.projectile_texture.get_size()
-		visual.uv = PackedVector2Array([
-			Vector2.ZERO,
-			Vector2(texture_size.x, 0.0),
-			texture_size,
-			Vector2(0.0, texture_size.y),
-		])
+		projectile_visual.scale = visual_size / texture_size
+		if special_move.projectile_flip_with_direction:
+			projectile_visual.scale.x *= direction
 	else:
+		visual.visible = true
 		visual.texture = null
 		visual.color = special_move.projectile_color
 		visual.uv = PackedVector2Array()
-	visual.scale.x = direction
+		visual.scale.x = direction
+		projectile_visual.visible = false
+		projectile_visual.texture = null
 
 
 func _physics_process(delta: float) -> void:
@@ -85,6 +89,8 @@ func _physics_process(delta: float) -> void:
 		return
 	lifetime_remaining -= delta
 	global_position.x += direction * speed * delta
+	if projectile_visual.visible:
+		projectile_visual.rotation += spin_speed * delta * direction
 	if lifetime_remaining <= 0.0 or global_position.distance_to(start_position) >= max_distance:
 		queue_free()
 

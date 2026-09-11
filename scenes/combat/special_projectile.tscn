@@ -16,6 +16,9 @@ script = ExtResource("1_projectile")
 polygon = PackedVector2Array(-14, -9, 14, -9, 14, 9, -14, 9)
 color = Color(1, 0.75, 0.2, 1)
 
+[node name="ProjectileVisual" type="Sprite2D" parent="."]
+visible = false
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_projectile")
 

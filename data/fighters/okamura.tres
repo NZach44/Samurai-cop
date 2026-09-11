@@ -13,6 +13,7 @@ alignment = 1
 campaign_tier = 0
 intro_text = "Fight me like a man!"
 sprite_frames = ExtResource("4_frames")
+visual_scale = 1.5
 move_speed = 252.0
 jump_velocity = 610.0
 power_multiplier = 0.95
