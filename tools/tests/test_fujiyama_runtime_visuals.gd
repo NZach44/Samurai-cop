@@ -112,7 +112,7 @@ func _test_textured_projectile(attacker: Fighter) -> void:
 	_check(launched_projectiles.size() == projectiles_before + 1, "Fujiyama special_1 did not launch a projectile")
 	if launched_projectiles.size() > projectiles_before:
 		var launched: SpecialProjectile = launched_projectiles[-1] as SpecialProjectile
-		_check(launched.visual.texture == FUJIYAMA_SPECIAL_1.projectile_texture, "launched special_1 projectile is not the piano")
+		_check(launched.projectile_visual.texture == FUJIYAMA_SPECIAL_1.projectile_texture, "launched special_1 projectile is not the piano")
 		launched.queue_free()
 
 	var projectile: SpecialProjectile = PROJECTILE_SCENE.instantiate() as SpecialProjectile
@@ -120,15 +120,13 @@ func _test_textured_projectile(attacker: Fighter) -> void:
 	projectile.configure(attacker, FUJIYAMA_SPECIAL_1, 1.0)
 	var rectangle: RectangleShape2D = projectile.collision_shape.shape as RectangleShape2D
 	_check(rectangle.size.is_equal_approx(Vector2(78.0, 56.0)), "piano collision must remain projectile_size")
-	_check(_polygon_size(projectile.visual.polygon).is_equal_approx(Vector2(132.0, 78.0)), "piano visual must use projectile_visual_size")
-	_check(projectile.visual.texture == FUJIYAMA_SPECIAL_1.projectile_texture, "piano texture was not applied")
-	_check(projectile.visual.color.is_equal_approx(Color.WHITE), "textured projectile must render without fallback tint")
-	_check(projectile.visual.uv.size() == 4, "textured projectile must define four UV points")
-	_check(projectile.visual.uv[2].is_equal_approx(FUJIYAMA_SPECIAL_1.projectile_texture.get_size()), "piano UVs must cover the complete texture")
+	_check(not projectile.visual.visible, "textured projectile must hide the fallback Polygon2D")
+	_check(projectile.projectile_visual.visible, "textured projectile Sprite2D must be visible")
+	_check(projectile.projectile_visual.texture == FUJIYAMA_SPECIAL_1.projectile_texture, "piano texture was not applied")
 	_check(_texture_is_predominantly_black(FUJIYAMA_SPECIAL_1.projectile_texture), "piano texture is not predominantly black")
-	_check(projectile.visual.scale.x > 0.0, "right-traveling piano must face right")
+	_check(projectile.projectile_visual.scale.x > 0.0, "right-traveling piano must face right")
 	projectile.configure(attacker, FUJIYAMA_SPECIAL_1, -1.0)
-	_check(projectile.visual.scale.x < 0.0, "left-traveling piano must flip")
+	_check(projectile.projectile_visual.scale.x < 0.0, "left-traveling piano must flip")
 	_check(is_equal_approx(projectile.speed, 180.0), "piano projectile speed changed")
 	_check(is_equal_approx(projectile.max_distance, 360.0), "piano projectile range changed")
 	_check(is_equal_approx(projectile.lifetime_remaining, 2.4), "piano projectile lifetime changed")
@@ -146,6 +144,8 @@ func _test_fallback_projectile(attacker: Fighter) -> void:
 	projectile.configure(attacker, FALLBACK_PROJECTILE_MOVE, 1.0)
 	var rectangle: RectangleShape2D = projectile.collision_shape.shape as RectangleShape2D
 	_check(projectile.visual.texture == null, "textureless projectile must keep Polygon2D fallback")
+	_check(projectile.visual.visible, "textureless projectile must show Polygon2D fallback")
+	_check(not projectile.projectile_visual.visible, "textureless projectile must hide Sprite2D visual")
 	_check(projectile.visual.color.is_equal_approx(FALLBACK_PROJECTILE_MOVE.projectile_color), "fallback projectile color changed")
 	_check(projectile.visual.uv.is_empty(), "fallback projectile must not retain texture UVs")
 	_check(rectangle.size.is_equal_approx(FALLBACK_PROJECTILE_MOVE.projectile_size), "fallback collision size changed")

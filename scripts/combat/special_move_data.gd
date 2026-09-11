@@ -49,3 +49,5 @@ enum AttackLevel {
 @export var projectile_color: Color = Color(1.0, 0.75, 0.2, 1.0)
 @export var projectile_texture: Texture2D
 @export var projectile_visual_size: Vector2 = Vector2.ZERO
+@export var projectile_spin_speed: float = 0.0
+@export var projectile_flip_with_direction: bool = true
