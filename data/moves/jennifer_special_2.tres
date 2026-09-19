@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="Texture2D" path="res://assets/characters/jennifer/effects/lion_head.png" id="2_lion"]
 
 [resource]
 script = ExtResource("1_special")
@@ -24,3 +25,7 @@ projectile_max_distance = 360.0
 projectile_damage = 17
 projectile_size = Vector2(46, 38)
 projectile_color = Color(0.82, 0.68, 0.27, 1)
+projectile_texture = ExtResource("2_lion")
+projectile_visual_size = Vector2(72, 72)
+projectile_spin_speed = 0.0
+projectile_flip_with_direction = false
