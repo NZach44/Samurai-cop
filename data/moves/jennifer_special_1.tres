@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="Texture2D" path="res://assets/characters/jennifer/effects/birthday_cake.png" id="2_cake"]
 
 [resource]
 script = ExtResource("1_special")
@@ -24,3 +25,7 @@ projectile_max_distance = 420.0
 projectile_damage = 13
 projectile_size = Vector2(42, 28)
 projectile_color = Color(1, 0.52, 0.68, 1)
+projectile_texture = ExtResource("2_cake")
+projectile_visual_size = Vector2(60, 60)
+projectile_spin_speed = 0.0
+projectile_flip_with_direction = false
