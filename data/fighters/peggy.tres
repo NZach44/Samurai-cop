@@ -13,6 +13,7 @@ alignment = 0
 campaign_tier = 0
 intro_text = "Let's use it before you lose it"
 sprite_frames = ExtResource("4_frames")
+visual_scale = 1.63
 move_speed = 264.0
 jump_velocity = 610.0
 power_multiplier = 0.91

@@ -1,105 +1,149 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3]
+[gd_resource type="SpriteFrames" load_steps=75 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/peggy/placeholder_sheet.svg" id="1_sheet"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
-atlas = ExtResource("1_sheet")
-region = Rect2(0, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_walk"]
-atlas = ExtResource("1_sheet")
-region = Rect2(48, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
-atlas = ExtResource("1_sheet")
-region = Rect2(96, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_punch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(144, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hurt"]
-atlas = ExtResource("1_sheet")
-region = Rect2(192, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_1"]
-atlas = ExtResource("1_sheet")
-region = Rect2(240, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_special_2"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ko"]
-atlas = ExtResource("1_sheet")
-region = Rect2(336, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kick"]
-atlas = ExtResource("1_sheet")
-region = Rect2(384, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_crouch"]
-atlas = ExtResource("1_sheet")
-region = Rect2(432, 0, 48, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_block"]
-atlas = ExtResource("1_sheet")
-region = Rect2(480, 0, 48, 128)
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/idle/idle_001.png" id="2_idle_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/idle/idle_002.png" id="3_idle_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/idle/idle_003.png" id="4_idle_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/idle/idle_004.png" id="5_idle_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_001.png" id="6_walk_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_002.png" id="7_walk_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_003.png" id="8_walk_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_004.png" id="9_walk_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_005.png" id="10_walk_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/walk/walk_006.png" id="11_walk_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/punch/punch_001.png" id="12_punch_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/punch/punch_002.png" id="13_punch_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/punch/punch_003.png" id="14_punch_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/punch/punch_004.png" id="15_punch_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/punch/punch_005.png" id="16_punch_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_001.png" id="17_kick_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_002.png" id="18_kick_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_003.png" id="19_kick_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_004.png" id="20_kick_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_005.png" id="21_kick_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/kick/kick_006.png" id="22_kick_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch/crouch_001.png" id="23_crouch_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch/crouch_002.png" id="24_crouch_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch/crouch_003.png" id="25_crouch_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_punch/crouch_punch_001.png" id="26_crouch_punch_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_punch/crouch_punch_002.png" id="27_crouch_punch_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_punch/crouch_punch_003.png" id="28_crouch_punch_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_punch/crouch_punch_004.png" id="29_crouch_punch_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_punch/crouch_punch_005.png" id="30_crouch_punch_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_001.png" id="31_crouch_kick_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_002.png" id="32_crouch_kick_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_003.png" id="33_crouch_kick_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_004.png" id="34_crouch_kick_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_005.png" id="35_crouch_kick_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_kick/crouch_kick_006.png" id="36_crouch_kick_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_block/crouch_block_001.png" id="37_crouch_block_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_block/crouch_block_002.png" id="38_crouch_block_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/crouch_block/crouch_block_003.png" id="39_crouch_block_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/block/block_001.png" id="40_block_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/block/block_002.png" id="41_block_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/block/block_003.png" id="42_block_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/jump/jump_001.png" id="43_jump_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/jump/jump_002.png" id="44_jump_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/jump/jump_003.png" id="45_jump_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/jump/jump_004.png" id="46_jump_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/jump/jump_005.png" id="47_jump_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/hurt/hurt_001.png" id="48_hurt_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/hurt/hurt_002.png" id="49_hurt_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/hurt/hurt_003.png" id="50_hurt_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_001.png" id="51_ko_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_002.png" id="52_ko_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_003.png" id="53_ko_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_004.png" id="54_ko_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_005.png" id="55_ko_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_006.png" id="56_ko_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_007.png" id="57_ko_007"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/ko/ko_008.png" id="58_ko_008"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_001.png" id="59_special_1_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_002.png" id="60_special_1_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_003.png" id="61_special_1_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_004.png" id="62_special_1_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_005.png" id="63_special_1_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_006.png" id="64_special_1_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_007.png" id="65_special_1_007"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_1/special_1_008.png" id="66_special_1_008"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_001.png" id="67_special_2_001"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_002.png" id="68_special_2_002"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_003.png" id="69_special_2_003"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_004.png" id="70_special_2_004"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_005.png" id="71_special_2_005"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_006.png" id="72_special_2_006"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_007.png" id="73_special_2_007"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/sprites/special_2/special_2_008.png" id="74_special_2_008"]
 
 [resource]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_block")}],
-"loop": true,
+"frames": [{"duration": 1.0, "texture": ExtResource("40_block_001")}, {"duration": 1.0, "texture": ExtResource("41_block_002")}, {"duration": 1.0, "texture": ExtResource("42_block_003")}],
+"loop": false,
 "name": &"block",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_crouch")}],
-"loop": true,
+"frames": [{"duration": 1.0, "texture": ExtResource("23_crouch_001")}, {"duration": 1.0, "texture": ExtResource("24_crouch_002")}, {"duration": 1.0, "texture": ExtResource("25_crouch_003")}],
+"loop": false,
 "name": &"crouch",
-"speed": 5.0
+"speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_hurt")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("37_crouch_block_001")}, {"duration": 1.0, "texture": ExtResource("38_crouch_block_002")}, {"duration": 1.0, "texture": ExtResource("39_crouch_block_003")}],
+"loop": false,
+"name": &"crouch_block",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("26_crouch_punch_001")}, {"duration": 1.0, "texture": ExtResource("27_crouch_punch_002")}, {"duration": 1.0, "texture": ExtResource("28_crouch_punch_003")}, {"duration": 1.0, "texture": ExtResource("29_crouch_punch_004")}, {"duration": 1.0, "texture": ExtResource("30_crouch_punch_005")}],
+"loop": false,
+"name": &"crouch_punch",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("31_crouch_kick_001")}, {"duration": 1.0, "texture": ExtResource("32_crouch_kick_002")}, {"duration": 1.0, "texture": ExtResource("33_crouch_kick_003")}, {"duration": 1.0, "texture": ExtResource("34_crouch_kick_004")}, {"duration": 1.0, "texture": ExtResource("35_crouch_kick_005")}, {"duration": 1.0, "texture": ExtResource("36_crouch_kick_006")}],
+"loop": false,
+"name": &"crouch_kick",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("48_hurt_001")}, {"duration": 1.0, "texture": ExtResource("49_hurt_002")}, {"duration": 1.0, "texture": ExtResource("50_hurt_003")}],
 "loop": false,
 "name": &"hurt",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_idle")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("2_idle_001")}, {"duration": 1.0, "texture": ExtResource("3_idle_002")}, {"duration": 1.0, "texture": ExtResource("4_idle_003")}, {"duration": 1.0, "texture": ExtResource("5_idle_004")}],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_jump")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("43_jump_001")}, {"duration": 1.0, "texture": ExtResource("44_jump_002")}, {"duration": 1.0, "texture": ExtResource("45_jump_003")}, {"duration": 1.0, "texture": ExtResource("46_jump_004")}, {"duration": 1.0, "texture": ExtResource("47_jump_005")}],
 "loop": false,
 "name": &"jump",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_kick")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("17_kick_001")}, {"duration": 1.0, "texture": ExtResource("18_kick_002")}, {"duration": 1.0, "texture": ExtResource("19_kick_003")}, {"duration": 1.0, "texture": ExtResource("20_kick_004")}, {"duration": 1.0, "texture": ExtResource("21_kick_005")}, {"duration": 1.0, "texture": ExtResource("22_kick_006")}],
 "loop": false,
 "name": &"kick",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_ko")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("51_ko_001")}, {"duration": 1.0, "texture": ExtResource("52_ko_002")}, {"duration": 1.0, "texture": ExtResource("53_ko_003")}, {"duration": 1.0, "texture": ExtResource("54_ko_004")}, {"duration": 1.0, "texture": ExtResource("55_ko_005")}, {"duration": 1.0, "texture": ExtResource("56_ko_006")}, {"duration": 1.0, "texture": ExtResource("57_ko_007")}, {"duration": 1.0, "texture": ExtResource("58_ko_008")}],
 "loop": false,
 "name": &"ko",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_punch")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("12_punch_001")}, {"duration": 1.0, "texture": ExtResource("13_punch_002")}, {"duration": 1.0, "texture": ExtResource("14_punch_003")}, {"duration": 1.0, "texture": ExtResource("15_punch_004")}, {"duration": 1.0, "texture": ExtResource("16_punch_005")}],
 "loop": false,
 "name": &"punch",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_1")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("59_special_1_001")}, {"duration": 1.0, "texture": ExtResource("60_special_1_002")}, {"duration": 1.0, "texture": ExtResource("61_special_1_003")}, {"duration": 1.0, "texture": ExtResource("62_special_1_004")}, {"duration": 1.0, "texture": ExtResource("63_special_1_005")}, {"duration": 1.0, "texture": ExtResource("64_special_1_006")}, {"duration": 1.0, "texture": ExtResource("65_special_1_007")}, {"duration": 1.0, "texture": ExtResource("66_special_1_008")}],
 "loop": false,
 "name": &"special_1",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_special_2")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("67_special_2_001")}, {"duration": 1.0, "texture": ExtResource("68_special_2_002")}, {"duration": 1.0, "texture": ExtResource("69_special_2_003")}, {"duration": 1.0, "texture": ExtResource("70_special_2_004")}, {"duration": 1.0, "texture": ExtResource("71_special_2_005")}, {"duration": 1.0, "texture": ExtResource("72_special_2_006")}, {"duration": 1.0, "texture": ExtResource("73_special_2_007")}, {"duration": 1.0, "texture": ExtResource("74_special_2_008")}],
 "loop": false,
 "name": &"special_2",
-"speed": 5.0
+"speed": 12.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk")}],
+"frames": [{"duration": 1.0, "texture": ExtResource("6_walk_001")}, {"duration": 1.0, "texture": ExtResource("7_walk_002")}, {"duration": 1.0, "texture": ExtResource("8_walk_003")}, {"duration": 1.0, "texture": ExtResource("9_walk_004")}, {"duration": 1.0, "texture": ExtResource("10_walk_005")}, {"duration": 1.0, "texture": ExtResource("11_walk_006")}],
 "loop": true,
 "name": &"walk",
-"speed": 5.0
+"speed": 9.0
 }]

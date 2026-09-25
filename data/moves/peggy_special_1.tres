@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="Texture2D" path="res://assets/characters/peggy/effects/handcuffs.png" id="2_handcuffs"]
 
 [resource]
 script = ExtResource("1_special")
@@ -24,3 +25,5 @@ projectile_max_distance = 420.0
 projectile_damage = 13
 projectile_size = Vector2(34, 18)
 projectile_color = Color(0.7, 0.76, 0.84, 1)
+projectile_texture = ExtResource("2_handcuffs")
+projectile_visual_size = Vector2(64, 64)
