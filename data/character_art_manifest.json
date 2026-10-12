@@ -1180,7 +1180,60 @@
     "nurse": {
       "sprite_frames": "res://assets/characters/nurse/nurse_frames.tres",
       "visual_scale_override": null,
-      "scale_profile": null,
+      "scale_profile": {
+        "reference_animation": "idle",
+        "height_ratio_to_reference": 0.922995,
+        "target_height_ratio_to_reference": 0.922995,
+        "target_baseline_y": 495,
+        "approved_neutral_metrics": {
+          "median_visible_height": 431.5,
+          "median_visible_width": 222.0,
+          "median_alpha_area": 39070.5
+        }
+      },
+      "production_batches": {
+        "complete_production": {
+          "status": "approved",
+          "anchor_source": "approved Wild Nurse idle production art",
+          "anchor_measured_height": 431.5,
+          "reference_measured_height": 431.5,
+          "batch_multiplier": 1.0,
+          "baseline": 495,
+          "normalization_version": 4,
+          "animations": [
+            "idle",
+            "walk",
+            "punch",
+            "kick",
+            "crouch",
+            "crouch_punch",
+            "crouch_kick",
+            "block",
+            "crouch_block",
+            "jump",
+            "hurt",
+            "special_1",
+            "special_2",
+            "ko"
+          ],
+          "animation_multipliers": {
+            "idle": 1.0,
+            "walk": 1.0,
+            "punch": 1.0,
+            "kick": 1.0,
+            "crouch": 1.0,
+            "crouch_punch": 1.0,
+            "crouch_kick": 1.0,
+            "block": 1.0,
+            "crouch_block": 1.0,
+            "jump": 1.0,
+            "hurt": 1.0,
+            "special_1": 1.0,
+            "special_2": 1.0,
+            "ko": 1.0
+          }
+        }
+      },
       "animations": {}
     }
   }

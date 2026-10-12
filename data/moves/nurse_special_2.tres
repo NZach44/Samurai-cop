@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="Texture2D" path="res://assets/characters/nurse/effects/heart.png" id="2_heart"]
 
 [resource]
 script = ExtResource("1_special")
@@ -16,7 +17,7 @@ hit_stun_duration = 0.23
 block_stun_duration = 0.15
 knockback = 260.0
 hitbox_offset_x = 54.0
-hitbox_offset_y = -28.0
+hitbox_offset_y = -86.0
 animation_name = &"special_2"
 projectile_speed = 245.0
 projectile_lifetime = 2.2
@@ -24,3 +25,7 @@ projectile_max_distance = 440.0
 projectile_damage = 11
 projectile_size = Vector2(22, 18)
 projectile_color = Color(1, 0.34, 0.55, 1)
+projectile_texture = ExtResource("2_heart")
+projectile_visual_size = Vector2(40, 40)
+projectile_spin_speed = 0.0
+projectile_flip_with_direction = false

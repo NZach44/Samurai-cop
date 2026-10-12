@@ -13,6 +13,7 @@ alignment = 0
 campaign_tier = 0
 intro_text = "Do you like what you see?"
 sprite_frames = ExtResource("4_frames")
+visual_scale = 1.63
 move_speed = 268.0
 jump_velocity = 615.0
 power_multiplier = 0.89
