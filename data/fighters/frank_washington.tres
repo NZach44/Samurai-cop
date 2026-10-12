@@ -12,6 +12,7 @@ display_name = "Frank Washington"
 alignment = 0
 campaign_tier = 1
 intro_text = "Because I'm an undercover cop"
+home_arena_id = &"stage_03"
 sprite_frames = ExtResource("4_frames")
 visual_scale = 1.7
 visual_offset = Vector2(0, 4)

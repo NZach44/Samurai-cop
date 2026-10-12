@@ -31,6 +31,7 @@ const HEALTH_RED: Color = Color("e5484d")
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
+@onready var arena_background: ArenaBackground = $ArenaBackground/Presentation
 @onready var floor_body: StaticBody2D = $Floor
 @onready var floor_collision: CollisionShape2D = $Floor/CollisionShape2D
 @onready var mobile_controls: CanvasLayer = $MobileControls
@@ -81,6 +82,7 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	arena_background.configure_for_opponent(fighter_2.character_data)
 	desktop_floor_position = floor_body.position
 	desktop_fighter_1_position = fighter_1.position
 	desktop_fighter_2_position = fighter_2.position
@@ -105,6 +107,7 @@ func _ready() -> void:
 
 
 func _apply_mobile_safe_area() -> void:
+	arena_background.set_reserved_bottom_height(0.0)
 	floor_body.position = desktop_floor_position
 	fighter_1.position = desktop_fighter_1_position
 	fighter_2.position = desktop_fighter_2_position
@@ -119,6 +122,7 @@ func _apply_mobile_safe_area() -> void:
 		return
 	var viewport_height: float = get_viewport_rect().size.y
 	var reserved_height: float = mobile_controls.get_reserved_control_height(viewport_height)
+	arena_background.set_reserved_bottom_height(reserved_height)
 	var floor_surface_y: float = viewport_height - reserved_height - mobile_floor_clearance
 	floor_body.position.y = floor_surface_y + floor_shape.size.y * 0.5
 	var mobile_vertical_offset: float = floor_body.position.y - desktop_floor_position.y

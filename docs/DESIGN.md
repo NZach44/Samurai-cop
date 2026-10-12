@@ -47,3 +47,32 @@ TBD
 - complex physics
 - 3D graphics
 - advanced story mode
+
+## Character-bound arenas
+
+Campaign and versus matches use the opponent/P2 fighter's `home_arena_id`.
+The player character never overrides that selection. `ArenaCatalog` is the
+single registry for stage names, production background paths, and optional
+visual-only scale, offset, or modulation. If an arena ID or texture cannot be
+loaded, the reusable arena scene keeps the match running with its default
+background and prints one warning.
+
+| Stage ID | Display name | Home fighter(s) | Production asset |
+| --- | --- | --- | --- |
+| `stage_01` | Lion Head Room | Jennifer | `assets/backgrounds/stage_01/background.png` |
+| `stage_02` | Chief's House | Fujiyama | `assets/backgrounds/stage_02/background.png` |
+| `stage_03` | Parking | Frank Washington | `assets/backgrounds/stage_03/background.png` |
+| `stage_04` | Outlands | Yamashita, Joe Marshall | `assets/backgrounds/stage_04/background.png` |
+| `stage_05` | Outlands 2 | Okamura | `assets/backgrounds/stage_05/background.png` |
+| `stage_06` | Police Station | Peggy | `assets/backgrounds/stage_06/background.png` |
+| `stage_07` | Hospital | Wild Nurse | `assets/backgrounds/stage_07/background.png` |
+
+Backgrounds are static comic/cel-shaded PNGs generated from the movie stills
+under `reference/backgrounds/`; those stills remain source references and are
+never loaded at runtime. Final art contains no actors, text, logos, subtitles,
+or baked UI. A full-rect `TextureRect` uses aspect-preserving cover scaling, so
+the background crops rather than distorts across landscape aspect ratios.
+Per-stage presentation metadata may adjust only background scale, offset, or
+modulation; it must never change fighter scale, floor collision, arena bounds,
+spawn positions, or mobile controls. On touch layouts the background excludes
+the reserved bottom control zone.

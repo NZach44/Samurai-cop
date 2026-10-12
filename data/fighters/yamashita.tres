@@ -12,6 +12,7 @@ display_name = "Yamashita"
 alignment = 1
 campaign_tier = 2
 intro_text = "... and then we will see who the real samurai is"
+home_arena_id = &"stage_04"
 sprite_frames = ExtResource("4_frames")
 visual_scale = 1.5
 move_speed = 225.0

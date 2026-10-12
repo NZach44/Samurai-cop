@@ -12,6 +12,7 @@ display_name = "Fujiyama"
 alignment = 1
 campaign_tier = 2
 intro_text = "So they call him SAMURAI, HUH"
+home_arena_id = &"stage_02"
 sprite_frames = ExtResource("4_frames")
 visual_scale = 2.05
 move_speed = 232.0
