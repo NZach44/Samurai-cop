@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
 [ext_resource type="PackedScene" path="res://scenes/ui/mobile_controls.tscn" id="3_mobile_controls"]
 [ext_resource type="Resource" path="res://data/fighters/joe_marshall.tres" id="4_joe"]
 [ext_resource type="Resource" path="res://data/fighters/yamashita.tres" id="5_yamashita"]
+[ext_resource type="Script" path="res://scripts/arenas/arena_background.gd" id="6_arena_background"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1152, 64)
@@ -78,10 +79,40 @@ Label/font_sizes/font_size = 16
 [node name="TestArena" type="Node2D"]
 script = ExtResource("2_round_controller")
 
-[node name="Background" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+[node name="ArenaBackground" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Presentation" type="Control" parent="ArenaBackground"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_arena_background")
+
+[node name="FallbackBackground" type="ColorRect" parent="ArenaBackground/Presentation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 color = Color(0.08, 0.1, 0.16, 1)
-z_index = -1
+
+[node name="Artwork" type="TextureRect" parent="ArenaBackground/Presentation"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(576, 584)
