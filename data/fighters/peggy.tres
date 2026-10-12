@@ -12,6 +12,7 @@ display_name = "Peggy"
 alignment = 0
 campaign_tier = 0
 intro_text = "Let's use it before you lose it"
+home_arena_id = &"stage_06"
 sprite_frames = ExtResource("4_frames")
 visual_scale = 1.63
 move_speed = 264.0

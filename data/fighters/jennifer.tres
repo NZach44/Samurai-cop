@@ -12,6 +12,7 @@ display_name = "Jennifer"
 alignment = 0
 campaign_tier = 1
 intro_text = "How did you know I'd come home with you?"
+home_arena_id = &"stage_01"
 sprite_frames = ExtResource("4_frames")
 visual_scale = 1.6
 move_speed = 258.0
