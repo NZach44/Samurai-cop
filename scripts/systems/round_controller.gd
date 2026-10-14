@@ -16,7 +16,7 @@ const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 @export var round_end_delay: float = 2.0
 @export var match_end_delay: float = 3.0
 @export var special_move_message_duration: float = 0.8
-@export var intro_duration: float = 1.7
+@export var intro_fallback_duration: float = 3.0
 @export var intro_start_delay: float = 0.5
 @export var intro_bubble_gap: float = 20.0
 @export var intro_bubble_screen_margin: float = 16.0
@@ -28,6 +28,7 @@ const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 const HEALTH_GREEN: Color = Color("35c968")
 const HEALTH_ORANGE: Color = Color("f0a43c")
 const HEALTH_RED: Color = Color("e5484d")
+const INTRO_PAUSE_DURATION: float = 0.5
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
@@ -66,6 +67,7 @@ var p2_special_message_sequence_id: int = 0
 var desktop_floor_position: Vector2
 var desktop_fighter_1_position: Vector2
 var desktop_fighter_2_position: Vector2
+var intro_sequence_id: int = 0
 
 
 func _enter_tree() -> void:
@@ -201,6 +203,9 @@ func _on_fighter_defeated(loser: Fighter) -> void:
 
 
 func _start_round() -> void:
+	intro_sequence_id += 1
+	var current_intro_sequence_id: int = intro_sequence_id
+	_clear_intro_presentation()
 	match_state = MatchState.ROUND_START
 	_set_fighter_controls_enabled(false)
 	_clear_special_projectiles()
@@ -210,13 +215,19 @@ func _start_round() -> void:
 	intro_bubble.hide()
 
 	await get_tree().create_timer(intro_start_delay).timeout
-	if match_state != MatchState.ROUND_START:
+	if not _is_intro_sequence_active(current_intro_sequence_id):
 		return
-	await _play_fighter_intro(fighter_1)
-	if match_state != MatchState.ROUND_START:
+	await _play_fighter_intro(fighter_1, current_intro_sequence_id)
+	if not _is_intro_sequence_active(current_intro_sequence_id):
 		return
-	await _play_fighter_intro(fighter_2)
-	if match_state != MatchState.ROUND_START:
+	await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
+	if not _is_intro_sequence_active(current_intro_sequence_id):
+		return
+	await _play_fighter_intro(fighter_2, current_intro_sequence_id)
+	if not _is_intro_sequence_active(current_intro_sequence_id):
+		return
+	await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
+	if not _is_intro_sequence_active(current_intro_sequence_id):
 		return
 
 	winner_label.text = "ROUND %d" % round_number
@@ -235,27 +246,50 @@ func _start_round() -> void:
 	_set_fighter_controls_enabled(true)
 
 
-func _play_fighter_intro(fighter: Fighter) -> void:
+func _play_fighter_intro(fighter: Fighter, sequence_id: int) -> void:
 	var data: CharacterData = fighter.character_data
 	if data == null or (data.intro_text.is_empty() and data.intro_audio == null):
 		return
-
-	intro_voice_player.stop()
-	intro_voice_player.stream = data.intro_audio
-	if data.intro_audio != null:
-		intro_voice_player.play()
 
 	if not data.intro_text.is_empty():
 		_configure_intro_bubble_text(data.intro_text)
 		# Container sizing is deferred; wait one locked frame before using final bounds.
 		await get_tree().process_frame
+		if not _is_intro_sequence_active(sequence_id):
+			return
 		_position_intro_bubble(fighter)
 		intro_bubble.show()
 
-	await get_tree().create_timer(intro_duration).timeout
+	intro_voice_player.stop()
+	intro_voice_player.stream = data.intro_audio
+	if data.intro_audio != null:
+		intro_voice_player.play()
+		if intro_voice_player.playing:
+			await intro_voice_player.finished
+		else:
+			await get_tree().create_timer(intro_fallback_duration).timeout
+	else:
+		await get_tree().create_timer(intro_fallback_duration).timeout
+
+	if not _is_intro_sequence_active(sequence_id):
+		return
+	_clear_intro_presentation()
+
+
+func _is_intro_sequence_active(sequence_id: int) -> bool:
+	return sequence_id == intro_sequence_id and match_state == MatchState.ROUND_START
+
+
+func _clear_intro_presentation() -> void:
 	intro_bubble.hide()
 	intro_voice_player.stop()
 	intro_voice_player.stream = null
+
+
+func _exit_tree() -> void:
+	intro_sequence_id += 1
+	if is_instance_valid(intro_voice_player):
+		_clear_intro_presentation()
 
 
 func _position_intro_bubble(fighter: Fighter) -> void:

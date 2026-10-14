@@ -11,6 +11,12 @@ enum AttackPosture {
 	CROUCHING,
 }
 
+enum ImpactSound {
+	NONE,
+	PUNCH,
+	KICK,
+}
+
 class NormalAttackData:
 	extends RefCounted
 	var attack_id: StringName
@@ -73,6 +79,15 @@ const ANIMATION_SPECIAL_2: StringName = &"special_2"
 const ANIMATION_KO: StringName = &"ko"
 const DEFAULT_SPECIAL_PROJECTILE_PATH: String = (
 	"res://scenes/combat/special_projectile.tscn"
+)
+const PUNCH_IMPACT_STREAM: AudioStream = preload(
+	"res://assets/audio/combat/punch_hits.tres"
+)
+const KICK_IMPACT_STREAM: AudioStream = preload(
+	"res://assets/audio/combat/kick_hits.tres"
+)
+const BLOCK_IMPACT_STREAM: AudioStream = preload(
+	"res://assets/audio/combat/block_hits.tres"
 )
 
 @export var move_speed: float = 240.0
@@ -139,6 +154,7 @@ const DEFAULT_SPECIAL_PROJECTILE_PATH: String = (
 @onready var punch_hit_box_shape: CollisionShape2D = $Visuals/PunchHitBox/CollisionShape2D
 @onready var hurt_box_shape: CollisionShape2D = $HurtBox/CollisionShape2D
 @onready var cpu_controller: CPUController = $CPUController
+@onready var combat_impact_player: AudioStreamPlayer = $CombatImpactPlayer
 
 var fighter_state: FighterState = FighterState.NORMAL
 var attack_is_active: bool = false
@@ -153,6 +169,7 @@ var active_attack_name: String = "Punch"
 var active_attack_animation: StringName = ANIMATION_PUNCH
 var active_attack_level: AttackLevel = AttackLevel.MID
 var active_attack_posture: AttackPosture = AttackPosture.STANDING
+var active_attack_impact_sound: ImpactSound = ImpactSound.NONE
 var active_attack_hit_stun_duration: float = -1.0
 var active_attack_block_stun_duration: float = -1.0
 var active_attack_forward_speed: float = 0.0
@@ -651,7 +668,9 @@ func _start_normal_attack(attack: NormalAttackData) -> void:
 		attack.hitbox_offset_y,
 		attack.animation_name,
 		attack.attack_level,
-		attack.attack_posture
+		attack.attack_posture,
+		null,
+		ImpactSound.KICK if attack.attack_id in [&"kick", &"low_kick"] else ImpactSound.PUNCH
 	)
 
 
@@ -685,7 +704,12 @@ func _start_special(
 		resolved_animation,
 		attack_level,
 		AttackPosture.STANDING,
-		special_move
+		special_move,
+		(
+			ImpactSound.KICK
+			if special_move.behavior == SpecialMoveData.SpecialBehavior.FLYING_KICK
+			else ImpactSound.NONE
+		)
 	)
 
 
@@ -815,7 +839,8 @@ func _start_attack(
 	animation_name: StringName,
 	attack_level: AttackLevel,
 	attack_posture: AttackPosture,
-	special_move: SpecialMoveData = null
+	special_move: SpecialMoveData = null,
+	impact_sound: ImpactSound = ImpactSound.NONE
 ) -> void:
 	hit_target_ids.clear()
 	active_attack_name = attack_name
@@ -824,6 +849,7 @@ func _start_attack(
 	active_attack_animation = animation_name
 	active_attack_level = attack_level
 	active_attack_posture = attack_posture
+	active_attack_impact_sound = impact_sound
 	active_attack_hit_stun_duration = (
 		special_move.hit_stun_duration if special_move != null else -1.0
 	)
@@ -929,7 +955,8 @@ func _on_punch_hit_box_area_entered(hurt_box: Area2D) -> void:
 		active_attack_name,
 		active_attack_level,
 		active_attack_hit_stun_duration,
-		active_attack_block_stun_duration
+		active_attack_block_stun_duration,
+		active_attack_impact_sound
 	)
 
 
@@ -940,7 +967,8 @@ func receive_hit(
 	attack_name: String = "Punch",
 	attack_level: AttackLevel = AttackLevel.MID,
 	attack_hit_stun_duration: float = -1.0,
-	attack_block_stun_duration: float = -1.0
+	attack_block_stun_duration: float = -1.0,
+	impact_sound: ImpactSound = ImpactSound.NONE
 ) -> void:
 	if fighter_state == FighterState.DEFEATED:
 		return
@@ -960,7 +988,8 @@ func receive_hit(
 			attacker,
 			attack_name,
 			attack_level,
-			attack_hit_stun_duration
+			attack_hit_stun_duration,
+			impact_sound
 		)
 	if control_mode == ControlMode.CPU:
 		if attack_was_blocked:
@@ -986,6 +1015,7 @@ func _resolve_block(
 	var blocked_damage: int = maxi(roundi(float(damage) * blocked_damage_multiplier), 0)
 	var damage_dealt: int = _apply_damage(blocked_damage)
 	_apply_knockback(attacker, knockback_speed * block_knockback_multiplier)
+	_play_combat_impact(BLOCK_IMPACT_STREAM)
 	print("BLOCKED: %s blocked %s from %s for %d damage (%d health remaining)" % [
 		get_display_name(),
 		attack_name,
@@ -1002,12 +1032,17 @@ func _resolve_normal_hit(
 	attacker: Fighter,
 	attack_name: String,
 	attack_level: AttackLevel,
-	attack_hit_stun_duration: float
+	attack_hit_stun_duration: float,
+	impact_sound: ImpactSound
 ) -> void:
 	_cancel_attack(FighterState.HIT_STUN)
 	block_stun_time_remaining = 0.0
 	var damage_dealt: int = _apply_damage(damage)
 	_apply_knockback(attacker, knockback_speed)
+	if impact_sound == ImpactSound.KICK:
+		_play_combat_impact(KICK_IMPACT_STREAM)
+	elif impact_sound == ImpactSound.PUNCH:
+		_play_combat_impact(PUNCH_IMPACT_STREAM)
 	hit_stun_time_remaining = (
 		attack_hit_stun_duration
 		if attack_hit_stun_duration >= 0.0
@@ -1047,6 +1082,13 @@ func _resolve_normal_hit(
 			current_health,
 		])
 	_finish_damage_resolution()
+
+
+func _play_combat_impact(stream: AudioStream) -> void:
+	if stream == null:
+		return
+	combat_impact_player.stream = stream
+	combat_impact_player.play()
 
 
 func _apply_damage(damage: int) -> int:

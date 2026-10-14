@@ -337,7 +337,7 @@
             "jump": 0.96028
           },
           "output_digests": {
-            "jump": "ac4a227ae35b3b5518cdaa87eaf830a9f6153144d7e1c0af362fbe516e54240a"
+            "jump": "3ae405859e2f9a7f48c588b5cee6ee305c454ec96d5ac53edaf575e1a579a730"
           },
           "anchor_metrics": {
             "height_ratio": 1.041363,
@@ -366,7 +366,7 @@
             "hurt": 0.907285
           },
           "output_digests": {
-            "hurt": "a4b71053f7a8904b3faf8269dba14e1738f511dfb1751c4ba6429ae7a71ba856"
+            "hurt": "5a363a6de3255353897fe5f06f578f358a4415f3af7ca081de5eb1040c760a5f"
           },
           "anchor_metrics": {
             "height_ratio": 1.10219,
@@ -453,7 +453,7 @@
             "special_2": 1.073107
           },
           "output_digests": {
-            "special_2": "c3cbadc1acf52d6146c49d316641387adf4b0418c62b015a4d059e85e0a40014"
+            "special_2": "848483813680b1c426cbbdce988986b1be58590bee51e02c420dd018a0d8f19c"
           },
           "anchor_metrics": {
             "height_ratio": 0.931873,

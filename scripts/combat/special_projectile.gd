@@ -110,6 +110,7 @@ func _on_area_entered(area: Area2D) -> void:
 		attack_title,
 		attack_level,
 		hit_stun_duration,
-		block_stun_duration
+		block_stun_duration,
+		Fighter.ImpactSound.NONE
 	)
 	queue_free()
