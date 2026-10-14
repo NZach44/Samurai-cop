@@ -340,6 +340,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="IntroVoicePlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
 
 [node name="MobileControls" parent="." instance=ExtResource("3_mobile_controls")]
 force_visible_for_testing = true

@@ -57,4 +57,7 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 shape = SubResource("RectangleShape2D_fighter")
 
+[node name="CombatImpactPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"
+
 [connection signal="area_entered" from="Visuals/PunchHitBox" to="." method="_on_punch_hit_box_area_entered"]
