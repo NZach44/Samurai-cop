@@ -34,17 +34,30 @@ func _run() -> void:
 func _test_resources() -> void:
 	_check(AudioServer.get_bus_index(&"SFX") >= 0, "SFX audio bus is missing")
 	for entry: Dictionary in [
-		{"name": "punch", "stream": PUNCH_HITS},
-		{"name": "kick", "stream": KICK_HITS},
-		{"name": "block", "stream": BLOCK_HITS},
+		{
+			"name": "punch",
+			"stream": PUNCH_HITS,
+			"path": "res://assets/audio/combat/punch.mp3",
+		},
+		{
+			"name": "kick",
+			"stream": KICK_HITS,
+			"path": "res://assets/audio/combat/kick.mp3",
+		},
+		{
+			"name": "block",
+			"stream": BLOCK_HITS,
+			"path": "res://assets/audio/combat/block.mp3",
+		},
 	]:
 		var randomizer: AudioStreamRandomizer = entry["stream"]
-		_check(randomizer.get_streams_count() == 3, "%s pool must contain three variants" % entry["name"])
+		_check(randomizer.get_streams_count() == 1, "%s pool must contain the supplied clip" % entry["name"])
 		for stream_index: int in range(randomizer.get_streams_count()):
 			var stream: AudioStream = randomizer.get_stream(stream_index)
-			_check(stream != null, "%s variant %d is missing" % [entry["name"], stream_index + 1])
+			_check(stream != null, "%s impact clip is missing" % entry["name"])
 			if stream != null:
-				_check(stream.get_length() > 0.0, "%s variant %d is empty" % [entry["name"], stream_index + 1])
+				_check(stream.resource_path == entry["path"], "%s pool uses the wrong clip" % entry["name"])
+				_check(stream.get_length() > 0.0, "%s impact clip is empty" % entry["name"])
 
 
 func _test_runtime_routing() -> void:

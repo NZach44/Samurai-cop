@@ -1,17 +1,11 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=4 format=3]
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3]
 
-[ext_resource type="AudioStream" path="res://assets/audio/combat/punch_hit_01.wav" id="1_punch_1"]
-[ext_resource type="AudioStream" path="res://assets/audio/combat/punch_hit_02.wav" id="2_punch_2"]
-[ext_resource type="AudioStream" path="res://assets/audio/combat/punch_hit_03.wav" id="3_punch_3"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/punch.mp3" id="1_punch"]
 
 [resource]
 playback_mode = 0
-random_pitch_semitones = 0.35
-random_volume_offset_db = 0.75
-streams_count = 3
-stream_0/stream = ExtResource("1_punch_1")
+random_pitch_semitones = 0.0
+random_volume_offset_db = 0.0
+streams_count = 1
+stream_0/stream = ExtResource("1_punch")
 stream_0/weight = 1.0
-stream_1/stream = ExtResource("2_punch_2")
-stream_1/weight = 1.0
-stream_2/stream = ExtResource("3_punch_3")
-stream_2/weight = 1.0
