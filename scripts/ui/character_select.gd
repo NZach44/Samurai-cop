@@ -31,9 +31,10 @@ const DIFFICULTIES: Array[CpuDifficultyProfile] = [
 @onready var medium_button: Button = %MediumButton
 @onready var difficult_button: Button = %DifficultButton
 @onready var confirm_button: Button = %ConfirmButton
+@onready var selection_music: AudioStreamPlayer = $SelectionMusic
 
 var selected_index: int = 0
-var selected_difficulty_index: int = 1
+var selected_difficulty_index: int = 0
 var character_buttons: Array[Button] = []
 var character_name_labels: Array[Label] = []
 var difficulty_buttons: Array[Button] = []
@@ -41,6 +42,10 @@ var is_transitioning: bool = false
 
 
 func _ready() -> void:
+	# Headless validation quits immediately and cannot service audio playback teardown.
+	if DisplayServer.get_name() != "headless":
+		_start_selection_music()
+
 	for index: int in ROSTER.size():
 		var character: CharacterData = ROSTER[index]
 		var option: Button = _create_character_button(character)
@@ -55,6 +60,15 @@ func _ready() -> void:
 	_select_character(0)
 	_select_difficulty(selected_difficulty_index)
 	character_buttons[0].grab_focus()
+
+
+func _start_selection_music() -> void:
+	selection_music.play()
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(selection_music):
+		selection_music.stop()
 
 
 func _input(event: InputEvent) -> void:

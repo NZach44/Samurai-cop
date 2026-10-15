@@ -1,6 +1,8 @@
 extends SceneTree
 
 const FIGHTER_SCENE: PackedScene = preload("res://scenes/fighters/fighter.tscn")
+const ARENA_SCENE: PackedScene = preload("res://scenes/arenas/test_arena.tscn")
+const FRANK_BULLET: SpecialMoveData = preload("res://data/moves/frank_special_2.tres")
 const PEGGY: CharacterData = preload("res://data/fighters/peggy.tres")
 const PEGGY_HEART: SpecialMoveData = preload("res://data/moves/peggy_special_2.tres")
 const PROJECTILE_CASES: Array[Dictionary] = [
@@ -30,10 +32,12 @@ func _check(condition: bool, message: String) -> void:
 
 func _run() -> void:
 	_test_projectile_speeds()
+	_test_frank_bullet()
+	_test_default_fighter_colors()
 	_test_handcuffs_readability()
 	await _test_peggy_heart_spawn()
 	if failures.is_empty():
-		print("PASS projectile speed, Peggy muzzle origin, and handcuffs readability")
+		print("PASS Frank bullet, default fighter colors, projectile speed, Peggy muzzle origin, and handcuffs readability")
 		quit(0)
 		return
 	for failure: String in failures:
@@ -54,6 +58,29 @@ func _test_projectile_speeds() -> void:
 			move.projectile_speed / fighter.move_speed >= 1.12,
 			"%s projectile needs at least a 12%% speed margin over its fighter" % move.special_id
 		)
+
+
+func _test_frank_bullet() -> void:
+	_check(FRANK_BULLET.projectile_texture != null, "Frank Special 2 still uses the placeholder polygon")
+	_check(FRANK_BULLET.projectile_flip_with_direction, "Frank's bullet does not flip with its travel direction")
+	_check(FRANK_BULLET.projectile_visual_size == Vector2(56, 18), "Frank's bullet runtime size changed")
+	var path := "res://assets/characters/frank_washington/effects/bullet.png"
+	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	_check(image != null and not image.is_empty(), "Frank's bullet image is missing")
+	if image == null or image.is_empty():
+		return
+	_check(image.get_size() == Vector2i(256, 80), "Frank's bullet source must remain 256x80")
+	var used_rect: Rect2i = image.get_used_rect()
+	_check(used_rect.size.x >= 200 and used_rect.size.y >= 40, "Frank's bullet silhouette is incomplete")
+
+
+func _test_default_fighter_colors() -> void:
+	var arena: Node = ARENA_SCENE.instantiate()
+	var fighter_1: Fighter = arena.get_node("Fighter1") as Fighter
+	var fighter_2: Fighter = arena.get_node("Fighter2") as Fighter
+	_check(fighter_1.modulate == Color.WHITE, "Fighter 1 has an arena color tint")
+	_check(fighter_2.modulate == Color.WHITE, "Fighter 2 still has an orange arena color tint")
+	arena.free()
 
 
 func _test_handcuffs_readability() -> void:

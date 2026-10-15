@@ -4,7 +4,7 @@ const CAMPAIGN_LENGTH: int = 7
 const GOOD_FINAL_OPPONENT_ID: StringName = &"yamashita"
 const BAD_FINAL_OPPONENT_ID: StringName = &"joe_marshall"
 const DEFAULT_DIFFICULTY: CpuDifficultyProfile = preload(
-	"res://data/difficulties/medium.tres"
+	"res://data/difficulties/easy.tres"
 )
 
 var selected_player_character: CharacterData

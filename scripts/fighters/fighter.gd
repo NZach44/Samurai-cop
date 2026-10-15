@@ -46,6 +46,7 @@ class CommandInput:
 signal health_changed(current_health: int, max_health: int)
 signal defeated(fighter: Fighter)
 signal special_move_started(move_name: String)
+signal special_audio_finished(special_id: StringName)
 
 enum ControlMode {
 	HUMAN,
@@ -192,10 +193,12 @@ var standing_hurtbox_size: Vector2
 var standing_hurtbox_position: Vector2
 var command_buffer: Array[CommandInput] = []
 var default_sprite_root_position: Vector2
+var active_special_audio_id: StringName = &""
 
 
 func _ready() -> void:
 	_clear_command_buffer()
+	special_voice_player.finished.connect(_on_special_voice_finished)
 	default_sprite_root_position = sprite_root.position
 	current_health = max_health
 	punch_hit_box_shape.shape = punch_hit_box_shape.shape.duplicate()
@@ -726,7 +729,15 @@ func _play_special_audio(special_move: SpecialMoveData) -> void:
 	)
 	special_voice_player.stop()
 	special_voice_player.stream = stream
+	active_special_audio_id = special_move.special_id
 	special_voice_player.play()
+
+
+func _on_special_voice_finished() -> void:
+	var finished_special_id: StringName = active_special_audio_id
+	active_special_audio_id = &""
+	if not finished_special_id.is_empty():
+		special_audio_finished.emit(finished_special_id)
 
 
 func can_move() -> bool:
@@ -1149,6 +1160,7 @@ func _finish_damage_resolution() -> void:
 func reset_for_round(spawn_position: Vector2) -> void:
 	_clear_command_buffer()
 	special_voice_player.stop()
+	active_special_audio_id = &""
 	_cancel_attack(FighterState.NORMAL)
 	_update_hurtbox_for_posture(false)
 	position = spawn_position

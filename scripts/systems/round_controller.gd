@@ -29,6 +29,9 @@ const HEALTH_GREEN: Color = Color("35c968")
 const HEALTH_ORANGE: Color = Color("f0a43c")
 const HEALTH_RED: Color = Color("e5484d")
 const INTRO_PAUSE_DURATION: float = 0.5
+const NURSE_CHARACTER_ID: StringName = &"nurse"
+const JOE_CHARACTER_ID: StringName = &"joe_marshall"
+const NURSE_SPECIAL_2_ID: StringName = &"nurse_syringe"
 
 @onready var fighter_1: Fighter = $Fighter1
 @onready var fighter_2: Fighter = $Fighter2
@@ -55,6 +58,8 @@ const INTRO_PAUSE_DURATION: float = 0.5
 @onready var intro_bubble: PanelContainer = $HUD/Controls/IntroBubble
 @onready var intro_label: Label = $HUD/Controls/IntroBubble/Label
 @onready var intro_voice_player: AudioStreamPlayer = $IntroVoicePlayer
+@onready var bingo_popout: TextureRect = $BingoOverlay/Controls/BingoPopout
+@onready var bingo_voice_player: AudioStreamPlayer = $BingoVoicePlayer
 
 var fighter_1_spawn_position: Vector2
 var fighter_2_spawn_position: Vector2
@@ -68,6 +73,8 @@ var desktop_floor_position: Vector2
 var desktop_fighter_1_position: Vector2
 var desktop_fighter_2_position: Vector2
 var intro_sequence_id: int = 0
+var bingo_sequence_id: int = 0
+var bingo_tween: Tween
 
 
 func _enter_tree() -> void:
@@ -98,6 +105,8 @@ func _ready() -> void:
 	fighter_2.defeated.connect(_on_fighter_defeated)
 	fighter_1.special_move_started.connect(_on_special_move_started.bind(1))
 	fighter_2.special_move_started.connect(_on_special_move_started.bind(2))
+	fighter_1.special_audio_finished.connect(_on_special_audio_finished.bind(fighter_1))
+	fighter_2.special_audio_finished.connect(_on_special_audio_finished.bind(fighter_2))
 
 	_on_health_changed(fighter_1.current_health, fighter_1.max_health, fighter_1_health_bar)
 	_on_health_changed(fighter_2.current_health, fighter_2.max_health, fighter_2_health_bar)
@@ -156,7 +165,7 @@ func _on_special_move_started(display_title: String, player_index: int) -> void:
 	if player_index == 1:
 		p1_special_message_sequence_id += 1
 		var current_message_id: int = p1_special_message_sequence_id
-		p1_special_title.text = display_title
+		p1_special_title.text = display_title.to_upper()
 		p1_special_announcement.show()
 		await get_tree().create_timer(special_move_message_duration).timeout
 		if current_message_id == p1_special_message_sequence_id:
@@ -164,11 +173,66 @@ func _on_special_move_started(display_title: String, player_index: int) -> void:
 	elif player_index == 2:
 		p2_special_message_sequence_id += 1
 		var current_message_id: int = p2_special_message_sequence_id
-		p2_special_title.text = display_title
+		p2_special_title.text = display_title.to_upper()
 		p2_special_announcement.show()
 		await get_tree().create_timer(special_move_message_duration).timeout
 		if current_message_id == p2_special_message_sequence_id:
 			p2_special_announcement.hide()
+
+
+func _on_special_audio_finished(special_id: StringName, source_fighter: Fighter) -> void:
+	if special_id == NURSE_SPECIAL_2_ID and _is_nurse_versus_joe(source_fighter):
+		_trigger_bingo_event()
+
+
+func _is_nurse_versus_joe(source_fighter: Fighter) -> bool:
+	if source_fighter.character_data == null:
+		return false
+	if source_fighter.character_data.character_id != NURSE_CHARACTER_ID:
+		return false
+	var other_fighter: Fighter = fighter_2 if source_fighter == fighter_1 else fighter_1
+	return (
+		other_fighter != source_fighter
+		and other_fighter.character_data != null
+		and other_fighter.character_data.character_id == JOE_CHARACTER_ID
+	)
+
+
+func _trigger_bingo_event() -> void:
+	bingo_sequence_id += 1
+	var current_sequence_id: int = bingo_sequence_id
+	if bingo_tween != null and bingo_tween.is_valid():
+		bingo_tween.kill()
+	bingo_voice_player.stop()
+	bingo_voice_player.play()
+
+	var viewport_height: float = get_viewport_rect().size.y
+	var final_position := Vector2(12.0, viewport_height - bingo_popout.size.y)
+	var hidden_position := Vector2(final_position.x, viewport_height)
+	bingo_popout.position = hidden_position
+	bingo_popout.show()
+	bingo_tween = create_tween()
+	bingo_tween.tween_property(bingo_popout, "position", final_position, 0.2).set_trans(
+		Tween.TRANS_BACK
+	).set_ease(Tween.EASE_OUT)
+	bingo_tween.tween_interval(1.0)
+	bingo_tween.tween_property(bingo_popout, "position", hidden_position, 0.2).set_trans(
+		Tween.TRANS_QUAD
+	).set_ease(Tween.EASE_IN)
+	bingo_tween.finished.connect(_finish_bingo_event.bind(current_sequence_id))
+
+
+func _finish_bingo_event(sequence_id: int) -> void:
+	if sequence_id == bingo_sequence_id:
+		bingo_popout.hide()
+
+
+func _clear_bingo_event() -> void:
+	bingo_sequence_id += 1
+	if bingo_tween != null and bingo_tween.is_valid():
+		bingo_tween.kill()
+	bingo_voice_player.stop()
+	bingo_popout.hide()
 
 
 func _on_fighter_defeated(loser: Fighter) -> void:
@@ -206,6 +270,7 @@ func _start_round() -> void:
 	intro_sequence_id += 1
 	var current_intro_sequence_id: int = intro_sequence_id
 	_clear_intro_presentation()
+	_clear_bingo_event()
 	match_state = MatchState.ROUND_START
 	_set_fighter_controls_enabled(false)
 	_clear_special_projectiles()
@@ -217,18 +282,19 @@ func _start_round() -> void:
 	await get_tree().create_timer(intro_start_delay).timeout
 	if not _is_intro_sequence_active(current_intro_sequence_id):
 		return
-	await _play_fighter_intro(fighter_1, current_intro_sequence_id)
-	if not _is_intro_sequence_active(current_intro_sequence_id):
-		return
-	await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
-	if not _is_intro_sequence_active(current_intro_sequence_id):
-		return
-	await _play_fighter_intro(fighter_2, current_intro_sequence_id)
-	if not _is_intro_sequence_active(current_intro_sequence_id):
-		return
-	await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
-	if not _is_intro_sequence_active(current_intro_sequence_id):
-		return
+	if round_number == 1:
+		await _play_fighter_intro(fighter_1, current_intro_sequence_id)
+		if not _is_intro_sequence_active(current_intro_sequence_id):
+			return
+		await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
+		if not _is_intro_sequence_active(current_intro_sequence_id):
+			return
+		await _play_fighter_intro(fighter_2, current_intro_sequence_id)
+		if not _is_intro_sequence_active(current_intro_sequence_id):
+			return
+		await get_tree().create_timer(INTRO_PAUSE_DURATION).timeout
+		if not _is_intro_sequence_active(current_intro_sequence_id):
+			return
 
 	winner_label.text = "ROUND %d" % round_number
 	winner_label.show()
@@ -288,6 +354,7 @@ func _clear_intro_presentation() -> void:
 
 func _exit_tree() -> void:
 	intro_sequence_id += 1
+	_clear_bingo_event()
 	if is_instance_valid(intro_voice_player):
 		_clear_intro_presentation()
 

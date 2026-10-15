@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_character_select"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/retro_action_theme.ogg" id="2_music"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_portrait"]
 bg_color = Color(0.055, 0.09, 0.19, 0.96)
@@ -58,6 +59,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_character_select")
+
+[node name="SelectionMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_music")
+bus = &"Music"
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -129,6 +134,15 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.77, 0.87, 1, 1)
 theme_override_font_sizes/font_size = 13
 text = "ARROWS / WASD: SELECT     Q / E: DIFFICULTY     ENTER: FIGHT     MOUSE & TOUCH SUPPORTED"
+horizontal_alignment = 1
+
+[node name="SpecialInstructions" type="Label" parent="Margin/MainColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.79, 0.24, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.04, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 12
+text = "ALL FIGHTERS — SPECIAL 1: FORWARD, FORWARD, PUNCH (J)     SPECIAL 2: DOWN, FORWARD, KICK (K)"
 horizontal_alignment = 1
 
 [node name="Content" type="HBoxContainer" parent="Margin/MainColumn"]

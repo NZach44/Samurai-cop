@@ -25,13 +25,14 @@ func _check(condition: bool, message: String) -> void:
 func _run() -> void:
 	_test_character_resources()
 	await _test_audio_driven_order()
+	await _test_later_round_skips_intros()
 	await _test_restart_during_intro()
 	await _test_missing_audio_fallback()
 
 	var game_session: Node = root.get_node("GameSession")
 	game_session.clear_campaign()
 	if failures.is_empty():
-		print("PASS intro resources, sequential audio timing, 0.5-second gaps, input lock, and missing-audio fallback")
+		print("PASS first-round-only intros, sequential timing, input lock, and missing-audio fallback")
 		quit(0)
 		return
 	for failure: String in failures:
@@ -129,6 +130,34 @@ func _test_audio_driven_order() -> void:
 		var p2_gap: float = float(round_started_ms - p2_finished_ms) / 1000.0
 		_check(p2_gap >= 0.45 and p2_gap <= 0.65, "P2-to-ROUND pause was %.3f seconds" % p2_gap)
 
+	arena.queue_free()
+	await process_frame
+
+
+func _test_later_round_skips_intros() -> void:
+	var game_session: Node = root.get_node("GameSession")
+	game_session.clear_campaign()
+	game_session.selected_player_character = JOE
+	game_session.selected_cpu_character = PEGGY
+	var arena = ARENA_SCENE.instantiate()
+	arena.round_number = 2
+	arena.intro_start_delay = 0.0
+	arena.round_message_duration = 0.01
+	arena.fight_message_duration = 0.01
+	root.add_child(arena)
+	current_scene = arena
+	var voice: AudioStreamPlayer = arena.get_node("IntroVoicePlayer") as AudioStreamPlayer
+	var bubble: PanelContainer = arena.get_node("HUD/Controls/IntroBubble") as PanelContainer
+	var heard_intro: bool = false
+	var saw_intro_bubble: bool = false
+	var deadline_ms: int = Time.get_ticks_msec() + 2000
+	while arena.match_state != arena.MatchState.FIGHTING and Time.get_ticks_msec() < deadline_ms:
+		await process_frame
+		heard_intro = heard_intro or voice.playing
+		saw_intro_bubble = saw_intro_bubble or bubble.visible
+	_check(arena.match_state == arena.MatchState.FIGHTING, "round 2 did not reach FIGHTING")
+	_check(not heard_intro, "intro voice repeated in round 2")
+	_check(not saw_intro_bubble, "intro quote repeated in round 2")
 	arena.queue_free()
 	await process_frame
 

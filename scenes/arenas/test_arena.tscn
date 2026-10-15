@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter.tscn" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/systems/round_controller.gd" id="2_round_controller"]
@@ -6,6 +6,8 @@
 [ext_resource type="Resource" path="res://data/fighters/joe_marshall.tres" id="4_joe"]
 [ext_resource type="Resource" path="res://data/fighters/yamashita.tres" id="5_yamashita"]
 [ext_resource type="Script" path="res://scripts/arenas/arena_background.gd" id="6_arena_background"]
+[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/effects/bingo_popout.png" id="7_bingo_popout"]
+[ext_resource type="AudioStream" path="res://assets/characters/joe_marshall/audio/special2.ogg" id="8_bingo_audio"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1152, 64)
@@ -54,21 +56,48 @@ shadow_color = Color(0, 0, 0, 0.28)
 shadow_size = 4
 shadow_offset = Vector2(0, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_special_announcement"]
-content_margin_left = 12.0
-content_margin_top = 6.0
-content_margin_right = 12.0
-content_margin_bottom = 6.0
-bg_color = Color(0.035, 0.055, 0.09, 0.82)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.98, 0.84, 0.28, 0.9)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[sub_resource type="SystemFont" id="SystemFont_special_announcement"]
+font_names = PackedStringArray("Impact", "Arial Black", "DejaVu Sans Condensed")
+font_weight = 800
+font_stretch = 75
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_special_p1"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.45, 0.035, 0.07, 0.96)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.68, 0.18, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 6
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_special_p2"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.04, 0.18, 0.48, 0.96)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.26, 0.82, 1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 6
+shadow_offset = Vector2(0, 3)
 
 [sub_resource type="Theme" id="Theme_hud"]
 Label/colors/font_color = Color(0.96, 0.98, 1, 1)
@@ -142,7 +171,6 @@ character_data = ExtResource("4_joe")
 opponent = NodePath("../Fighter2")
 
 [node name="Fighter2" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_fighter")]
-modulate = Color(0.95, 0.55, 0.45, 1)
 position = Vector2(832, 400)
 character_data = ExtResource("5_yamashita")
 control_mode = 1
@@ -277,18 +305,20 @@ visible = false
 layout_mode = 1
 anchor_right = 0.48
 offset_left = 32.0
-offset_top = 100.0
+offset_top = 96.0
 offset_right = -12.0
-offset_bottom = 170.0
+offset_bottom = 178.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_special_announcement")
+theme_override_styles/panel = SubResource("StyleBoxFlat_special_p1")
 
 [node name="Title" type="Label" parent="HUD/Controls/P1SpecialAnnouncement"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.84, 0.28, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 0.92, 0.58, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.01, 0.02, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = SubResource("SystemFont_special_announcement")
+theme_override_font_sizes/font_size = 24
 text = "SPECIAL MOVE"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -301,18 +331,20 @@ layout_mode = 1
 anchor_left = 0.52
 anchor_right = 1.0
 offset_left = 12.0
-offset_top = 100.0
+offset_top = 96.0
 offset_right = -32.0
-offset_bottom = 170.0
+offset_bottom = 178.0
 grow_horizontal = 0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_special_announcement")
+theme_override_styles/panel = SubResource("StyleBoxFlat_special_p2")
 
 [node name="Title" type="Label" parent="HUD/Controls/P2SpecialAnnouncement"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.84, 0.28, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.8, 0.96, 1, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.04, 0.13, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = SubResource("SystemFont_special_announcement")
+theme_override_font_sizes/font_size = 24
 text = "SPECIAL MOVE"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -339,7 +371,38 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
+[node name="BingoOverlay" type="CanvasLayer" parent="."]
+layer = 30
+
+[node name="Controls" type="Control" parent="BingoOverlay"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BingoPopout" type="TextureRect" parent="BingoOverlay/Controls"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -280.0
+offset_right = 292.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("7_bingo_popout")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="IntroVoicePlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
+
+[node name="BingoVoicePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_bingo_audio")
 bus = &"Voice"
 
 [node name="MobileControls" parent="." instance=ExtResource("3_mobile_controls")]
