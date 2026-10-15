@@ -40,6 +40,7 @@ enum AttackLevel {
 @export var hitbox_offset_y: float = -24.0
 @export var animation_name: StringName = &"special_1"
 @export var movement_speed: float = 0.0
+@export var activation_audio: AudioStream
 @export var projectile_scene: PackedScene
 @export var projectile_speed: float = 240.0
 @export var projectile_lifetime: float = 2.0

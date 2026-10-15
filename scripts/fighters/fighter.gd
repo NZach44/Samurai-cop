@@ -89,6 +89,9 @@ const KICK_IMPACT_STREAM: AudioStream = preload(
 const BLOCK_IMPACT_STREAM: AudioStream = preload(
 	"res://assets/audio/combat/block_hits.tres"
 )
+const DEFAULT_SPECIAL_AUDIO: AudioStream = preload(
+	"res://assets/audio/voice/special_move.mp3"
+)
 
 @export var move_speed: float = 240.0
 @export var jump_velocity: float = 600.0
@@ -155,6 +158,7 @@ const BLOCK_IMPACT_STREAM: AudioStream = preload(
 @onready var hurt_box_shape: CollisionShape2D = $HurtBox/CollisionShape2D
 @onready var cpu_controller: CPUController = $CPUController
 @onready var combat_impact_player: AudioStreamPlayer = $CombatImpactPlayer
+@onready var special_voice_player: AudioStreamPlayer = $SpecialVoicePlayer
 
 var fighter_state: FighterState = FighterState.NORMAL
 var attack_is_active: bool = false
@@ -690,6 +694,7 @@ func _start_special(
 		if special_move.attack_level == SpecialMoveData.AttackLevel.LOW
 		else AttackLevel.MID
 	)
+	_play_special_audio(special_move)
 	special_move_started.emit(special_move.display_title)
 	_start_attack(
 		special_move.display_title,
@@ -711,6 +716,17 @@ func _start_special(
 			else ImpactSound.NONE
 		)
 	)
+
+
+func _play_special_audio(special_move: SpecialMoveData) -> void:
+	var stream: AudioStream = (
+		special_move.activation_audio
+		if special_move.activation_audio != null
+		else DEFAULT_SPECIAL_AUDIO
+	)
+	special_voice_player.stop()
+	special_voice_player.stream = stream
+	special_voice_player.play()
 
 
 func can_move() -> bool:
@@ -1132,6 +1148,7 @@ func _finish_damage_resolution() -> void:
 
 func reset_for_round(spawn_position: Vector2) -> void:
 	_clear_command_buffer()
+	special_voice_player.stop()
 	_cancel_attack(FighterState.NORMAL)
 	_update_hurtbox_for_posture(false)
 	position = spawn_position

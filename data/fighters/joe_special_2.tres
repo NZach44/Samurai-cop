@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
+[ext_resource type="AudioStream" path="res://assets/characters/joe_marshall/audio/special2.ogg" id="2_audio"]
 
 [resource]
 script = ExtResource("1_special")
@@ -21,3 +22,4 @@ hitbox_offset_x = 60.0
 hitbox_offset_y = -24.0
 animation_name = &"special_2"
 movement_speed = 180.0
+activation_audio = ExtResource("2_audio")

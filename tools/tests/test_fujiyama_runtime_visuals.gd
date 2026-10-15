@@ -127,7 +127,7 @@ func _test_textured_projectile(attacker: Fighter) -> void:
 	_check(projectile.projectile_visual.scale.x > 0.0, "right-traveling piano must face right")
 	projectile.configure(attacker, FUJIYAMA_SPECIAL_1, -1.0)
 	_check(projectile.projectile_visual.scale.x < 0.0, "left-traveling piano must flip")
-	_check(is_equal_approx(projectile.speed, 180.0), "piano projectile speed changed")
+	_check(is_equal_approx(projectile.speed, 300.0), "piano projectile speed changed")
 	_check(is_equal_approx(projectile.max_distance, 360.0), "piano projectile range changed")
 	_check(is_equal_approx(projectile.lifetime_remaining, 2.4), "piano projectile lifetime changed")
 	_check(projectile.damage == attacker.get_scaled_damage(20), "piano projectile damage changed")

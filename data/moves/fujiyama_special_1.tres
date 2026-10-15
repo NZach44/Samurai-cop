@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
 [ext_resource type="Texture2D" path="res://assets/characters/fujiyama/props/piano.svg" id="2_piano"]
+[ext_resource type="AudioStream" path="res://assets/characters/fujiyama/audio/special1.ogg" id="3_audio"]
 
 [resource]
 script = ExtResource("1_special")
@@ -19,6 +20,7 @@ knockback = 420.0
 hitbox_offset_x = 64.0
 hitbox_offset_y = -30.0
 animation_name = &"special_1"
+activation_audio = ExtResource("3_audio")
 projectile_speed = 300.0
 projectile_lifetime = 2.4
 projectile_max_distance = 360.0

@@ -60,4 +60,7 @@ shape = SubResource("RectangleShape2D_fighter")
 [node name="CombatImpactPlayer" type="AudioStreamPlayer" parent="."]
 bus = &"SFX"
 
+[node name="SpecialVoicePlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
+
 [connection signal="area_entered" from="Visuals/PunchHitBox" to="." method="_on_punch_hit_box_area_entered"]

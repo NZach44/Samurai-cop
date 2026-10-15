@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="SpecialMoveData" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/combat/special_move_data.gd" id="1_special"]
 [ext_resource type="Texture2D" path="res://assets/characters/nurse/effects/heart.png" id="2_heart"]
+[ext_resource type="AudioStream" path="res://assets/characters/nurse/audio/special2.ogg" id="3_audio"]
 
 [resource]
 script = ExtResource("1_special")
@@ -19,6 +20,7 @@ knockback = 260.0
 hitbox_offset_x = 54.0
 hitbox_offset_y = -86.0
 animation_name = &"special_2"
+activation_audio = ExtResource("3_audio")
 projectile_speed = 360.0
 projectile_lifetime = 2.2
 projectile_max_distance = 440.0
