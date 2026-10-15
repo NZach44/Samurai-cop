@@ -19,6 +19,7 @@ enum CampaignTier {
 @export var intro_text: String = ""
 @export var intro_audio: AudioStream
 @export var home_arena_id: StringName = &""
+@export var profile_portrait: Texture2D
 @export var sprite_frames: SpriteFrames
 @export_range(0.25, 3.0, 0.05) var visual_scale: float = 1.0
 @export var visual_offset: Vector2 = Vector2.ZERO

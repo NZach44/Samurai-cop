@@ -1,6 +1,54 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_character_select"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_portrait"]
+bg_color = Color(0.055, 0.09, 0.19, 0.96)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.91, 0.58, 0.16, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_roster"]
+bg_color = Color(0.035, 0.055, 0.125, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.38, 0.65, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_details"]
+bg_color = Color(0.075, 0.11, 0.21, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.91, 0.58, 0.16, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_confirm"]
+bg_color = Color(0.68, 0.12, 0.16, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.76, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="CharacterSelect" type="Control"]
 layout_mode = 3
@@ -18,7 +66,28 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.055, 0.07, 0.12, 1)
+color = Color(0.018, 0.035, 0.105, 1)
+mouse_filter = 2
+
+[node name="TopBand" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 82.0
+grow_horizontal = 2
+color = Color(0.055, 0.13, 0.31, 1)
+mouse_filter = 2
+
+[node name="BottomBand" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.55, 0.075, 0.11, 1)
 mouse_filter = 2
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -26,26 +95,40 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = -12.0
-offset_bottom = -12.0
+offset_left = 18.0
+offset_top = 8.0
+offset_right = -18.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MainColumn" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="Title" type="Label" parent="Margin/MainColumn"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "SELECT YOUR FIGHTER"
+theme_override_colors/font_color = Color(1, 0.79, 0.24, 1)
+theme_override_colors/font_outline_color = Color(0.55, 0.07, 0.1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 36
+text = "Samurai Cop: the game"
+horizontal_alignment = 1
+
+[node name="SelectionTitle" type="Label" parent="Margin/MainColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.77, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.1, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "CHOOSE YOUR PLAYER"
 horizontal_alignment = 1
 
 [node name="Instructions" type="Label" parent="Margin/MainColumn"]
 layout_mode = 2
-text = "Arrows/WASD: Fighter    Q/E: Difficulty    Enter: Fight    Mouse/Touch supported"
+theme_override_colors/font_color = Color(0.77, 0.87, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "ARROWS / WASD: SELECT     Q / E: DIFFICULTY     ENTER: FIGHT     MOUSE & TOUCH SUPPORTED"
 horizontal_alignment = 1
 
 [node name="Content" type="HBoxContainer" parent="Margin/MainColumn"]
@@ -53,44 +136,137 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="CharacterGrid" type="GridContainer" parent="Margin/MainColumn/Content"]
-unique_name_in_owner = true
+[node name="PortraitPanel" type="PanelContainer" parent="Margin/MainColumn/Content"]
+custom_minimum_size = Vector2(282, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-columns = 4
+theme_override_styles/panel = SubResource("StyleBox_portrait")
 
-[node name="DetailsPanel" type="PanelContainer" parent="Margin/MainColumn/Content"]
-custom_minimum_size = Vector2(220, 0)
+[node name="PortraitMargin" type="MarginContainer" parent="Margin/MainColumn/Content/PortraitPanel"]
 layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
-[node name="DetailsMargin" type="MarginContainer" parent="Margin/MainColumn/Content/DetailsPanel"]
+[node name="PortraitColumn" type="VBoxContainer" parent="Margin/MainColumn/Content/PortraitPanel/PortraitMargin"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/separation = 2
 
-[node name="Details" type="VBoxContainer" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin"]
+[node name="PlayerBadge" type="Label" parent="Margin/MainColumn/Content/PortraitPanel/PortraitMargin/PortraitColumn"]
 layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="SelectedNameLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Fighter"
+theme_override_colors/font_color = Color(0.4, 0.77, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.1, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
+text = "1P  PLAYER"
 horizontal_alignment = 1
 
-[node name="Preview" type="TextureRect" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+[node name="Preview" type="TextureRect" parent="Margin/MainColumn/Content/PortraitPanel/PortraitMargin/PortraitColumn"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 120)
+custom_minimum_size = Vector2(240, 330)
 layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 3
 stretch_mode = 5
+
+[node name="SelectedNameLabel" type="Label" parent="Margin/MainColumn/Content/PortraitPanel/PortraitMargin/PortraitColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.27, 1)
+theme_override_colors/font_outline_color = Color(0.38, 0.03, 0.06, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 25
+text = "FIGHTER"
+horizontal_alignment = 1
+
+[node name="RosterPanel" type="PanelContainer" parent="Margin/MainColumn/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBox_roster")
+
+[node name="RosterMargin" type="MarginContainer" parent="Margin/MainColumn/Content/RosterPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 9
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 9
+theme_override_constants/margin_bottom = 9
+
+[node name="RosterColumn" type="VBoxContainer" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RosterTitle" type="Label" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.83, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "SELECT A FIGHTER"
+horizontal_alignment = 1
+
+[node name="CharacterGrid" type="GridContainer" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
+columns = 4
+
+[node name="DifficultyLabel" type="Label" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.82, 1, 1)
+text = "CPU DIFFICULTY"
+horizontal_alignment = 1
+
+[node name="DifficultyRow" type="HBoxContainer" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="EasyButton" type="Button" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(105, 38)
+layout_mode = 2
+toggle_mode = true
+text = "EASY"
+
+[node name="MediumButton" type="Button" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(105, 38)
+layout_mode = 2
+toggle_mode = true
+text = "MEDIUM"
+
+[node name="DifficultButton" type="Button" parent="Margin/MainColumn/Content/RosterPanel/RosterMargin/RosterColumn/DifficultyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(105, 38)
+layout_mode = 2
+toggle_mode = true
+text = "DIFFICULT"
+
+[node name="DetailsPanel" type="PanelContainer" parent="Margin/MainColumn/Content"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_details")
+
+[node name="DetailsMargin" type="MarginContainer" parent="Margin/MainColumn/Content/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="Details" type="VBoxContainer" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StatsTitle" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.79, 0.24, 1)
+theme_override_font_sizes/font_size = 18
+text = "FIGHTER DATA"
+horizontal_alignment = 1
+
+[node name="Rule" type="HSeparator" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+layout_mode = 2
 
 [node name="SpeedLabel" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
 unique_name_in_owner = true
@@ -107,6 +283,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Jump: Balanced"
 
+[node name="SpecialsTitle" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.78, 1, 1)
+text = "SPECIAL MOVES"
+
 [node name="Special1Label" type="Label" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -119,39 +300,19 @@ layout_mode = 2
 text = "Special 2"
 autowrap_mode = 2
 
-[node name="DifficultyRow" type="HBoxContainer" parent="Margin/MainColumn"]
+[node name="Spacer" type="Control" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
+custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 8
+size_flags_vertical = 3
 
-[node name="DifficultyLabel" type="Label" parent="Margin/MainColumn/DifficultyRow"]
-layout_mode = 2
-text = "DIFFICULTY"
-
-[node name="EasyButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
+[node name="ConfirmButton" type="Button" parent="Margin/MainColumn/Content/DetailsPanel/DetailsMargin/Details"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(130, 42)
+custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-toggle_mode = true
-text = "EASY"
-
-[node name="MediumButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(130, 42)
-layout_mode = 2
-toggle_mode = true
-text = "MEDIUM"
-
-[node name="DifficultButton" type="Button" parent="Margin/MainColumn/DifficultyRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(130, 42)
-layout_mode = 2
-toggle_mode = true
-text = "DIFFICULT"
-
-[node name="ConfirmButton" type="Button" parent="Margin/MainColumn"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 54)
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.93, 0.66, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 23
+theme_override_styles/normal = SubResource("StyleBox_confirm")
+theme_override_styles/hover = SubResource("StyleBox_confirm")
+theme_override_styles/pressed = SubResource("StyleBox_confirm")
 text = "FIGHT!"

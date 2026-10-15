@@ -121,7 +121,7 @@ func _select_difficulty(index: int) -> void:
 
 func _update_details(character: CharacterData) -> void:
 	selected_name_label.text = character.display_name
-	preview.texture = _get_preview_texture(character)
+	preview.texture = _get_profile_texture(character)
 	speed_label.text = "Speed: %s" % _relative_speed(character.move_speed)
 	power_label.text = "Power: %s" % _relative_power(character.power_multiplier)
 	jump_label.text = "Jump: %s" % _relative_jump(character.jump_velocity)
@@ -146,7 +146,9 @@ func _confirm_selection() -> void:
 	get_tree().change_scene_to_file(ARENA_SCENE)
 
 
-func _get_preview_texture(character: CharacterData) -> Texture2D:
+func _get_profile_texture(character: CharacterData) -> Texture2D:
+	if character.profile_portrait != null:
+		return character.profile_portrait
 	if character.sprite_frames == null or not character.sprite_frames.has_animation(&"idle"):
 		return null
 	if character.sprite_frames.get_frame_count(&"idle") == 0:
@@ -156,22 +158,27 @@ func _get_preview_texture(character: CharacterData) -> Texture2D:
 
 func _create_character_button(character: CharacterData) -> Button:
 	var option := Button.new()
-	option.custom_minimum_size = Vector2(125.0, 132.0)
+	option.custom_minimum_size = Vector2(102.0, 178.0)
 	option.toggle_mode = true
+	option.focus_mode = Control.FOCUS_ALL
+	option.add_theme_stylebox_override("normal", _make_card_style(Color("26375f"), Color("6f86b8"), 2))
+	option.add_theme_stylebox_override("hover", _make_card_style(Color("314b7d"), Color("f2bd3f"), 3))
+	option.add_theme_stylebox_override("pressed", _make_card_style(Color("8d252d"), Color("ffe084"), 4))
+	option.add_theme_stylebox_override("focus", _make_card_style(Color("8d252d"), Color("ffffff"), 4))
 
 	var card := VBoxContainer.new()
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	option.add_child(card)
 	card.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	card.offset_left = 6.0
-	card.offset_top = 6.0
-	card.offset_right = -6.0
-	card.offset_bottom = -6.0
+	card.offset_left = 5.0
+	card.offset_top = 5.0
+	card.offset_right = -5.0
+	card.offset_bottom = -5.0
 
 	var portrait := TextureRect.new()
-	portrait.custom_minimum_size = Vector2(48.0, 84.0)
+	portrait.custom_minimum_size = Vector2(72.0, 132.0)
 	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait.texture = _get_preview_texture(character)
+	portrait.texture = _get_profile_texture(character)
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -181,10 +188,27 @@ func _create_character_button(character: CharacterData) -> Button:
 	name_label.text = character.display_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.add_theme_font_size_override("font_size", 13)
+	name_label.add_theme_color_override("font_color", Color("fff0bf"))
+	name_label.add_theme_color_override("font_shadow_color", Color("090d1b"))
+	name_label.add_theme_constant_override("shadow_offset_x", 1)
+	name_label.add_theme_constant_override("shadow_offset_y", 1)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(name_label)
 	character_name_labels.append(name_label)
 	return option
+
+
+func _make_card_style(fill_color: Color, border_color: Color, border_width: int) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = fill_color
+	style.border_color = border_color
+	style.set_border_width_all(border_width)
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	return style
 
 
 func _special_name(special_move: SpecialMoveData) -> String:

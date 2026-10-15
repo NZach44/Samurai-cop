@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/character_data.gd" id="1_character_data"]
 [ext_resource type="Resource" path="res://data/moves/nurse_special_1.tres" id="2_special_1"]
 [ext_resource type="Resource" path="res://data/moves/nurse_special_2.tres" id="3_special_2"]
 [ext_resource type="SpriteFrames" path="res://assets/characters/nurse/nurse_frames.tres" id="4_frames"]
 [ext_resource type="AudioStream" path="res://assets/characters/nurse/audio/intro_quote.ogg" id="5_intro"]
+[ext_resource type="Texture2D" path="res://assets/characters/nurse/profile/profile.png" id="6_profile"]
 
 [resource]
 script = ExtResource("1_character_data")
@@ -15,6 +16,7 @@ campaign_tier = 0
 intro_text = "Do you like what you see?"
 intro_audio = ExtResource("5_intro")
 home_arena_id = &"stage_07"
+profile_portrait = ExtResource("6_profile")
 sprite_frames = ExtResource("4_frames")
 visual_scale = 1.63
 move_speed = 268.0
