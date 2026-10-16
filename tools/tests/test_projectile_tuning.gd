@@ -3,6 +3,8 @@ extends SceneTree
 const FIGHTER_SCENE: PackedScene = preload("res://scenes/fighters/fighter.tscn")
 const ARENA_SCENE: PackedScene = preload("res://scenes/arenas/test_arena.tscn")
 const FRANK_BULLET: SpecialMoveData = preload("res://data/moves/frank_special_2.tres")
+const YAMASHITA: CharacterData = preload("res://data/fighters/yamashita.tres")
+const YAMASHITA_SHOTGUN: SpecialMoveData = preload("res://data/fighters/yamashita_special_2.tres")
 const PEGGY: CharacterData = preload("res://data/fighters/peggy.tres")
 const PEGGY_HEART: SpecialMoveData = preload("res://data/moves/peggy_special_2.tres")
 const PROJECTILE_CASES: Array[Dictionary] = [
@@ -33,11 +35,13 @@ func _check(condition: bool, message: String) -> void:
 func _run() -> void:
 	_test_projectile_speeds()
 	_test_frank_bullet()
+	_test_yamashita_shotgun()
+	_test_yamashita_special_scale()
 	_test_default_fighter_colors()
 	_test_handcuffs_readability()
 	await _test_peggy_heart_spawn()
 	if failures.is_empty():
-		print("PASS Frank bullet, default fighter colors, projectile speed, Peggy muzzle origin, and handcuffs readability")
+		print("PASS bullet visuals, Yamashita special scale, default fighter colors, projectile speed, Peggy muzzle origin, and handcuffs readability")
 		quit(0)
 		return
 	for failure: String in failures:
@@ -72,6 +76,44 @@ func _test_frank_bullet() -> void:
 	_check(image.get_size() == Vector2i(256, 80), "Frank's bullet source must remain 256x80")
 	var used_rect: Rect2i = image.get_used_rect()
 	_check(used_rect.size.x >= 200 and used_rect.size.y >= 40, "Frank's bullet silhouette is incomplete")
+
+
+func _test_yamashita_shotgun() -> void:
+	_check(YAMASHITA_SHOTGUN.projectile_texture != null, "Yamashita shotgun still uses the yellow polygon")
+	_check(YAMASHITA_SHOTGUN.projectile_flip_with_direction, "Yamashita bullet does not flip with travel direction")
+	_check(
+		YAMASHITA_SHOTGUN.projectile_visual_size == Vector2(64, 20),
+		"Yamashita bullet runtime size changed"
+	)
+	_check(
+		YAMASHITA_SHOTGUN.projectile_texture == FRANK_BULLET.projectile_texture,
+		"Yamashita shotgun is not using the production bullet texture"
+	)
+
+
+func _test_yamashita_special_scale() -> void:
+	var idle_height: float = _animation_median_height(YAMASHITA.sprite_frames, &"idle")
+	for animation: StringName in [&"special_1", &"special_2"]:
+		var special_height: float = _animation_median_height(YAMASHITA.sprite_frames, animation)
+		_check(
+			absf(special_height / idle_height - 1.0) <= 0.03,
+			"Yamashita %s median height differs from idle by more than 3%%" % animation
+		)
+		for frame_index: int in YAMASHITA.sprite_frames.get_frame_count(animation):
+			var image: Image = YAMASHITA.sprite_frames.get_frame_texture(animation, frame_index).get_image()
+			_check(image.get_used_rect().end.y == 132, "Yamashita %s frame %d baseline changed" % [animation, frame_index + 1])
+
+
+func _animation_median_height(frames: SpriteFrames, animation: StringName) -> float:
+	var heights: Array[float] = []
+	for frame_index: int in frames.get_frame_count(animation):
+		var image: Image = frames.get_frame_texture(animation, frame_index).get_image()
+		heights.append(float(image.get_used_rect().size.y))
+	heights.sort()
+	var middle: int = heights.size() / 2
+	if heights.size() % 2 == 0:
+		return (heights[middle - 1] + heights[middle]) * 0.5
+	return heights[middle]
 
 
 func _test_default_fighter_colors() -> void:
