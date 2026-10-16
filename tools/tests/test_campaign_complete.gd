@@ -43,8 +43,10 @@ func _run() -> void:
 		Vector2i(1440, 648),
 	]:
 		root.size = viewport_size
+		screen.size = Vector2(viewport_size)
 		await process_frame
 		_check(screen.size == Vector2(viewport_size), "reward screen does not fill %s" % viewport_size)
+		_check(artwork.size == screen.size, "completion artwork does not cover %s" % viewport_size)
 
 	screen.queue_free()
 	await process_frame
