@@ -7,7 +7,6 @@ const JOE: CharacterData = preload("res://data/fighters/joe_marshall.tres")
 const FRANK: CharacterData = preload("res://data/fighters/frank_washington.tres")
 const FUJIYAMA_SPECIAL_1: SpecialMoveData = preload("res://data/moves/fujiyama_special_1.tres")
 const FUJIYAMA_SPECIAL_2: SpecialMoveData = preload("res://data/moves/fujiyama_special_2.tres")
-const FALLBACK_PROJECTILE_MOVE: SpecialMoveData = preload("res://data/moves/frank_special_2.tres")
 
 var failures: PackedStringArray = []
 
@@ -138,22 +137,28 @@ func _test_textured_projectile(attacker: Fighter) -> void:
 
 
 func _test_fallback_projectile(attacker: Fighter) -> void:
+	var fallback_projectile_move := SpecialMoveData.new()
+	fallback_projectile_move.behavior = SpecialMoveData.SpecialBehavior.PROJECTILE
+	fallback_projectile_move.projectile_color = Color(0.95, 0.75, 0.15, 1.0)
+	fallback_projectile_move.projectile_size = Vector2(28.0, 16.0)
+	fallback_projectile_move.projectile_speed = 300.0
+	fallback_projectile_move.projectile_max_distance = 360.0
 	var projectile: SpecialProjectile = PROJECTILE_SCENE.instantiate() as SpecialProjectile
 	root.add_child(projectile)
 	projectile.global_position = Vector2.ZERO
-	projectile.configure(attacker, FALLBACK_PROJECTILE_MOVE, 1.0)
+	projectile.configure(attacker, fallback_projectile_move, 1.0)
 	var rectangle: RectangleShape2D = projectile.collision_shape.shape as RectangleShape2D
 	_check(projectile.visual.texture == null, "textureless projectile must keep Polygon2D fallback")
 	_check(projectile.visual.visible, "textureless projectile must show Polygon2D fallback")
 	_check(not projectile.projectile_visual.visible, "textureless projectile must hide Sprite2D visual")
-	_check(projectile.visual.color.is_equal_approx(FALLBACK_PROJECTILE_MOVE.projectile_color), "fallback projectile color changed")
+	_check(projectile.visual.color.is_equal_approx(fallback_projectile_move.projectile_color), "fallback projectile color changed")
 	_check(projectile.visual.uv.is_empty(), "fallback projectile must not retain texture UVs")
-	_check(rectangle.size.is_equal_approx(FALLBACK_PROJECTILE_MOVE.projectile_size), "fallback collision size changed")
-	_check(_polygon_size(projectile.visual.polygon).is_equal_approx(FALLBACK_PROJECTILE_MOVE.projectile_size), "fallback visual size changed")
-	var expected_distance: float = FALLBACK_PROJECTILE_MOVE.projectile_speed * 0.1
+	_check(rectangle.size.is_equal_approx(fallback_projectile_move.projectile_size), "fallback collision size changed")
+	_check(_polygon_size(projectile.visual.polygon).is_equal_approx(fallback_projectile_move.projectile_size), "fallback visual size changed")
+	var expected_distance: float = fallback_projectile_move.projectile_speed * 0.1
 	projectile._physics_process(0.1)
 	_check(is_equal_approx(projectile.global_position.x, expected_distance), "fallback projectile movement changed")
-	projectile._physics_process(FALLBACK_PROJECTILE_MOVE.projectile_max_distance / FALLBACK_PROJECTILE_MOVE.projectile_speed)
+	projectile._physics_process(fallback_projectile_move.projectile_max_distance / fallback_projectile_move.projectile_speed)
 	_check(projectile.is_queued_for_deletion(), "fallback projectile no longer expires at finite range")
 
 

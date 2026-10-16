@@ -10,6 +10,8 @@ Thumbs.db
 # Local source/reference media is never shipped. Keep the .gdignore marker tracked.
 /reference/*
 !/reference/.gdignore
+/incoming/*
+!/incoming/.gdignore
 /source_media/
 /artifacts/character_art/
 /artifacts/character_rig/

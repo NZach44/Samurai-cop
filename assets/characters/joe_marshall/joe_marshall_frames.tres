@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=76 format=3]
+[gd_resource type="SpriteFrames" load_steps=75 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/placeholder_sheet.svg" id="1_sheet"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/idle/idle_001.png" id="2_idle_001"]
@@ -50,7 +50,6 @@
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_001.png" id="48_block_001"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_002.png" id="49_block_002"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_003.png" id="50_block_003"]
-[ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/block/block_004.png" id="51_block_004"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_001.png" id="52_special_1_001"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_002.png" id="53_special_1_002"]
 [ext_resource type="Texture2D" path="res://assets/characters/joe_marshall/sprites/special_1/special_1_003.png" id="54_special_1_003"]
@@ -87,13 +86,10 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("50_block_003")
-}, {
-"duration": 1.0,
-"texture": ExtResource("51_block_004")
 }],
 "loop": false,
 "name": &"block",
-"speed": 10.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -178,7 +174,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"hurt",
-"speed": 12.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,

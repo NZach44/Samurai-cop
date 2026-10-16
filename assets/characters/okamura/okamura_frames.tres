@@ -77,14 +77,14 @@
 [resource]
 animations = [{
 "frames": [{"duration": 1.0, "texture": ExtResource("37_block_001")}, {"duration": 1.0, "texture": ExtResource("38_block_002")}, {"duration": 1.0, "texture": ExtResource("39_block_003")}],
-"loop": true,
+"loop": false,
 "name": &"block",
 "speed": 8.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("23_crouch_001")}, {"duration": 1.0, "texture": ExtResource("24_crouch_002")}, {"duration": 1.0, "texture": ExtResource("25_crouch_003")}],
-"loop": true,
+"loop": false,
 "name": &"crouch",
-"speed": 6.0
+"speed": 8.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("26_crouch_punch_001")}, {"duration": 1.0, "texture": ExtResource("27_crouch_punch_002")}, {"duration": 1.0, "texture": ExtResource("28_crouch_punch_003")}, {"duration": 1.0, "texture": ExtResource("29_crouch_punch_004")}, {"duration": 1.0, "texture": ExtResource("30_crouch_punch_005")}],
 "loop": false,
@@ -97,7 +97,7 @@ animations = [{
 "speed": 12.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("40_crouch_block_001")}, {"duration": 1.0, "texture": ExtResource("41_crouch_block_002")}, {"duration": 1.0, "texture": ExtResource("42_crouch_block_003")}],
-"loop": true,
+"loop": false,
 "name": &"crouch_block",
 "speed": 8.0
 }, {

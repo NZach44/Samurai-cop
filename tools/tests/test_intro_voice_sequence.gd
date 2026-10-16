@@ -67,13 +67,15 @@ func _test_audio_driven_order() -> void:
 	var arena = ARENA_SCENE.instantiate()
 	arena.round_message_duration = 0.05
 	arena.fight_message_duration = 0.05
+	var voice: AudioStreamPlayer = arena.get_node("IntroVoicePlayer") as AudioStreamPlayer
+	var voice_finish_times: PackedInt64Array = []
+	voice.finished.connect(func() -> void: voice_finish_times.append(Time.get_ticks_msec()))
 	root.add_child(arena)
 	current_scene = arena
 	await process_frame
 
 	var fighter_1: Fighter = arena.get_node("Fighter1") as Fighter
 	var fighter_2: Fighter = arena.get_node("Fighter2") as Fighter
-	var voice: AudioStreamPlayer = arena.get_node("IntroVoicePlayer") as AudioStreamPlayer
 	var bubble: PanelContainer = arena.get_node("HUD/Controls/IntroBubble") as PanelContainer
 	var label: Label = arena.get_node("HUD/Controls/IntroBubble/Label") as Label
 	var round_label: Label = arena.get_node("HUD/Controls/WinnerLabel") as Label
@@ -86,8 +88,6 @@ func _test_audio_driven_order() -> void:
 	var p2_started_ms: int = -1
 	var p2_finished_ms: int = -1
 	var round_started_ms: int = -1
-	var was_playing: bool = false
-	var previous_stream: AudioStream = null
 	var deadline_ms: int = Time.get_ticks_msec() + 15000
 	while arena.match_state != arena.MatchState.FIGHTING and Time.get_ticks_msec() < deadline_ms:
 		await process_frame
@@ -105,17 +105,12 @@ func _test_audio_driven_order() -> void:
 				_check(label.text == PEGGY.intro_text, "P2 voice used the wrong quote bubble")
 			else:
 				_check(false, "unexpected intro stream played")
-			if previous_stream != null and voice.stream != previous_stream:
-				_check(not was_playing, "P1 and P2 intro voices overlapped")
-			previous_stream = voice.stream
-		elif was_playing:
-			if saw_p2:
-				p2_finished_ms = Time.get_ticks_msec()
-			elif saw_p1:
-				p1_finished_ms = Time.get_ticks_msec()
+		if voice_finish_times.size() >= 1:
+			p1_finished_ms = voice_finish_times[0]
+		if voice_finish_times.size() >= 2:
+			p2_finished_ms = voice_finish_times[1]
 		if p2_finished_ms >= 0 and round_started_ms < 0 and round_label.visible and round_label.text.begins_with("ROUND"):
 			round_started_ms = Time.get_ticks_msec()
-		was_playing = voice.playing
 
 	_check(saw_p1, "P1 intro audio never played")
 	_check(saw_p2, "P2 intro audio never played")

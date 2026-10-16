@@ -20,7 +20,8 @@ Best of 3 rounds.
 
 Each player starts with 100 health.
 
-Round timer: 60 seconds.
+Rounds are untimed in the early release. A timed-round mode requires separate
+timeout and tie-break rules before it can be enabled safely.
 
 ## Initial controls
 
@@ -76,3 +77,19 @@ Per-stage presentation metadata may adjust only background scale, offset, or
 modulation; it must never change fighter scale, floor collision, arena bounds,
 spawn positions, or mobile controls. On touch layouts the background excludes
 the reserved bottom control zone.
+
+## Campaign ladder preview
+
+After character selection and after each campaign victory, the reusable
+`CampaignLadder` screen reads the already-generated opponent order and current
+fight index from `GameSession`. It displays all seven opponents, marks defeated
+fighters, highlights the next opponent, and positions the player's portrait at
+the current step. The preview is visual only and advances to the arena after
+four seconds; opponent ordering and campaign progression remain authoritative
+in `GameSession`.
+
+After the seventh opponent is defeated, the match flow opens a four-second
+campaign-completion reward screen instead of returning directly to character
+selection. It uses the cel-shaded production illustration at
+`assets/ui/campaign_complete/finish.png`, then clears campaign state and starts
+again at character selection.

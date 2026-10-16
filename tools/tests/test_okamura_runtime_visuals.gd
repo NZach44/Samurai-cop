@@ -48,6 +48,8 @@ func _run() -> void:
 	_test_shuriken_projectile(fighter)
 	await _test_special_2_flying_kick(fighter)
 	fighter.queue_free()
+	arena.queue_free()
+	await process_frame
 	_finish()
 
 
