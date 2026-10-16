@@ -1,6 +1,6 @@
 extends Control
 
-const ARENA_SCENE: String = "res://scenes/arenas/test_arena.tscn"
+const CAMPAIGN_LADDER_SCENE: String = "res://scenes/ui/campaign_ladder.tscn"
 const GRID_COLUMNS: int = 4
 const BASE_MOVE_SPEED: float = 240.0
 const ROSTER: Array[CharacterData] = [
@@ -157,7 +157,7 @@ func _confirm_selection() -> void:
 		is_transitioning = false
 		confirm_button.disabled = false
 		return
-	get_tree().change_scene_to_file(ARENA_SCENE)
+	get_tree().change_scene_to_file(CAMPAIGN_LADDER_SCENE)
 
 
 func _get_profile_texture(character: CharacterData) -> Texture2D:

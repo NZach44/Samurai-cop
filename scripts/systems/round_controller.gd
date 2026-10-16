@@ -8,7 +8,8 @@ enum MatchState {
 }
 
 const ROUNDS_TO_WIN: int = 2
-const ARENA_SCENE: String = "res://scenes/arenas/test_arena.tscn"
+const CAMPAIGN_LADDER_SCENE: String = "res://scenes/ui/campaign_ladder.tscn"
+const CAMPAIGN_COMPLETE_SCENE: String = "res://scenes/ui/campaign_complete.tscn"
 const CHARACTER_SELECT_SCENE: String = "res://scenes/ui/character_select.tscn"
 
 @export var round_message_duration: float = 0.8
@@ -445,8 +446,12 @@ func _finish_match(winner: Fighter, winner_number: int) -> void:
 	await get_tree().create_timer(match_end_delay).timeout
 	if campaign_is_active and player_won and not completed_campaign:
 		if game_session.advance_campaign():
-			get_tree().change_scene_to_file(ARENA_SCENE)
+			get_tree().change_scene_to_file(CAMPAIGN_LADDER_SCENE)
 			return
+	if completed_campaign:
+		game_session.clear_campaign()
+		get_tree().change_scene_to_file(CAMPAIGN_COMPLETE_SCENE)
+		return
 	game_session.clear_campaign()
 	get_tree().change_scene_to_file(CHARACTER_SELECT_SCENE)
 
